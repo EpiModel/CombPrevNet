@@ -8,10 +8,11 @@ rm(list = ls())
 suppressMessages(library("EpiModelHIV"))
 suppressMessages(library("ARTnet"))
 
-epistats <- build_epistats(city_name = "Atlanta")
+epistats <- build_epistats(geog.lvl = "city", geog.cat = "Atlanta", race = TRUE,
+                           init.hiv.prev = rep(0.17, 3))
 saveRDS(epistats, file = "est/epistats.rda")
-netparams <- build_netparams(epistats = epistats, smooth.main.dur.55p = TRUE)
-netstats <- build_netstats(epistats, netparams, expect.mort = 0.000478213, network.size = 10000)
+netparams <- build_netparams(epistats = epistats, smooth.main.dur = TRUE)
+netstats <- build_netstats(epistats, netparams, expect.mort = 0.000478213, network.size = 1000)
 saveRDS(netstats, file = "est/netstats.rda")
 
 
@@ -31,13 +32,13 @@ nw_main <- nw_casl <- nw_inst <- nw
 # Formula
 model_main <- ~edges +
   nodematch("age.grp", diff = TRUE) +
-  nodefactor("age.grp", base = 1) +
+  nodefactor("age.grp", levels = -1) +
   nodematch("race", diff = FALSE) +
-  nodefactor("race", base = 1) +
-  nodefactor("deg.casl", base = 1) +
+  nodefactor("race", levels = -1) +
+  nodefactor("deg.casl", levels = -1) +
   concurrent +
   degrange(from = 3) +
-  nodematch("role.class", diff = TRUE, keep = 1:2)
+  nodematch("role.class", diff = TRUE, levels = 1:2)
 
 # Target Stats
 netstats_main <- c(
@@ -71,13 +72,13 @@ fit_main <- netest(nw_main,
 # Formula
 model_casl <- ~edges +
   nodematch("age.grp", diff = TRUE) +
-  nodefactor("age.grp", base = c(1,5)) +
+  nodefactor("age.grp", levels = c(-1,-5)) +
   nodematch("race", diff = FALSE) +
-  nodefactor("race", base = 1) +
-  nodefactor("deg.main", base = 3) +
+  nodefactor("race", levels = -1) +
+  nodefactor("deg.main", levels = -3) +
   concurrent +
   degrange(from = 4) +
-  nodematch("role.class", diff = TRUE, keep = 1:2)
+  nodematch("role.class", diff = TRUE, levels = 1:2)
 
 # Target Stats
 netstats_casl <- c(
@@ -110,12 +111,12 @@ fit_casl <- netest(nw_casl,
 # Formula
 model_inst <- ~edges +
   nodematch("age.grp", diff = FALSE) +
-  nodefactor("age.grp", base = 1) +
+  nodefactor("age.grp", levels = -1) +
   nodematch("race", diff = FALSE) +
-  nodefactor("race", base = 1) +
-  nodefactor("risk.grp", base = 5) +
-  nodefactor("deg.tot", base = 1) +
-  nodematch("role.class", diff = TRUE, keep = 1:2)
+  nodefactor("race", levels = -1) +
+  nodefactor("risk.grp", levels = -5) +
+  nodefactor("deg.tot", levels = -1) +
+  nodematch("role.class", diff = TRUE, levels = 1:2)
 
 # Target Stats
 netstats_inst <- c(
