@@ -7,7 +7,7 @@ set.seed(123)
 
 dat <- initialize_msm(est, param, init, control, s = 1)
 
-for (at in 2:at) {
+for (at in 2:9) {
   dat <- aging_msm(dat, at)
   dat <- departure_msm(dat, at)
   dat <- arrival_msm(dat, at)
@@ -29,13 +29,11 @@ for (at in 2:at) {
 }
 
 at = at + 1
-dat.temp <- dat.temp
+dat.temp <- dat
 
-dat <- aging_msm(dat, at)
-dat <- departure_msm(dat, at)
-dat <- arrival_msm(dat, at)
-
-debug(hivtest_msm)
-dat <- hivtest_msm(dat, at)
+dat.temp <- aging_msm(dat.temp, at)
+dat.temp <- departure_msm(dat.temp, at)
+dat.temp <- arrival_msm(dat.temp, at)
 
 debug(hivtest_msm)
+dat.temp <- hivtest_msm(dat.temp, at)
