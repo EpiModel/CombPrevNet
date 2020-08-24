@@ -26,7 +26,7 @@ param.orig <- param_msm(epistats = epistats,
 init <- init_msm()
 
 control <- control_msm(simno = 1,
-                       nsteps = 52*10 ,
+                       nsteps = 52*60 ,
                        nsims = 5,
                        ncores = 1,
                        save.nwstats = FALSE,
