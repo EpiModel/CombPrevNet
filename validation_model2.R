@@ -38,11 +38,23 @@ sim[[1]] <- netsim(est, param.orig, init, control)
 
 ## Full partner initiation of PreP once identified
 
-param$prep.start.prob.part = 1
+param$prep.start.prob.part = 0
 sim[[2]] <- netsim(est, param, init, control)
 
 plot(sim[[2]], y = c("prepELig", "prepCurr"))
 plot(sim[[1]], y = c("prepElig", "prepCurr"), mean.col = c("green", "yellow"),
      qnts.col = c("green", "yellow"))
 
+param$prep.start.prob.part = 0.5
+sim[[2]] <- netsim(est, param, init, control)
 
+plot(sim[[3]], y = c("prepELig", "prepCurr"))
+plot(sim[[1]], y = c("prepElig", "prepCurr"), mean.col = c("green", "yellow"),
+     qnts.col = c("green", "yellow"))
+
+param$prep.start.prob.part = 0.75
+sim[[2]] <- netsim(est, param, init, control)
+
+plot(sim[[4]], y = c("prepELig", "prepCurr"))
+plot(sim[[1]], y = c("prepElig", "prepCurr"), mean.col = c("green", "yellow"),
+     qnts.col = c("green", "yellow"))

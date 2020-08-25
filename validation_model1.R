@@ -27,9 +27,9 @@ param <- param_msm(epistats = epistats,
 init <- init_msm()
 
 control <- control_msm(simno = 1001,
-                       nsteps = 52*10 ,
-                       nsims = 5,
+                       nsteps =52*10,
                        ncores = 1,
+                       nsims = 5,
                        save.nwstats = FALSE,
                        save.clin.hist = FALSE,
                        tergmLite = TRUE)
@@ -38,11 +38,10 @@ sim <- list()
 
 set.seed(123)
 
-sim[[1]] <- netsim(est, param.orig, init, control)
+sim[[1]] <- netsim(est, param, init, control)
 
 # Realistic breakdown of partnership types
-# 
-param <- param.orig
+
 param$part.lookback.main <- 52
 param$part.lookback.casl <- 26
 param$part.lookback.ooff <- 4
