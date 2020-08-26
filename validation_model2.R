@@ -2,12 +2,11 @@
 ## --------------------------------------------------------------- ##
 
 
-netstats <- readRDS("C:/Users/smande6/Box Sync/est/netstats.rda")
-epistats <- readRDS("C:/Users/smande6/Box Sync/est/epistats.rda")
-est <- readRDS("C:/Users/smande6/Box Sync/est/netest.rda")
+netstats <- readRDS("est/netstats.rda")
+epistats <- readRDS("est/epistats.rda")
+est <- readRDS("est/netest.rda")
 
-sim <- list()
-param.orig <- param_msm(epistats = epistats,
+param <- param_msm(epistats = epistats,
                         netstats = netstats,
                         hiv.scrn.rate = c(1, 1, 1),
                         part.lookback.main = 52,
@@ -18,43 +17,48 @@ param.orig <- param_msm(epistats = epistats,
                         part.ident.ooff = 1,
                         ptype.lookup = c(1, 2, 3),
                         prep.start.prob.part = 1,
+                        prep.start = 1,
+                        riskh.start = TRUE
 )
 
 init <- init_msm()
 
-control <- control_msm(simno = 1,
-                       nsteps = 52*10 ,
-                       nsims = 1,
-                       ncores = 1,
-                       save.nwstats = FALSE,
-                       save.clin.hist = FALSE,
-                       tergmLite = TRUE)
+control1 <- control_msm(simno = 1001,
+                        start = 1,
+                        nsteps =520,
+                        ncores = 1,
+                        nsims = 5,
+                        save.nwstats = FALSE,
+                        save.clin.hist = FALSE,
+                        tergmLite = TRUE)
 
-sim <- list()
+control2 <- control_msm(simno = 1001,
+                        start = (52*70) + 1,
+                        nsteps =52*80,
+                        ncores = 1,
+                        nsims = 5,
+                        save.nwstats = FALSE,
+                        save.clin.hist = FALSE,
+                        tergmLite = TRUE, 
+                        initialize.FUN = reinit_msm)
 
 set.seed(123)
 
-sim[[1]] <- netsim(est, param.orig, init, control)
+sim[[1]] <- netsim(est, param, init, control1)
 
 ## Full partner initiation of PreP once identified
 
 param$prep.start.prob.part = 0
 sim[[2]] <- netsim(est, param, init, control)
 
-plot(sim[[2]], y = c("prepELig", "prepCurr"))
-plot(sim[[1]], y = c("prepElig", "prepCurr"), mean.col = c("green", "yellow"),
-     qnts.col = c("green", "yellow"))
+
 
 param$prep.start.prob.part = 0.5
 sim[[2]] <- netsim(est, param, init, control)
 
-plot(sim[[3]], y = c("prepELig", "prepCurr"))
-plot(sim[[1]], y = c("prepElig", "prepCurr"), mean.col = c("green", "yellow"),
-     qnts.col = c("green", "yellow"))
+
 
 param$prep.start.prob.part = 0.75
 sim[[2]] <- netsim(est, param, init, control)
 
-plot(sim[[4]], y = c("prepELig", "prepCurr"))
-plot(sim[[1]], y = c("prepElig", "prepCurr"), mean.col = c("green", "yellow"),
-     qnts.col = c("green", "yellow"))
+

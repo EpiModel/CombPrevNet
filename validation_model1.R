@@ -26,10 +26,10 @@ param <- param_msm(epistats = epistats,
 
 init <- init_msm()
 
-control <- control_msm(simno = 1001,
-                       nsteps =52*10,
+control1 <- control_msm(simno = 1001,
+                       nsteps =52*70,
                        ncores = 1,
-                       nsims = 5,
+                       nsims = 1,
                        save.nwstats = FALSE,
                        save.clin.hist = FALSE,
                        tergmLite = TRUE)
@@ -38,15 +38,25 @@ sim <- list()
 
 set.seed(123)
 
-sim[[1]] <- netsim(est, param, init, control)
+sim[[1]] <- netsim(burnin, param, init, control2)
 
 # Realistic breakdown of partnership types
+
+control2 <- control_msm(simno = 1001,
+                       start = (52*70) + 1,
+                       nsteps =52*80,
+                       ncores = 1,
+                       nsims = 5,
+                       save.nwstats = FALSE,
+                       save.clin.hist = FALSE,
+                       tergmLite = TRUE, 
+                       initialize.FUN = reinit_msm)
 
 param$part.lookback.main <- 52
 param$part.lookback.casl <- 26
 param$part.lookback.ooff <- 4
 
-sim[[2]] <- netsim(est, param, init, control)
+sim[[2]] <- netsim(burnin, param, init, control2)
 
 # Longer recall periods
 # 
@@ -54,7 +64,7 @@ param$part.lookback.main <- 104
 param$part.lookback.casl <- 52
 param$part.lookback.ooff <- 26
 
-sim[[3]] <- netsim(est, param, init, control)
+sim[[3]] <- netsim(burnin, param, init, control2)
 
 # Very short recall periods
 # 
@@ -62,36 +72,40 @@ param$part.lookback.main <- 12
 param$part.lookback.casl <- 6
 param$part.lookback.ooff <- 2
 
-sim[[4]] <- netsim(est, param, init, control)
+sim[[4]] <- netsim(burnin, param, init, control2)
 
 ## part.ident: probability of identifying eligible partner
 # No prob. of success in identification. Note: should be equivalent to sim1.
+param$part.lookback.main <- 52
+param$part.lookback.casl <- 26
+param$part.lookback.ooff <- 4
+
 param$part.ident.main <- 0
 param$part.ident.casl <- 0
 param$part.ident.ooff <- 0
 
-sim[[5]] <- netsim(est, param, init, control)
+sim[[5]] <- netsim(burnin, param, init, control2)
 
 # Complete partner identification
 param$part.ident.main <- 1
 param$part.ident.casl <- 1
 param$part.ident.ooff <- 1
 
-sim[[6]] <- netsim(est, param, init,control)
+sim[[6]] <- netsim(burnin, param, init,control2)
 
 # Stratified partner identification rates - high
 param$part.ident.main <- 0.75
 param$part.ident.casl <- 0.6
 param$part.ident.ooff <- 0.3
 
-sim[[7]] <- netsim(est, param, init, control)
+sim[[7]] <- netsim(burnin, param, init, control2)
 
 # Stratified partner identification rates - low
 param$part.ident.main <- 0.03
 param$part.ident.casl <- 0.1
 param$part.ident.ooff <- 0.05
 
-sim[[8]] <- netsim(est, param, init, control)
+sim[[8]] <- netsim(burnin, param, init, control2)
 
 # Stratified partner identification rates - high main/casl recall,
 # low one off partner recall
@@ -99,7 +113,7 @@ param$part.ident.main <- 0.9
 param$part.ident.casl <- 0.8
 param$part.ident.ooff <- 0.05
 
-sim[[9]] <- netsim(est, param, init, control)
+sim[[9]] <- netsim(burnin, param, init, control2)
 
 # Stratified partner identification rates - low main/casl recall,
 # high one off partner recall
@@ -107,7 +121,7 @@ param$part.ident.main <- 0.3
 param$part.ident.casl <- 0.1
 param$part.ident.ooff <- 0.8
 
-sim[[10]] <- netsim(est, param, init, control)
+sim[[10]] <- netsim(burnin, param, init, control2)
 
 ## ptype.lookup: subset by type of relationship
 # Only main/casual
@@ -116,27 +130,28 @@ param$part.ident.casl <- 0.6
 param$part.ident.ooff <- 0.3
 param$ptype.lookup <- c(1, 2)
 
-sim[[11]] <- netsim(est, param, init, control)
+sim[[11]] <- netsim(burnin, param, init, control2)
 
 # Only casual
 param$ptype.lookup <- 3
 
-sim[[12]] <- netsim(est, param, init, control)
+sim[[12]] <- netsim(burnin, param, init, control2)
 
-## hiv.scrn.rate: HIV testing rate for partners of individuas who are incident HIV+.
+## hiv.scrn.rate: HIV testing rate for partners of individualls who are incident HIV+.
 # Low screen rate
+param$ptype.lookup <- c(1, 2, 3)
 param$hiv.scrn.rate <- c(0.5, 0.25, 0.125)
 
-sim[[13]] <- netsim(est, param, init, control)
+sim[[13]] <- netsim(burnin, param, init, control2)
 
 # No screening for identified partners
 param$hiv.scrn.rate <- c(0, 0, 0)
 
-sim[[14]] <- netsim(est, param, init, control)
+sim[[14]] <- netsim(burnin, param, init, control2)
 
 # High screen rate
 param$hiv.scrn.rate <- c(0.95, 0.75, 0.5)
 
-sim[[14]] <- netsim(est, param, init, control)
+sim[[15]] <- netsim(burnin, param, init, control2)
 
 saveRDS(sim, file = "model1.sim.rda")

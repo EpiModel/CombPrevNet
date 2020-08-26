@@ -2,9 +2,9 @@
 rm(list = ls())
 suppressMessages(library("EpiModelHIV"))
 
-netstats <- readRDS("C:/Users/smande6/Box Sync/est/netstats.rda")
-epistats <- readRDS("C:/Users/smande6/Box Sync/est/epistats.rda")
-est <- readRDS("C:/Users/smande6/Box Sync/est/netest.rda")
+netstats <- readRDS("est/netstats.rda")
+epistats <- readRDS("est/epistats.rda")
+est <- readRDS("est/netest.rda")
 
 param <- param_msm(netstats = netstats,
                    epistats = epistats,
@@ -45,11 +45,13 @@ set.seed(123)
 sim <- netsim(est, param, init, control)
 
 ## Single simulation, multiple HIV positive tested
+burnin <- readRDS("burnin.rda")
 set.seed(123)
 
 dat <- initialize_msm(est, param, init, control, s = 1)
+dat <- reinit_msm(burnin, param, init, control2)
 
-for (at in 2:9) {
+for (at in 3261:3270) {
   dat <- aging_msm(dat, at)
   dat <- departure_msm(dat, at)
   dat <- arrival_msm(dat, at)
