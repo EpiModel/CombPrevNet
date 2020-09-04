@@ -1,7 +1,7 @@
 ## Model Schematic 2: Identified Partners Prep Initiation
 ## --------------------------------------------------------------- ##
 
-
+suppressMessages(library(EpiModelHIV))
 netstats <- readRDS("est/netstats.rda")
 epistats <- readRDS("est/epistats.rda")
 est <- readRDS("est/netest.rda")
@@ -16,7 +16,7 @@ param <- param_msm(epistats = epistats,
                         part.ident.casl = 1,
                         part.ident.ooff = 1,
                         ptype.lookup = c(1, 2, 3),
-                        prep.start.prob.part = 1,
+                        prep.start.prob.part = 0,
                         prep.start = 1,
                         riskh.start = TRUE
 )
@@ -25,18 +25,18 @@ init <- init_msm()
 
 control1 <- control_msm(simno = 1001,
                         start = 1,
-                        nsteps =520,
+                        nsteps =100,
                         ncores = 1,
-                        nsims = 5,
+                        nsims = 1,
                         save.nwstats = FALSE,
                         save.clin.hist = FALSE,
                         tergmLite = TRUE)
 
 control2 <- control_msm(simno = 1001,
-                        start = (52*70) + 1,
-                        nsteps =52*80,
+                        start = 101,
+                        nsteps =300,
                         ncores = 1,
-                        nsims = 5,
+                        nsims = 10,
                         save.nwstats = FALSE,
                         save.clin.hist = FALSE,
                         tergmLite = TRUE, 
@@ -44,21 +44,22 @@ control2 <- control_msm(simno = 1001,
 
 set.seed(123)
 
-sim[[1]] <- netsim(est, param, init, control1)
+burnin <- netsim(est, param, init, control1)
+
+sim <- list()
+
+sim[[1]] <- netsim(burnin, param, init, control2)
+
+## Average prob. of initiating PreP
+param$prep.start.prob.part = 0.5
+sim[[2]] <- netsim(burnin, param, init, control2)
+
+## High prob. of initiating PreP
+param$prep.start.prob.part = 0.75
+sim[[3]] <- netsim(burnin, param, init, control2)
 
 ## Full partner initiation of PreP once identified
-
-param$prep.start.prob.part = 0
-sim[[2]] <- netsim(est, param, init, control)
-
-
-
-param$prep.start.prob.part = 0.5
-sim[[2]] <- netsim(est, param, init, control)
-
-
-
-param$prep.start.prob.part = 0.75
-sim[[2]] <- netsim(est, param, init, control)
+param$prep.start.prob.part = 1
+sim[[4]] <- netsim(burnin, param, init, control2)
 
 
