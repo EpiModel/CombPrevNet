@@ -62,4 +62,12 @@ sim[[3]] <- netsim(burnin, param, init, control2)
 param$prep.start.prob.part = 1
 sim[[4]] <- netsim(burnin, param, init, control2)
 
+plot(sim[[1]], y = "prep.part")
+plot(sim[[2]], y = "prep.part", mean.col = "red", qnts.col = "red", add = TRUE)
+plot(sim[[3]], y = "prep.part", mean.col = "green", qnts.col = "green", add = TRUE)
+plot(sim[[4]], y = "prep.part", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
+legend(100, 140, legend=c("prep.start.prob.part = 0, 0, 0", "prep.start.prob.part = 0.5, 0.5, 0.5",
+                          "prep.start.prob.part = 0.75, 0.75, 0.75", "prep.start.prob.part = 1, 1, 1"), 
+       text.col=c("blue", "red", "green", "yellow"), cex=0.75, bg = "lightblue")
+
 

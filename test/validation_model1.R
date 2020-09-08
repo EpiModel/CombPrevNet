@@ -9,7 +9,7 @@ est <- readRDS("est/netest.rda")
 
 
 ## part.lookback: Rates of elicitation for partner lookback period:
-# No elicitation of partners (i.e., set lookback window to 0 time steps).
+# One year elicitation of partners (i.e., set lookback window to 52 time steps).
 #
 param <- param_msm(epistats = epistats,
                    netstats = netstats,
@@ -201,4 +201,4 @@ legend(100, 140, legend=c("hiv.screen.rate = 1, 1, 1", "hiv.screen.rate = 0, 0, 
                           "hiv.screen.rate = 0.5, 0.25, 0.125", "part.lookback = 0.95, 0.75, 0.5"), 
        text.col=c("blue", "red", "yellow", "green"), cex=0.75, bg = "lightblue")
 
-saveRDS(sim, file = "model1.sim.rda")
+saveRDS(sim, file = "process1.sim.rda")
