@@ -27,31 +27,36 @@ param <- param_msm(epistats = epistats,
 init <- init_msm()
 
 control1 <- control_msm(simno = 1001,
-                       nsteps =52*70,
-                       ncores = 1,
-                       nsims = 1,
-                       save.nwstats = FALSE,
-                       save.clin.hist = FALSE,
-                       tergmLite = TRUE)
+                        nsteps =100,
+                        ncores = 1,
+                        nsims = 1,
+                        save.nwstats = FALSE,
+                        save.clin.hist = FALSE,
+                        tergmLite = TRUE)
 
 sim <- list()
 
 set.seed(123)
 
-sim[[1]] <- netsim(burnin, param, init, control2)
+burnin <- netsim(est, param, init, control1)
 
-# Realistic breakdown of partnership types
+
 
 control2 <- control_msm(simno = 1001,
-                       start = (52*70) + 1,
-                       nsteps =52*80,
-                       ncores = 1,
-                       nsims = 5,
-                       save.nwstats = FALSE,
-                       save.clin.hist = FALSE,
-                       tergmLite = TRUE, 
-                       initialize.FUN = reinit_msm)
+                        start = 101,
+                        nsteps = 300,
+                        ncores = 1,
+                        nsims = 5,
+                        save.nwstats = FALSE,
+                        save.clin.hist = FALSE,
+                        tergmLite = TRUE, 
+                        initialize.FUN = reinit_msm)
 
+
+sim[[1]] <- netsim(burnin, param, init, control2)
+
+
+# Realistic breakdown of partnership types
 param$part.lookback.main <- 52
 param$part.lookback.casl <- 26
 param$part.lookback.ooff <- 4
@@ -73,6 +78,14 @@ param$part.lookback.casl <- 6
 param$part.lookback.ooff <- 2
 
 sim[[4]] <- netsim(burnin, param, init, control2)
+
+plot(sim[[1]], y = "part.identified", xlim = c(100, 300), xlab = "Timestep", ylab = "Partners Identified", main = "Validation: part.lookback")
+plot(sim[[2]], y = "part.identified", mean.col = "red", qnts.col = "red", add = TRUE)
+plot(sim[[3]], y = "part.identified", mean.col = "green", qnts.col = "green", add = TRUE)
+plot(sim[[4]], y = "part.identified", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
+legend(100, 95, legend=c("part.lookback = 52, 52, 52", "part.lookback = 52, 26, 4",
+                         "part.lookback = 104, 52, 26", "part.lookback = 12, 6, 2"),
+       text.col=c("blue", "red", "green", "yellow"), cex=0.75, bg = "lightblue")
 
 ## part.ident: probability of identifying eligible partner
 # No prob. of success in identification. Note: should be equivalent to sim1.
@@ -107,6 +120,14 @@ param$part.ident.ooff <- 0.05
 
 sim[[8]] <- netsim(burnin, param, init, control2)
 
+plot(sim[[5]], y = "part.identified", xlim = c(100, 300), ylim = c(0, 100), xlab = "Timestep", ylab = "Partners Identified", main = "Validation: part.ident")
+plot(sim[[6]], y = "part.identified", mean.col = "red", qnts.col = "red", add = TRUE)
+plot(sim[[7]], y = "part.identified", mean.col = "green", qnts.col = "green", add = TRUE)
+plot(sim[[8]], y = "part.identified", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
+legend(100, 95, legend = c("part.ident = 0, 0, 0", "part.ident = 1, 1, 1",
+                           "part.ident = 0.75, 0.6, 0.3", "part.ident = 0.03, 0.1, 0.05"),
+       text.col = c("blue", "red", "green", "yellow"), cex=0.75, bg = "lightblue")
+
 # Stratified partner identification rates - high main/casl recall,
 # low one off partner recall
 param$part.ident.main <- 0.9
@@ -123,6 +144,13 @@ param$part.ident.ooff <- 0.8
 
 sim[[10]] <- netsim(burnin, param, init, control2)
 
+plot(sim[[5]], y = "part.identified", xlim = c(100, 300), ylim = c(0, 100), xlab = "Timestep", ylab = "Partners Identified", main = "Validation: part.ident")
+plot(sim[[9]], y = "part.identified", mean.col = "red", qnts.col = "red", add = TRUE)
+plot(sim[[10]], y = "part.identified", mean.col = "green", qnts.col = "green", add = TRUE)
+legend(100, 95, legend = c("part.ident = 0, 0, 0", "part.ident = 0.9, 0.8, 0.05",
+                           "part.ident = 0.3, 0.1, 0.9"),
+       text.col = c("blue", "red", "green"), cex=0.75, bg = "lightblue")
+
 ## ptype.lookup: subset by type of relationship
 # Only main/casual
 param$part.ident.main <- 0.75
@@ -137,8 +165,19 @@ param$ptype.lookup <- 3
 
 sim[[12]] <- netsim(burnin, param, init, control2)
 
+plot(sim[[7]], y = "part.identified", xlim = c(100, 300), ylim = c(0, 100), ylab = "Partners Identified", main = "Validation: ptype.lookup", xlab = "Timestep")
+plot(sim[[11]], y = "part.identified", mean.col = "red", qnts.col = "red", add = TRUE)
+plot(sim[[12]], y = "part.identified", mean.col = "green", qnts.col = "green", add = TRUE)
+legend(100, 95, legend = c("ptype.lookup = 1, 2, 3", "ptype.lookup = 1, 2",
+                           "ptype.lookup = 3"),
+       text.col = c("blue", "red", "green"), cex=0.75, bg = "lightblue")
+
+
 ## hiv.scrn.rate: HIV testing rate for partners of individualls who are incident HIV+.
 # Low screen rate
+param$part.ident.main <- 1
+param$part.ident.casl <- 1
+param$part.ident.ooff <- 1
 param$ptype.lookup <- c(1, 2, 3)
 param$hiv.scrn.rate <- c(0.5, 0.25, 0.125)
 
@@ -153,5 +192,13 @@ sim[[14]] <- netsim(burnin, param, init, control2)
 param$hiv.scrn.rate <- c(0.95, 0.75, 0.5)
 
 sim[[15]] <- netsim(burnin, param, init, control2)
+
+plot(sim[[1]], y = "part.screened", xlim = c(100, 300), xlab = "Timestep", ylab = "Partners Screened", main = "Validation: hiv.scrn.rate")
+plot(sim[[14]], y = "part.screened", mean.col = "red", qnts.col = "red", add = TRUE)
+plot(sim[[15]], y = "part.screened", mean.col = "green", qnts.col = "green", add = TRUE)
+plot(sim[[13]], y = "part.screened", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
+legend(100, 140, legend=c("hiv.screen.rate = 1, 1, 1", "hiv.screen.rate = 0, 0, 0",
+                          "hiv.screen.rate = 0.5, 0.25, 0.125", "part.lookback = 0.95, 0.75, 0.5"), 
+       text.col=c("blue", "red", "yellow", "green"), cex=0.75, bg = "lightblue")
 
 saveRDS(sim, file = "model1.sim.rda")
