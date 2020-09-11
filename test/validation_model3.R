@@ -73,15 +73,21 @@ param$tx.init.prob.idnt <- c(0.75, 0.75, 0.75)
 sim[[5]] <- netsim(burnin, param, init, control1)
 
 ## Comparison
-plot(sim[[1]], y = "part.init", ylim = c(0, 50))
+plot(sim[[1]], y = "part.init", ylim = c(0, 50), ylab = "Partners Initiating ART", main = "Validation: tx.init.prob.idnt")
 plot(sim[[2]], y = "part.init", mean.col = "red", qnts.col = "red", add = TRUE)
 plot(sim[[3]], y = "part.init", mean.col = "green", qnts.col = "green", add = TRUE)
 plot(sim[[4]], y = "part.init", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
 plot(sim[[5]], y = "part.init", mean.col = "purple", qnts.col = "purple", add = TRUE)
+legend(0, 40, legend=c("tx.init.prob.idnt = 0, 0, 0", "tx.init.prob.idnt = 1, 1, 1",
+                          "tx.init.prob.idnt = 0.5, 0.5, 0.5", "tx.init.prob.idnt = 0.01, 0.01, 0.01"), 
+       text.col=c("blue", "red", "yellow", "green"), cex=0.75, bg = "lightblue")
 
 ## ART Renitiation
 
 ## Model 6: Default model parameters; complete treatment reinitiation for HIV+ partners
+param$tx.halt.part.prob <- c(1, 1, 1)
+param$tx.halt.dur.rr <- c(1, 1, 1)
+param$tx.halt.full.rr <- c(1, 1, 1)
 param$tx.init.prob.idnt <- c(1, 1, 1)
 param$tx.reinit.part.prob.idnt <- c(1, 1, 1)
 sim[[6]] <- netsim(burnin, param, init, control1)
