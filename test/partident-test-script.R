@@ -1,11 +1,18 @@
 # hivtest_msm debug script
 # 
 
-undebug(hivtest_msm)
+undebug(partident_msm)
 
 param <- param_msm(epistats = epistats,
                    netstats = netstats,
                    hiv.scrn.rate = c(1, 1, 1),
+                   part.lookback.main = 52,
+                   part.lookback.casl = 52,
+                   part.lookback.ooff = 52,
+                   part.ident.main = 1,
+                   part.ident.casl = 1,
+                   part.ident.ooff = 1,
+                   ptype.lookup = c(1, 2, 3)
 )
 
 init <- init_msm()
@@ -50,7 +57,6 @@ dat.temp <- dat
 dat.temp <- aging_msm(dat.temp, at)
 dat.temp <- departure_msm(dat.temp, at)
 dat.temp <- arrival_msm(dat.temp, at)
-dat.temp <- partident_msm(dat, at)
 
-debug(hivtest_msm)
-dat.temp <- hivtest_msm(dat.temp, at)
+debug(partident_msm)
+dat.temp <- partident_msm(dat.temp, at)
