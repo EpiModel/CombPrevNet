@@ -1,4 +1,4 @@
-## Model Schematic 2: Identified Partners Prep Initiation
+## Model Process 3: Identified Partners Prep Initiation
 ## --------------------------------------------------------------- ##
 
 suppressMessages(library(EpiModelHIV))
@@ -70,5 +70,5 @@ legend(0, 40, legend=c("prep.start.prob.part = 0, 0, 0", "prep.start.prob.part =
                           "prep.start.prob.part = 0.75, 0.75, 0.75", "prep.start.prob.part = 1, 1, 1"), 
        text.col=c("blue", "red", "green", "yellow"), cex=0.75, bg = "lightblue")
 
-saveRDS(sim, file = "process2.sim.rda")
+saveRDS(sim, file = "process3.sim.rda")
 
