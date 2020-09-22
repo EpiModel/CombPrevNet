@@ -6,13 +6,16 @@ undebug(partident_msm)
 param <- param_msm(epistats = epistats,
                    netstats = netstats,
                    hiv.scrn.rate = c(1, 1, 1),
+                   part.identification = Inf,
                    part.lookback.main = 52,
                    part.lookback.casl = 52,
                    part.lookback.ooff = 52,
                    part.ident.main = 1,
                    part.ident.casl = 1,
                    part.ident.ooff = 1,
-                   ptype.lookup = c(1, 2, 3)
+                   ptype.lookup = c(1, 2, 3),
+                   prep.start = 101,
+                   prep.start.part = 101
 )
 
 init <- init_msm()
