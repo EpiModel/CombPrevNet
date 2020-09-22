@@ -56,8 +56,8 @@
       "RemoteRepo": "EpiModel",
       "RemoteUsername": "statnet",
       "RemoteRef": "master",
-      "RemoteSha": "03ac578f40015e50ffd110b0ebb6e1fc76d3e0d0",
-      "Hash": "a090ded7ec1d96fe29bcb84a53778cab"
+      "RemoteSha": "903673d60da4664e70b3cdf1f3c30feee33bcc8a",
+      "Hash": "442a7c537ef0d894c73e54b79cdd1048"
     },
     "EpiModelHIV": {
       "Package": "EpiModelHIV",
@@ -68,8 +68,8 @@
       "RemoteRepo": "EpiModelHIV-p",
       "RemoteUsername": "EpiModel",
       "RemoteRef": "CombPrevNet",
-      "RemoteSha": "c32e9e3c3aea7ebcc0da084a3fb67efbde14f3e8",
-      "Hash": "7c7c6883a469f606ea3c2c4ae3390e0e"
+      "RemoteSha": "a1cd7959b920b09349fc16c6596f9a6839e3b5be",
+      "Hash": "f9fd40ba5f5970cf6a9c360245131ed4"
     },
     "EpiModelHPC": {
       "Package": "EpiModelHPC",
@@ -134,10 +134,10 @@
     },
     "backports": {
       "Package": "backports",
-      "Version": "1.1.9",
+      "Version": "1.1.10",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "b29e2d989dfb2e71ca3fd7d5bb1c0d58"
+      "Hash": "05ffd2d4acb51aee70f1de68ad7a6aed"
     },
     "base64enc": {
       "Package": "base64enc",
