@@ -7,13 +7,10 @@ netstats <- readRDS("est/netstats.rda")
 epistats <- readRDS("est/epistats.rda")
 est <- readRDS("est/netest.rda")
 
-
-## part.lookback: Rates of elicitation for partner lookback period:
-# One year elicitation of partners (i.e., set lookback window to 52 time steps).
-#
 param <- param_msm(epistats = epistats,
                    netstats = netstats,
                    hiv.scrn.rate = c(1, 1, 1),
+                   part.identification = 1,
                    part.lookback.main = 52,
                    part.lookback.casl = 52,
                    part.lookback.ooff = 52,
