@@ -2,9 +2,9 @@
 ## --------------------------------------------------------------- ##
 
 suppressMessages(library(EpiModelHIV))
-netstats <- readRDS("est/netstats.rds")
-epistats <- readRDS("est/epistats.rds")
-est <- readRDS("est/netest.rds")
+netstats <- readRDS("data/input/netstats.rds")
+epistats <- readRDS("data/input/epistats.rds")
+est <- readRDS("data/input/netest.rds")
 
 param <- param_msm(epistats = epistats,
                         netstats = netstats,
