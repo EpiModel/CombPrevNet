@@ -7,8 +7,8 @@
 rm(list = ls())
 suppressMessages(library("EpiModelHIV"))
 
-est <- readRDS("est/netest.rda")
-netstats <- readRDS("est/netstats.rda")
+est <- readRDS("est/netest.rds")
+netstats <- readRDS("est/netstats.rds")
 
 
 # Main --------------------------------------------------------------------

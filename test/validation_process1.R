@@ -3,9 +3,9 @@
 
 suppressMessages(library("EpiModelHIV"))
 
-netstats <- readRDS("est/netstats.rda")
-epistats <- readRDS("est/epistats.rda")
-est <- readRDS("est/netest.rda")
+netstats <- readRDS("est/netstats.rds")
+epistats <- readRDS("est/epistats.rds")
+est <- readRDS("est/netest.rds")
 
 
 ## part.lookback: Rates of elicitation for partner lookback period:
@@ -171,4 +171,4 @@ legend(100, 250, legend = c("ptype.lookup = 1, 2, 3", "ptype.lookup = 1, 2",
                            "ptype.lookup = 3"),
        text.col = c("blue", "red", "green"), cex=0.75, bg = "lightblue")
 
-saveRDS(sim, file = "process1.sim.rda")
+saveRDS(sim, file = "process1.sim.rds")
