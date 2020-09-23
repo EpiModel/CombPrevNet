@@ -2,9 +2,9 @@
 ## --------------------------------------------------------------- ##
 
 suppressMessages(library(EpiModelHIV))
-netstats <- readRDS("est/netstats.rda")
-epistats <- readRDS("est/epistats.rda")
-est <- readRDS("est/netest.rda")
+netstats <- readRDS("data/input/netstats.rds")
+epistats <- readRDS("data/input/epistats.rds")
+est <- readRDS("data/input/netest.rds")
 
 param <- param_msm(epistats = epistats,
                         netstats = netstats,
@@ -77,5 +77,5 @@ legend(0, 140, legend=c("prep.start.prob.part = 0, 0, 0", "prep.start.prob.part 
                           "prep.start.prob.part = 0.75, 0.75, 0.75", "prep.start.prob.part = 1, 1, 1", "prep.start.part = 150"), 
        text.col=c("blue", "red", "green", "yellow", "purple"), cex=0.75, bg = "lightblue")
 
-saveRDS(sim, file = "process3.sim.rda")
+saveRDS(sim, file = "process3.sim.rds")
 

@@ -3,9 +3,9 @@
 
 suppressMessages(library("EpiModelHIV"))
 
-netstats <- readRDS("est/netstats.rda")
-epistats <- readRDS("est/epistats.rda")
-est <- readRDS("est/netest.rda")
+netstats <- readRDS("data/input/netstats.rds")
+epistats <- readRDS("data/input/epistats.rds")
+est <- readRDS("data/input/netest.rds")
 
 
 ## part.lookback: Rates of elicitation for partner lookback period:
@@ -79,7 +79,8 @@ param$part.lookback.ooff <- 2
 
 sim[[4]] <- netsim(burnin, param, init, control2)
 
-plot(sim[[1]], y = "part.identified", xlim = c(100, 200), xlab = "Timestep", ylab = "Partners Identified", main = "Validation: part.lookback")
+plot(sim[[1]], y = "part.identified", xlim = c(100, 200), xlab = "Timestep", 
+     ylab = "Partners Identified", main = "Validation: part.lookback")
 plot(sim[[2]], y = "part.identified", mean.col = "red", qnts.col = "red", add = TRUE)
 plot(sim[[3]], y = "part.identified", mean.col = "green", qnts.col = "green", add = TRUE)
 plot(sim[[4]], y = "part.identified", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
@@ -119,7 +120,8 @@ param$part.ident.ooff <- 0.05
 
 sim[[8]] <- netsim(burnin, param, init, control2)
 
-plot(sim[[5]], y = "part.identified", xlim = c(100, 200), ylim = c(0, 250), xlab = "Timestep", ylab = "Partners Identified", main = "Validation: part.ident")
+plot(sim[[5]], y = "part.identified", xlim = c(100, 200), ylim = c(0, 250), 
+     xlab = "Timestep", ylab = "Partners Identified", main = "Validation: part.ident")
 plot(sim[[6]], y = "part.identified", mean.col = "red", qnts.col = "red", add = TRUE)
 plot(sim[[7]], y = "part.identified", mean.col = "green", qnts.col = "green", add = TRUE)
 plot(sim[[8]], y = "part.identified", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
@@ -143,7 +145,8 @@ param$part.ident.ooff <- 0.8
 
 sim[[10]] <- netsim(burnin, param, init, control2)
 
-plot(sim[[5]], y = "part.identified", xlim = c(100, 200), ylim = c(0, 250), xlab = "Timestep", ylab = "Partners Identified", main = "Validation: part.ident")
+plot(sim[[5]], y = "part.identified", xlim = c(100, 200), ylim = c(0, 250), 
+     xlab = "Timestep", ylab = "Partners Identified", main = "Validation: part.ident")
 plot(sim[[9]], y = "part.identified", mean.col = "red", qnts.col = "red", add = TRUE)
 plot(sim[[10]], y = "part.identified", mean.col = "green", qnts.col = "green", add = TRUE)
 legend(100, 250, legend = c("part.ident = 0, 0, 0", "part.ident = 0.9, 0.8, 0.05",
@@ -164,11 +167,12 @@ param$ptype.lookup <- 3
 
 sim[[12]] <- netsim(burnin, param, init, control2)
 
-plot(sim[[7]], y = "part.identified", xlim = c(100, 200), ylim = c(0, 250), ylab = "Partners Identified", main = "Validation: ptype.lookup", xlab = "Timestep")
+plot(sim[[7]], y = "part.identified", xlim = c(100, 200), ylim = c(0, 250), 
+     ylab = "Partners Identified", main = "Validation: ptype.lookup", xlab = "Timestep")
 plot(sim[[11]], y = "part.identified", mean.col = "red", qnts.col = "red", add = TRUE)
 plot(sim[[12]], y = "part.identified", mean.col = "green", qnts.col = "green", add = TRUE)
 legend(100, 250, legend = c("ptype.lookup = 1, 2, 3", "ptype.lookup = 1, 2",
                            "ptype.lookup = 3"),
        text.col = c("blue", "red", "green"), cex=0.75, bg = "lightblue")
 
-saveRDS(sim, file = "process1.sim.rda")
+saveRDS(sim, file = "process1.sim.rds")

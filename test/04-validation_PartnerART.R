@@ -3,9 +3,9 @@
 ## --------------------------------------------------------------- ##
 
 suppressMessages(library(EpiModelHIV))
-netstats <- readRDS("est/netstats.rda")
-epistats <- readRDS("est/epistats.rda")
-est <- readRDS("est/netest.rda")
+netstats <- readRDS("data/input/netstats.rds")
+epistats <- readRDS("data/input/epistats.rds")
+est <- readRDS("data/input/netest.rds")
 
 sim <- list()
 
@@ -114,4 +114,4 @@ plot(sim[[7]], y = "part.reinit", mean.col = "green", qnts.col = "green", add = 
 plot(sim[[8]], y = "part.reinit", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
 plot(sim[[9]], y = "part.reinit", mean.col = "purple", qnts.col = "purple", add = TRUE)
 
-saveRDS(sim, file = "process4.sim.rda")
+saveRDS(sim, file = "process4.sim.rds")
