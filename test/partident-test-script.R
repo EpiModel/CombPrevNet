@@ -5,7 +5,7 @@ undebug(partident_msm)
 
 param <- param_msm(epistats = epistats,
                    netstats = netstats,
-                   hiv.scrn.rate = c(1, 1, 1),
+                   hiv.test.rate.idnt  = c(1, 1, 1),
                    part.identification = 50,
                    part.lookback.main = 52,
                    part.lookback.casl = 52,
