@@ -56,8 +56,8 @@
       "RemoteRepo": "EpiModel",
       "RemoteUsername": "statnet",
       "RemoteRef": "master",
-      "RemoteSha": "903673d60da4664e70b3cdf1f3c30feee33bcc8a",
-      "Hash": "442a7c537ef0d894c73e54b79cdd1048"
+      "RemoteSha": "9e67e8046ac54f8cfaf290490a1e1011f1723e0c",
+      "Hash": "244ea7f6c9db388e4023d0b4ee0954c1"
     },
     "EpiModelHIV": {
       "Package": "EpiModelHIV",
@@ -68,8 +68,8 @@
       "RemoteRepo": "EpiModelHIV-p",
       "RemoteUsername": "EpiModel",
       "RemoteRef": "CombPrevNet",
-      "RemoteSha": "a6bfd609a2b668d67dbc7b53073c9331c6ac330b",
-      "Hash": "0906a62272902fda2d22ac8fa0f73473"
+      "RemoteSha": "44ef2337ebee69079847dc030090c288cf8cbdfe",
+      "Hash": "56b680017ab04457508974c3267dc9ca"
     },
     "EpiModelHPC": {
       "Package": "EpiModelHPC",
@@ -631,10 +631,10 @@
     },
     "withr": {
       "Package": "withr",
-      "Version": "2.2.0",
+      "Version": "2.3.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "ecd17882a0b4419545691e095b74ee89"
+      "Hash": "7307d79f58d1885b38c4f4f1a8cb19dd"
     }
   }
 }
