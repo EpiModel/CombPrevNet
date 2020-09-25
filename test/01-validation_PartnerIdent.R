@@ -13,7 +13,7 @@ est <- readRDS("data/input/netest.rds")
 #
 param <- param_msm(epistats = epistats,
                    netstats = netstats,
-                   hiv.test.rate.idnt  = c(1, 1, 1),
+                   part.hiv.test.rate  = c(1, 1, 1),
                    part.identification = 1,
                    part.lookback.main = 52,
                    part.lookback.casl = 52,
@@ -84,7 +84,7 @@ plot(sim[[1]], y = "part.identified", xlim = c(100, 200), xlab = "Timestep",
 plot(sim[[2]], y = "part.identified", mean.col = "red", qnts.col = "red", add = TRUE)
 plot(sim[[3]], y = "part.identified", mean.col = "green", qnts.col = "green", add = TRUE)
 plot(sim[[4]], y = "part.identified", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
-legend(100, 250, legend=c("part.lookback = 52, 52, 52", "part.lookback = 52, 26, 4",
+legend(100, 450, legend=c("part.lookback = 52, 52, 52", "part.lookback = 52, 26, 4",
                          "part.lookback = 104, 52, 26", "part.lookback = 12, 6, 2"),
        text.col=c("blue", "red", "green", "yellow"), cex=0.75, bg = "lightblue")
 

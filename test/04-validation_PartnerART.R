@@ -11,7 +11,7 @@ sim <- list()
 
 param <- param_msm(epistats = epistats,
                    netstats = netstats,
-                   hiv.test.rate.idnt = c(1, 1, 1),
+                   part.hiv.test.rate = c(1, 1, 1),
                    part.identification = 1,
                    part.lookback.main = 52,
                    part.lookback.casl = 52,
@@ -20,10 +20,10 @@ param <- param_msm(epistats = epistats,
                    part.ident.casl = 1,
                    part.ident.ooff = 1,
                    ptype.lookup = c(1, 2, 3),
-                   prep.start.prob.part = 1,
+                   part.prep.start.prob = 1,
                    prep.start = 1,
-                   tx.init.prob.idnt = c(0, 0, 0),
-                   tx.reinit.part.prob.idnt = c(0, 0, 0),
+                   part.tx.init.prob = c(0, 0, 0),
+                   part.tx.reinit.part.prob = c(0, 0, 0),
                    riskh.start = TRUE
 )
 
@@ -59,30 +59,30 @@ control1 <- control_msm(simno = 1001,
 sim[[1]] <- netsim(burnin, param, init, control1)
 
 ## Model 2: Default model parameters; complete treatment initiation for HIV+ partners
-param$tx.init.prob.idnt <- c(1, 1, 1)
+param$part.tx.init.prob <- c(1, 1, 1)
 sim[[2]] <- netsim(burnin, param, init, control1)
 
 ## Model 3: Default model parameters; average prob. of treatment initiation for HIV+ partners
-param$tx.init.prob.idnt <- c(0.5, 0.5, 0.5)
+param$part.tx.init.prob <- c(0.5, 0.5, 0.5)
 sim[[3]] <- netsim(burnin, param, init, control1)
 
 ## Model 4: Default model parameters; low prob. of treatment initiation for HIV+ partners
-param$tx.init.prob.idnt <- c(0.01, 0.01, 0.01)
+param$part.tx.init.prob <- c(0.01, 0.01, 0.01)
 sim[[4]] <- netsim(burnin, param, init, control1)
 
 ## Model 5: Default model parameters; low prob. of treatment initiation for HIV+ partners
-param$tx.init.prob.idnt <- c(0.75, 0.75, 0.75)
+param$part.tx.init.prob <- c(0.75, 0.75, 0.75)
 sim[[5]] <- netsim(burnin, param, init, control1)
 
 ## Comparison
-plot(sim[[1]], y = "part.init", ylim = c(0, 20), ylab = "Partners Initiating ART", main = "Validation: tx.init.prob.idnt")
+plot(sim[[1]], y = "part.init", ylim = c(0, 20), ylab = "Partners Initiating ART", main = "Validation: part.tx.init.prob")
 plot(sim[[2]], y = "part.init", mean.col = "red", qnts.col = "red", add = TRUE)
 plot(sim[[3]], y = "part.init", mean.col = "green", qnts.col = "green", add = TRUE)
 plot(sim[[4]], y = "part.init", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
 plot(sim[[5]], y = "part.init", mean.col = "purple", qnts.col = "purple", add = TRUE)
-legend(0, 20, legend=c("tx.init.prob.idnt = 1, 1, 1", "tx.init.prob.idnt = 0.75, 0.75, 0.75",
-                       "tx.init.prob.idnt = 0.5, 0.5, 0.5", "tx.init.prob.idnt = 0.01, 0.01, 0.01",   
-                       "tx.init.prob.idnt = 0, 0, 0"), 
+legend(0, 20, legend=c("part.tx.init.prob = 1, 1, 1", "part.tx.init.prob = 0.75, 0.75, 0.75",
+                       "part.tx.init.prob = 0.5, 0.5, 0.5", "part.tx.init.prob = 0.01, 0.01, 0.01",   
+                       "part.tx.init.prob = 0, 0, 0"), 
        text.col=c("red", "purple", "green", "yellow", "blue"), cex=0.75, bg = "lightblue")
 
 ## ART Renitiation
@@ -91,20 +91,20 @@ legend(0, 20, legend=c("tx.init.prob.idnt = 1, 1, 1", "tx.init.prob.idnt = 0.75,
 param$tx.halt.part.prob <- c(1, 1, 1)
 param$tx.halt.dur.rr <- c(1, 1, 1)
 param$tx.halt.full.rr <- c(1, 1, 1)
-param$tx.init.prob.idnt <- c(1, 1, 1)
-param$tx.reinit.part.prob.idnt <- c(1, 1, 1)
+param$part.tx.init.prob <- c(1, 1, 1)
+param$part.tx.reinit.part.prob <- c(1, 1, 1)
 sim[[6]] <- netsim(burnin, param, init, control1)
 
 ## Model 7: Default model parameters; average prob. of treatment reinitiation for HIV+ partners
-param$tx.reinit.part.prob.idnt <- c(0.5, 0.5, 0.5)
+param$part.tx.reinit.part.prob <- c(0.5, 0.5, 0.5)
 sim[[7]] <- netsim(burnin, param, init, control1)
 
 ## Model 8: Default model parameters; low prob. of treatment reinitiation for HIV+ partners
-param$tx.reinit.part.prob.idnt <- c(0.01, 0.01, 0.01)
+param$part.tx.reinit.part.prob <- c(0.01, 0.01, 0.01)
 sim[[8]] <- netsim(burnin, param, init, control1)
 
 ## Model 9: Default model parameters; low prob. of treatment reinitiation for HIV+ partners
-param$tx.reinit.part.prob.idnt <- c(0.75, 0.75, 0.75)
+param$part.tx.reinit.part.prob <- c(0.75, 0.75, 0.75)
 sim[[9]] <- netsim(burnin, param, init, control1)
 
 ## Comparison

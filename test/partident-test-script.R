@@ -5,7 +5,7 @@ undebug(partident_msm)
 
 param <- param_msm(epistats = epistats,
                    netstats = netstats,
-                   hiv.test.rate.idnt  = c(1, 1, 1),
+                   part.hiv.test.rate  = c(1, 1, 1),
                    part.identification = 50,
                    part.lookback.main = 52,
                    part.lookback.casl = 52,
@@ -15,7 +15,7 @@ param <- param_msm(epistats = epistats,
                    part.ident.ooff = 1,
                    ptype.lookup = c(1, 2, 3),
                    prep.start = 101,
-                   prep.start.part = 101
+                   part.prep.start = 101
 )
 
 init <- init_msm()

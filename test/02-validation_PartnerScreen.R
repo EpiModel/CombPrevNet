@@ -9,7 +9,7 @@ est <- readRDS("data/input/netest.rds")
 
 param <- param_msm(epistats = epistats,
                    netstats = netstats,
-                   hiv.test.rate.idnt = c(1, 1, 1),
+                   part.hiv.test.rate = c(1, 1, 1),
                    part.identification = 1,
                    part.lookback.main = 52,
                    part.lookback.casl = 52,
@@ -58,7 +58,7 @@ param$part.ident.main <- 1
 param$part.ident.casl <- 1
 param$part.ident.ooff <- 1
 param$ptype.lookup <- c(1, 2, 3)
-param$hiv.scrn.rate <- c(0.5, 0.25, 0.125)
+param$part.hiv.test.rate <- c(0.5, 0.25, 0.125)
 
 sim[[2]] <- netsim(burnin, param, init, control2)
 
@@ -68,16 +68,16 @@ param$hiv.scrn.rate <- c(0, 0, 0)
 sim[[3]] <- netsim(burnin, param, init, control2)
 
 # High screen rate
-param$hiv.scrn.rate <- c(0.95, 0.75, 0.5)
+param$part.hiv.test.rate <- c(0.95, 0.75, 0.5)
 
 sim[[4]] <- netsim(burnin, param, init, control2)
 
-plot(sim[[1]], y = "part.screened", xlim = c(100, 200), xlab = "Timestep", ylab = "Partners Screened", main = "Validation: hiv.scrn.rate", ylim = c(0, 150))
+plot(sim[[1]], y = "part.screened", xlim = c(100, 200), xlab = "Timestep", ylab = "Partners Screened", main = "Validation: part.hiv.test.rate", ylim = c(0, 150))
 plot(sim[[2]], y = "part.screened", mean.col = "red", qnts.col = "red", add = TRUE)
 plot(sim[[3]], y = "part.screened", mean.col = "green", qnts.col = "green", add = TRUE)
 plot(sim[[4]], y = "part.screened", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
-legend(100, 150, legend=c("hiv.screen.rate = 1, 1, 1", "hiv.screen.rate = 0, 0, 0",
-                          "hiv.screen.rate = 0.5, 0.25, 0.125", "part.lookback = 0.95, 0.75, 0.5"), 
+legend(100, 150, legend=c("part.hiv.test.rate = 1, 1, 1", "part.hiv.test.rate = 0, 0, 0",
+                          "part.hiv.test.rate = 0.5, 0.25, 0.125", "part.hiv.test.rate = 0.95, 0.75, 0.5"), 
        text.col=c("blue", "green", "red", "yellow"), cex=0.75, bg = "lightblue")
 
 saveRDS(sim, file = "process2.sim.rds")

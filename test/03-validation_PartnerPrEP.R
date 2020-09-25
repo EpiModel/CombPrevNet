@@ -8,7 +8,7 @@ est <- readRDS("data/input/netest.rds")
 
 param <- param_msm(epistats = epistats,
                         netstats = netstats,
-                        hiv.test.rate.idnt = c(1, 1, 1),
+                        part.hiv.test.rate = c(1, 1, 1),
                         part.identification = 1,
                         part.lookback.main = 52,
                         part.lookback.casl = 26,
@@ -17,9 +17,9 @@ param <- param_msm(epistats = epistats,
                         part.ident.casl = 1,
                         part.ident.ooff = 1,
                         ptype.lookup = c(1, 2, 3),
-                        prep.start.prob.part = 1,
+                        part.prep.start.prob = 1,
                         prep.start = 101,
-                        prep.start.part = 101,
+                        part.prep.start = 101,
                         riskh.start = TRUE
 )
 
@@ -53,19 +53,19 @@ sim <- list()
 sim[[1]] <- netsim(burnin, param, init, control2)
 
 ## Average prob. of initiating PreP
-param$prep.start.prob.part = 0.5
+param$part.prep.start.prob = 0.5
 sim[[2]] <- netsim(burnin, param, init, control2)
 
 ## High prob. of initiating PreP
-param$prep.start.prob.part = 0.75
+param$part.prep.start.prob = 0.75
 sim[[3]] <- netsim(burnin, param, init, control2)
 
 ## Full partner initiation of PreP once identified
-param$prep.start.prob.part = 1
+param$part.prep.start.prob = 1
 sim[[4]] <- netsim(burnin, param, init, control2)
 
 ## Delay prep intervention for parnters
-param$prep.start.part <- 150
+param$part.prep.start <- 150
 sim[[5]] <- netsim(burnin, param, init, control2)
 
 plot(sim[[1]], y = "prep.part", xlim = c(0, 200), ylim = c(0, 150), ylab = "Total PreP Initiation", main = "Validation: PreP Initiation")
@@ -73,8 +73,8 @@ plot(sim[[2]], y = "prep.part", mean.col = "red", qnts.col = "red", add = TRUE)
 plot(sim[[3]], y = "prep.part", mean.col = "green", qnts.col = "green", add = TRUE)
 plot(sim[[4]], y = "prep.part", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
 plot(sim[[5]], y = "prep.part", mean.col = "purple", qnts.col = "purple", add = TRUE)
-legend(0, 140, legend=c("prep.start.prob.part = 0, 0, 0", "prep.start.prob.part = 0.5, 0.5, 0.5",
-                          "prep.start.prob.part = 0.75, 0.75, 0.75", "prep.start.prob.part = 1, 1, 1", "prep.start.part = 150"), 
+legend(0, 140, legend=c("part.prep.start.prob = 0, 0, 0", "part.prep.start.prob = 0.5, 0.5, 0.5",
+                          "part.prep.start.prob = 0.75, 0.75, 0.75", "part.prep.start.prob = 1, 1, 1", "part.prep.start = 150"), 
        text.col=c("blue", "red", "green", "yellow", "purple"), cex=0.75, bg = "lightblue")
 
 saveRDS(sim, file = "process3.sim.rds")
