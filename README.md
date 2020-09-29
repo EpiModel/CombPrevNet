@@ -28,5 +28,5 @@ install.packages("tergmLite")
 
 # install remotes if necessary, install.packages("remotes")
 remotes::install_github("statnet/EpiModelHPC")
-remotes::install_github("statnet/EpiModelHIV", ref = "CombPrev")
+remotes::install_github("statnet/EpiModelHIV", ref = "CombPrevNet")
 ```
