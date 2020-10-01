@@ -49,15 +49,10 @@
     },
     "EpiModel": {
       "Package": "EpiModel",
-      "Version": "2.0.3",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "EpiModel",
-      "RemoteUsername": "statnet",
-      "RemoteRef": "master",
-      "RemoteSha": "9e67e8046ac54f8cfaf290490a1e1011f1723e0c",
-      "Hash": "244ea7f6c9db388e4023d0b4ee0954c1"
+      "Version": "2.0.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "5914e15822073ab226e5b2653cce0937"
     },
     "EpiModelHIV": {
       "Package": "EpiModelHIV",
@@ -68,8 +63,8 @@
       "RemoteRepo": "EpiModelHIV-p",
       "RemoteUsername": "EpiModel",
       "RemoteRef": "CombPrevNet",
-      "RemoteSha": "44ef2337ebee69079847dc030090c288cf8cbdfe",
-      "Hash": "56b680017ab04457508974c3267dc9ca"
+      "RemoteSha": "95ceab6f5aba19f040bd46fc4e79de5459efd495",
+      "Hash": "e775dc1a800fd503170c521e877a4f7a"
     },
     "EpiModelHPC": {
       "Package": "EpiModelHPC",
@@ -169,10 +164,10 @@
     },
     "coda": {
       "Package": "coda",
-      "Version": "0.19-3",
+      "Version": "0.19-4",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "b177892d05d94358d282fcc303799593"
+      "Hash": "24b6d006b8b2343876cf230687546932"
     },
     "codetools": {
       "Package": "codetools",
