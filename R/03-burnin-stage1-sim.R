@@ -7,9 +7,9 @@ suppressMessages(library("EpiModelHPC"))
 pull_env_vars()
 
 ## Parameters
-netstats <- readRDS("data/input/netstats.rda")
-epistats <- readRDS("data/input/epistats.rda")
-est <- readRDS("data/input/netest.rda")
+netstats <- readRDS("data/input/netstats.rds")
+epistats <- readRDS("data/input/epistats.rds")
+est <- readRDS("data/input/netest.rds")
 
 param <- param_msm(netstats = netstats,
                    epistats = epistats,
