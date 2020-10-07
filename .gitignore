@@ -6,3 +6,5 @@
 .jpeg
 .rda
 data/
+test.development/
+renv/

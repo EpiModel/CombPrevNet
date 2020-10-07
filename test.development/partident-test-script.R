@@ -1,7 +1,12 @@
 # hivtest_msm debug script
 # 
 
-undebug(partident_msm)
+suppressMessages(library("EpiModelHIV"))
+
+netstats <- readRDS("data/input/netstats.rds")
+epistats <- readRDS("data/input/epistats.rds")
+est <- readRDS("data/input/netest.rds")
+
 
 param <- param_msm(epistats = epistats,
                    netstats = netstats,
