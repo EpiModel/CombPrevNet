@@ -7,9 +7,9 @@ suppressMessages(library("EpiModelHIV"))
 pull_env_vars()
 
 ## Parameters
-netstats <- readRDS("est/netstats.rda")
-epistats <- readRDS("est/epistats.rda")
-burnin <- readRDS("est/burnin1.ATL.3race.rda")
+netstats <- readRDS("data/input/netstats.rds")
+epistats <- readRDS("data/input/epistats.rds")
+burnin <- readRDS("data/input/burnin.ATL.3race.rds")
 
 param <- param_msm(netstats = netstats,
                    epistats = epistats,
@@ -34,13 +34,10 @@ param <- param_msm(netstats = netstats,
                    acts.aids.vl = 5.75,
                    prep.start = (52*60) + 1,
                    riskh.start = 52*59,
-                   prep.start.prob = 0.712,
+                   prep.start.prob = 0.66,
                    prep.require.lnt = TRUE,
                    prep.risk.reassess.method = "year")
-init <- init_msm(prev.ugc = 0,
-                 prev.rct = 0,
-                 prev.rgc = 0,
-                 prev.uct = 0)
+init <- init_msm()
 control <- control_msm(simno = fsimno,
                        start = (52*60) + 1,
                        nsteps = 52*65,
