@@ -30,7 +30,7 @@ model_main_dx <- ~edges +
 dx_main <- netdx(fit_main, nsims = nsims, ncores = ncores, nsteps = 500,
                  nwstats.formula = model_main_dx, skip.dissolution = TRUE,
                  set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5))
-print(dx_main)
+print(dx_main, digits = 1)
 # plot(dx_main)
 
 netstats$main
@@ -50,7 +50,7 @@ model_casl_dx <- ~edges +
   concurrent +
   nodematch("role.class", diff = TRUE) +
   degree(0:4)
-dx_casl <- netdx(fit_casl, nsims = 10, ncores = 6, nsteps = 500,
+dx_casl <- netdx(fit_casl, nsims = nsims, ncores = ncores, nsteps = 500,
                  nwstats.formula = model_casl_dx, skip.dissolution = TRUE,
                  set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5))
 print(dx_casl, digits = 1)
