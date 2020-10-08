@@ -23,8 +23,6 @@ control <- control_msm(simno = fsimno,
                        save.clin.hist = FALSE)
 
 # Intervention parameters
-
-
 part.ident.start = Inf
 part.index.window = 0
 part.ident.main.window = 12
@@ -46,8 +44,7 @@ part.tx.reinit.prob = c(0.5, 0.5, 0.5)
 sim <- netsim(burnin, param, init, control)
 
 # Merging
-# savesim(sim, save.min = TRUE, save.max = FALSE)
-# savesim(sim, save.min = FALSE, save.max = TRUE, compress = FALSE, time.stamp = FALSE)
+savesim(sim, save.min = TRUE, save.max = FALSE)
 
-# process_simfiles(simno = simno, min.n = njobs, nsims = nsims,
-#                  truncate.at = 52*60)
+process_simfiles(simno = simno, min.n = njobs, nsims = nsims,
+                 truncate.at = 52*60)
