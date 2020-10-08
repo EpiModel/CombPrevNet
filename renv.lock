@@ -63,15 +63,15 @@
     },
     "EpiModelHIV": {
       "Package": "EpiModelHIV",
-      "Version": "1.5.0",
+      "Version": "2.0.5",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "EpiModelHIV-p",
       "RemoteUsername": "EpiModel",
       "RemoteRef": "CombPrevNet",
-      "RemoteSha": "95ceab6f5aba19f040bd46fc4e79de5459efd495",
-      "Hash": "e775dc1a800fd503170c521e877a4f7a"
+      "RemoteSha": "b2eeca7524160acba93f1679233e5e678b8e675d",
+      "Hash": "e56f7553ba738daffedf0c7f9d2b87b4"
     },
     "EpiModelHPC": {
       "Package": "EpiModelHPC",
