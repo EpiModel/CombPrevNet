@@ -44,7 +44,6 @@ part.tx.halt.prob = c(0.00102, 0.00102, 0.00071)
 part.tx.reinit.prob = c(0.5, 0.5, 0.5)
 
 
-
 ## Simulation
 sim <- netsim(burnin, param, init, control)
 
