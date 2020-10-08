@@ -4,5 +4,5 @@ if (dir.exists("renv/")) {
     renv::status()
   }
 } else {
-  cat("* Run renv::init() to install the R packages for this project")
+  cat("* Run renv::init() to install the R packages for this project\n")
 }
