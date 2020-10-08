@@ -1,3 +1,9 @@
+
+##
+## 05. Epidemic Model Burnin, Stage 1, Full-Scale Simulation
+## CombPrevNet (https://github.com/EpiModel/CombPrevNet)
+##
+
 ## Packages
 library("methods")
 suppressMessages(library("EpiModelHIV"))

@@ -1,5 +1,8 @@
 
-## File processing -------------------------------------------------------------
+##
+## 06. Epidemic Model Burnin, Stage 1, Simulation Selection
+## CombPrevNet (https://github.com/EpiModel/CombPrevNet)
+##
 
 suppressMessages(library("EpiModelHIV"))
 suppressMessages(library("dplyr"))

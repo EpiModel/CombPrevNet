@@ -1,6 +1,7 @@
 
 ##
-## Diagnostics for Combination Prevention Model
+## 02. Network Model Diagnostics
+## CombPrevNet (https://github.com/EpiModel/CombPrevNet)
 ##
 
 ## Packages ##

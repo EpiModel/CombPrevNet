@@ -1,6 +1,7 @@
 
 ##
-## Estimation for Combination Prevention Model
+## 01. Network Model Estimation
+## CombPrevNet (https://github.com/EpiModel/CombPrevNet)
 ##
 
 ## Packages ##

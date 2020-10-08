@@ -1,3 +1,10 @@
+
+##
+## 03. Epidemic Model Burnin, Stage 1, Parameter Calibration
+## CombPrevNet (https://github.com/EpiModel/CombPrevNet)
+##
+
+
 ## Packages
 library("methods")
 suppressMessages(library("EpiModelHIV"))
