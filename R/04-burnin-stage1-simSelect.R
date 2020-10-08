@@ -2,7 +2,7 @@
 ## File processing -------------------------------------------------------------
 
 suppressMessages(library("EpiModelHIV"))
-suppressMessages(library("tidyverse"))
+suppressMessages(library("dplyr"))
 suppressMessages(library("foreach"))
 source("post/fx.R")
 
