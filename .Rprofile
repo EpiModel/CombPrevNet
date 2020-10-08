@@ -1,3 +1,5 @@
+
+# 1. renv package management
 if (dir.exists("renv/")) {
   source("renv/activate.R")
   if (interactive()) {
@@ -6,3 +8,15 @@ if (dir.exists("renv/")) {
 } else {
   cat("* Run renv::init() to install the R packages for this project\n")
 }
+
+# 2. directory structure
+if (!dir.exists("data/input/")) {
+  dir.create("data/input/", recursive = TRUE)
+}
+if (!dir.exists("data/output/")) {
+  dir.create("data/output/")
+}
+if (!dir.exists("out/")) {
+  dir.create("out/")
+}
+
