@@ -13,7 +13,7 @@ epistats <- build_epistats(geog.lvl = "city", geog.cat = "Atlanta", race = TRUE,
 saveRDS(epistats, file = "data/input/epistats.rds")
 netparams <- build_netparams(epistats = epistats, smooth.main.dur = TRUE)
 netstats <- build_netstats(epistats, netparams, expect.mort = 0.000478213, 
-                           network.size = 20000)
+                           network.size = 25000)
 saveRDS(netstats, file = "data/input/netstats.rds")
 
 

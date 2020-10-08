@@ -10,6 +10,8 @@ suppressMessages(library("EpiModelHIV"))
 est <- readRDS("data/input/netest.rds")
 netstats <- readRDS("data/input/netstats.rds")
 
+ncores <- parallel::detectCores() / 2
+nsims <- ncores * 1
 
 # Main --------------------------------------------------------------------
 
@@ -17,19 +19,19 @@ fit_main <- est[[1]]
 
 model_main_dx <- ~edges +
   nodematch("age.grp", diff = TRUE) +
-  nodefactor("age.grp", base = 0) +
+  nodefactor("age.grp", levels = TRUE) +
   nodematch("race", diff = TRUE) +
-  nodefactor("race", base = 0) +
-  nodefactor("deg.casl", base = 0) +
+  nodefactor("race", levels = TRUE) +
+  nodefactor("deg.casl", levels = TRUE) +
   degrange(from = 3) +
   concurrent +
   nodematch("role.class", diff = TRUE) +
   degree(0:3)
-dx_main <- netdx(fit_main, nsims = 10, ncores = 6, nsteps = 500,
+dx_main <- netdx(fit_main, nsims = nsims, ncores = ncores, nsteps = 500,
                  nwstats.formula = model_main_dx, skip.dissolution = TRUE,
                  set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5))
 print(dx_main)
-plot(dx_main)
+# plot(dx_main)
 
 netstats$main
 
@@ -40,10 +42,10 @@ fit_casl <- est[[2]]
 
 model_casl_dx <- ~edges +
   nodematch("age.grp", diff = TRUE) +
-  nodefactor("age.grp", base = 0) +
+  nodefactor("age.grp", levels = TRUE) +
   nodematch("race", diff = TRUE) +
-  nodefactor("race", base = 0) +
-  nodefactor("deg.main", base = 0) +
+  nodefactor("race", levels = TRUE) +
+  nodefactor("deg.main", levels = TRUE) +
   degrange(from = 4) +
   concurrent +
   nodematch("role.class", diff = TRUE) +
@@ -52,7 +54,7 @@ dx_casl <- netdx(fit_casl, nsims = 10, ncores = 6, nsteps = 500,
                  nwstats.formula = model_casl_dx, skip.dissolution = TRUE,
                  set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5))
 print(dx_casl, digits = 1)
-plot(dx_casl)
+# plot(dx_casl)
 
 netstats$casl
 
@@ -63,11 +65,11 @@ fit_inst <- est[[3]]
 
 model_inst_dx <- ~edges +
   nodematch("age.grp", diff = FALSE) +
-  nodefactor("age.grp", base = 0) +
+  nodefactor("age.grp", levels = TRUE) +
   nodematch("race", diff = TRUE) +
-  nodefactor("race", base = 0) +
-  nodefactor("risk.grp", base = 0) +
-  nodefactor("deg.tot", base = 0) +
+  nodefactor("race", levels = TRUE) +
+  nodefactor("risk.grp", levels = TRUE) +
+  nodefactor("deg.tot", levels = TRUE) +
   nodematch("role.class", diff = TRUE) +
   degree(0:4)
 dx_inst <- netdx(fit_inst, nsims = 10000, dynamic = FALSE,
@@ -76,6 +78,6 @@ dx_inst <- netdx(fit_inst, nsims = 10000, dynamic = FALSE,
 
 print(dx_inst, digits = 1)
 
-plot(dx_inst, sim.lines = TRUE, sim.lwd = 0.05)
+# plot(dx_inst, sim.lines = TRUE, sim.lwd = 0.05)
 
 netstats$inst
