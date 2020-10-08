@@ -6,7 +6,9 @@
 
 ## Packages
 library("methods")
-suppressMessages(library("EpiModelHIV"))
+suppressMessages(
+  library("EpiModelHIV")
+)
 
 ## Environmental Arguments
 pull_env_vars()
@@ -19,43 +21,25 @@ est <- readRDS("data/input/netest.rds")
 param <- param_msm(netstats = netstats,
                    epistats = epistats,
                    hiv.test.rate = c(0.00385, 0.00380, 0.00690),
-                   hiv.test.late.prob = c(0, 0, 0),
                    tx.init.prob = c(0.1775, 0.190, 0.2521),
-                   tt.partial.supp = c(0, 0, 0),
-                   tt.full.supp = c(1, 1, 1),
-                   tt.durable.supp = c(0, 0, 0),
                    tx.halt.partial.prob = c(0.0062, 0.0055, 0.0031),
-                   tx.halt.full.rr = c(0.45, 0.45, 0.45),
-                   tx.halt.durable.rr = c(0.45, 0.45, 0.45),
                    tx.reinit.partial.prob = c(0.00255, 0.00255, 0.00255),
-                   tx.reinit.full.rr = c(1, 1, 1),
-                   tx.reinit.durable.rr = c(1, 1, 1),
-                   max.time.off.tx.full.int = 52 * 15,
-                   max.time.on.tx.part.int = 52 * 10,
-                   max.time.off.tx.part.int = 52 * 10,
-                   aids.mr = 1/250,
                    trans.scale = c(2.44, 0.424, 0.270),
-                   acts.scale = 1.00,
-                   acts.aids.vl = 5.75,
-                   prep.start = (52*60) + 1,
                    riskh.start = 52*59,
-                   prep.start.prob = 0.66,
-                   prep.require.lnt = TRUE,
-                   prep.risk.reassess.method = "year")
-init <- init_msm(prev.ugc = 0,
-                 prev.rct = 0,
-                 prev.rgc = 0,
-                 prev.uct = 0)
+                   prep.start = (52*60) + 1,
+                   prep.start.prob = 0.66)
+init <- init_msm()
 control <- control_msm(simno = fsimno,
                        nsteps = 52*2,
                        nsims = ncores,
                        ncores = ncores,
+                       truncate.plist = FALSE,
                        tergmLite = TRUE)
 ## Simulation
 sim <- netsim(est, param, init, control)
 
 ## Save-Min
-savesim(sim, save.min = TRUE, save.max = FALSE, compress = TRUE)
+# savesim(sim, save.min = TRUE, save.max = FALSE, compress = TRUE)
 
 # Merging
-process_simfiles(simno = simno, min.n = njobs, nsims = nsims)
+# process_simfiles(simno = simno, min.n = njobs, nsims = nsims)

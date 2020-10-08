@@ -17,10 +17,7 @@ epistats <- readRDS("data/input/epistats.rds")
 est <- readRDS("data/input/netest.rds")
 param <- readRDS("data/input/param.burnin1.rds")
 
-init <- init_msm(prev.ugc = 0,
-                 prev.rct = 0,
-                 prev.rgc = 0,
-                 prev.uct = 0)
+init <- init_msm()
 control <- control_msm(simno = fsimno,
                        nsteps = 52*60,
                        nsims = ncores,
