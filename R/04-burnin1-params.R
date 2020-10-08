@@ -8,7 +8,6 @@
 ## Packages
 library("methods")
 suppressMessages(library("EpiModelHIV"))
-suppressMessages(library("EpiModelHPC"))
 
 ## Parameters
 netstats <- readRDS("data/input/netstats.rds")

@@ -7,7 +7,6 @@
 ## Packages
 library("methods")
 suppressMessages(library("EpiModelHIV"))
-suppressMessages(library("EpiModelHPC"))
 
 ## Environmental Arguments
 pull_env_vars()
