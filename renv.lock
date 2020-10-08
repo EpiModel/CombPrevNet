@@ -14,12 +14,12 @@
       "Version": "2.5.0",
       "Source": "GitHub",
       "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "ARTnet",
       "RemoteUsername": "EpiModel",
+      "RemoteRepo": "ARTnet",
       "RemoteRef": "HEAD",
-      "RemoteSha": "9924fd7c243966a50b641bea18a92e6a0975f2ba",
-      "Hash": "5733c49bea143d61785a391bf97480c7"
+      "RemoteSha": "639462fee86bd519d4b463f1ef468889429c41a9",
+      "RemoteHost": "api.github.com",
+      "Hash": "7187b9acb2446065daeef32d30aa4506"
     },
     "ARTnetData": {
       "Package": "ARTnetData",
@@ -59,12 +59,12 @@
       "Version": "2.0.5",
       "Source": "GitHub",
       "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "EpiModelHIV-p",
       "RemoteUsername": "EpiModel",
+      "RemoteRepo": "EpiModelHIV-p",
       "RemoteRef": "CombPrevNet",
-      "RemoteSha": "b2eeca7524160acba93f1679233e5e678b8e675d",
-      "Hash": "e56f7553ba738daffedf0c7f9d2b87b4"
+      "RemoteSha": "dd38130d99617e93ae59143c3964bfa13bc9a6dd",
+      "RemoteHost": "api.github.com",
+      "Hash": "6cc1ac414c6d3592e5a2a209df49fc03"
     },
     "EpiModelHPC": {
       "Package": "EpiModelHPC",
