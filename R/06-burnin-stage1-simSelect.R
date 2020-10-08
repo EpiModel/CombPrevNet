@@ -90,6 +90,6 @@ colMeans(df)
 # Save as best-fitting
 sim <- s11
 
-saveRDS(sim, file = "est/burnin.ATL.3race.rds", compress = "xz")
-saveRDS(tdf, file = "est/tdf.ATL.3race.rds", compress = "xz")
-saveRDS(tdf.select, file = "est/tdf.sel.ATL.3race.rds", compress = "xz")
+saveRDS(sim, file = "data/input/burnin1.rds", compress = "xz")
+saveRDS(tdf, file = "data/input/burnin1-tdf.rds", compress = "xz")
+saveRDS(tdf.select, file = "data/input/burnin1-tdfsel.rds", compress = "xz")
