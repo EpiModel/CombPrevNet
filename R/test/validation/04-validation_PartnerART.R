@@ -11,20 +11,19 @@ sim <- list()
 
 param <- param_msm(epistats = epistats,
                    netstats = netstats,
-                   part.hiv.test.rate = c(1, 1, 1),
-                   part.identification = 1,
-                   part.lookback.main = 52,
-                   part.lookback.casl = 52,
-                   part.lookback.ooff = 52,
-                   part.ident.main = 1,
-                   part.ident.casl = 1,
-                   part.ident.ooff = 1,
-                   ptype.lookup = c(1, 2, 3),
-                   part.prep.start.prob = 1,
+                   part.hiv.test.rate  = c(1, 1, 1),
+                   part.ident.main.window =  52,
+                   part.ident.casl.window  = 52,
+                   part.ident.ooff.window  = 52,
+                   part.ident.main.prob = 1,
+                   part.ident.casl.prob = 1,
+                   part.ident.ooff.prob = 1,
+                   part.index.window = Inf,
+                   part.ident.start = 1,
                    prep.start = 1,
                    part.tx.init.prob = c(0, 0, 0),
                    part.tx.reinit.part.prob = c(0, 0, 0),
-                   riskh.start = TRUE
+                   riskh.start = 1
 )
 
 init <- init_msm()
@@ -88,23 +87,23 @@ legend(0, 20, legend=c("part.tx.init.prob = 1, 1, 1", "part.tx.init.prob = 0.75,
 ## ART Renitiation
 
 ## Model 6: Default model parameters; complete treatment reinitiation for HIV+ partners
-param$tx.halt.part.prob <- c(1, 1, 1)
-param$tx.halt.dur.rr <- c(1, 1, 1)
+param$part.tx.halt.prob <- c(1, 1, 1)
+param$tx.halt.durable.rr <- c(1, 1, 1)
 param$tx.halt.full.rr <- c(1, 1, 1)
 param$part.tx.init.prob <- c(1, 1, 1)
-param$part.tx.reinit.part.prob <- c(1, 1, 1)
+param$part.tx.reinit.prob <- c(1, 1, 1)
 sim[[6]] <- netsim(burnin, param, init, control1)
 
 ## Model 7: Default model parameters; average prob. of treatment reinitiation for HIV+ partners
-param$part.tx.reinit.part.prob <- c(0.5, 0.5, 0.5)
+param$part.tx.reinit.prob <- c(0.5, 0.5, 0.5)
 sim[[7]] <- netsim(burnin, param, init, control1)
 
 ## Model 8: Default model parameters; low prob. of treatment reinitiation for HIV+ partners
-param$part.tx.reinit.part.prob <- c(0.01, 0.01, 0.01)
+param$part.tx.reinit.prob <- c(0.01, 0.01, 0.01)
 sim[[8]] <- netsim(burnin, param, init, control1)
 
 ## Model 9: Default model parameters; low prob. of treatment reinitiation for HIV+ partners
-param$part.tx.reinit.part.prob <- c(0.75, 0.75, 0.75)
+param$part.tx.reinit.prob <- c(0.75, 0.75, 0.75)
 sim[[9]] <- netsim(burnin, param, init, control1)
 
 ## Comparison

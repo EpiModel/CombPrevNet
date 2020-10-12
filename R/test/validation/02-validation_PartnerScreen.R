@@ -9,15 +9,15 @@ est <- readRDS("data/input/netest.rds")
 
 param <- param_msm(epistats = epistats,
                    netstats = netstats,
-                   part.hiv.test.rate = c(1, 1, 1),
-                   part.identification = 1,
-                   part.lookback.main = 52,
-                   part.lookback.casl = 52,
-                   part.lookback.ooff = 52,
-                   part.ident.main = 1,
-                   part.ident.casl = 1,
-                   part.ident.ooff = 1,
-                   ptype.lookup = c(1, 2, 3)
+                   part.hiv.test.rate  = c(1, 1, 1),
+                   part.ident.main.window =  52,
+                   part.ident.casl.window  = 52,
+                   part.ident.ooff.window  = 52,
+                   part.ident.main.prob = 1,
+                   part.ident.casl.prob = 1,
+                   part.ident.ooff.prob = 1,
+                   part.index.window = Inf,
+                   part.ident.start = 1
 )
 
 init <- init_msm()
@@ -54,10 +54,6 @@ sim[[1]] <- netsim(burnin, param, init, control2)
 
 ## hiv.scrn.rate: HIV testing rate for partners of individualls who are incident HIV+.
 # Low screen rate
-param$part.ident.main <- 1
-param$part.ident.casl <- 1
-param$part.ident.ooff <- 1
-param$ptype.lookup <- c(1, 2, 3)
 param$part.hiv.test.rate <- c(0.5, 0.25, 0.125)
 
 sim[[2]] <- netsim(burnin, param, init, control2)

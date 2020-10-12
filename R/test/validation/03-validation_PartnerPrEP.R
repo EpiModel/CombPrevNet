@@ -20,7 +20,7 @@ param <- param_msm(epistats = epistats,
                         part.prep.start.prob = 1,
                         prep.start = 101,
                         part.prep.start = 101,
-                        riskh.start = TRUE
+                        riskh.start = 1
 )
 
 init <- init_msm()
