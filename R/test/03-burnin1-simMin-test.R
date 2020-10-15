@@ -25,16 +25,33 @@ param <- param_msm(netstats = netstats,
                    tx.halt.partial.prob = c(0.0062, 0.0055, 0.0031),
                    tx.reinit.partial.prob = c(0.00255, 0.00255, 0.00255),
                    trans.scale = c(2.44, 0.424, 0.270),
-                   riskh.start = 52*59,
-                   prep.start = (52*60) + 1,
-                   prep.start.prob = 0.66)
+                   riskh.start = 1,
+                   prep.start = 26,
+                   prep.start.prob = 0.66,
+
+                   truncate.plist = 52,
+                   part.ident.start = 52,
+                   part.index.window = 0,
+                   part.ident.main.window = 12,
+                   part.ident.casl.window = 12,
+                   part.ident.ooff.window = 12,
+                   part.ident.main.prob = 0.5,
+                   part.ident.casl.prob = 0.5,
+                   part.ident.ooff.prob = 0.5,
+                   part.hiv.test.rate = c(0.5, 0.5, 0.5),
+                   part.prep.start.prob = 0.5,
+                   part.tx.init.prob = c(0.6, 0.6, 0.8),
+                   part.tx.halt.prob = c(0.00001, 0.00001, 0.00001),
+                   part.tx.reinit.prob = c(0.05, 0.05, 0.05)
+)
 init <- init_msm()
+
+pkgload::load_all("~/git/EpiModelHIV-p")
 control <- control_msm(simno = fsimno,
                        nsteps = 52*2,
                        nsims = ncores,
-                       ncores = ncores,
-                       truncate.plist = FALSE,
-                       tergmLite = TRUE)
+                       ncores = ncores)
+
 ## Simulation
 sim <- netsim(est, param, init, control)
 
