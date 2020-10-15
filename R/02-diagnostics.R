@@ -32,7 +32,6 @@ dx_main <- netdx(fit_main, nsims = nsims, ncores = ncores, nsteps = 500,
                  nwstats.formula = model_main_dx, skip.dissolution = TRUE,
                  set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5))
 print(dx_main, digits = 1)
-# plot(dx_main)
 
 netstats$main
 
@@ -55,7 +54,6 @@ dx_casl <- netdx(fit_casl, nsims = nsims, ncores = ncores, nsteps = 500,
                  nwstats.formula = model_casl_dx, skip.dissolution = TRUE,
                  set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5))
 print(dx_casl, digits = 1)
-# plot(dx_casl)
 
 netstats$casl
 
@@ -78,7 +76,5 @@ dx_inst <- netdx(fit_inst, nsims = 10000, dynamic = FALSE,
                  set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5))
 
 print(dx_inst, digits = 1)
-
-# plot(dx_inst, sim.lines = TRUE, sim.lwd = 0.05)
 
 netstats$inst

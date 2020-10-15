@@ -33,7 +33,7 @@ tdf <- data.frame("batch" = 0, "cc.dx.B" = 0, "cc.dx.H" = 0, "cc.dx.W" = 0,
 # }
 
 
-for (i in 1:length(fn)) {
+for (i in seq_len(fn)) {
   load(fn[i])
   for (j in 1:25) {
     f <- function(j) {
@@ -52,11 +52,12 @@ for (i in 1:length(fn)) {
 }
 
 tdf <- data.frame(do.call("rbind", tdf), stringsAsFactors = FALSE)
-names(tdf)[1:5] <- c("batch", "cc.dx", "i.prev.dx", "cc.linked1m","cc.vsupp")
+names(tdf)[1:5] <- c("batch", "cc.dx", "i.prev.dx", "cc.linked1m", "cc.vsupp")
 tdf[2:13] <- sapply(tdf[2:13], as.numeric)
 
 ## Model Performance
-stats <- c(0.804,0.799, 0.88, 0.33, 0.126, 0.085, 0.62, 0.65, 0.76, 0.55, 0.6, 0.72)
+stats <- c(0.804,0.799, 0.88, 0.33, 0.126, 0.085,
+           0.62, 0.65, 0.76, 0.55, 0.6, 0.72)
 
 data <- apply(tdf[,c(2:13)], 1, dis_per, y = stats)
 temp.per <- which(data >= quantile(data, 0.999))

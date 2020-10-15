@@ -14,62 +14,37 @@ gather_netsim <- function(fn) {
   return(out)
 }
 
-plot_netsim_list <- function(x, var, ylim) {
-  
-  pal <- brewer_ramp(n = length(x), plt = "Set1", delete.lights = TRUE)
-  
-  if (class(x) == "netsim.list") {
-    for (i in seq_along(x)) {
-      if (i == 1) {
-        plot(x[[i]], y = var, mean.col = pal[i], qnts = FALSE, ylim = ylim)
-      } else {
-        plot(x[[i]], y = var, mean.col = pal[i], qnts = FALSE, add = TRUE)
-      }
-    }
-  } else {
-    for (i in seq_along(x)) {
-      load(x[i])
-      if (i == 1) {
-        plot(sim, y = var, mean.col = pal[i], qnts = FALSE, ylim = ylim)
-      } else {
-        plot(sim, y = var, mean.col = pal[i], qnts = FALSE, add = TRUE)
-      }
-    }
-  }
-  legend("topleft", legend = paste("Run", seq_along(x)), lty = 1, lwd = 2,
-         cex = 0.8, bty = "n", col = pal)
-}
 
-dis_per <- function(x,y){
-  num <- abs(x-y)
+dis_per <- function(x,y) {
+  num <- abs(x - y)
   avg <- num/y
   avg <- mean(avg, na.rm = TRUE)
   return(avg)
 }
 
-dis_cos <- function(x,y){
+dis_cos <- function(x,y) {
   num <- sum(x*y)
   denom <- sqrt(sum(x^2))*sqrt(sum(y^2))
   cos.sim <- num/denom
   return(cos.sim)
 }
 
-dis_euc <- function(x,y){
-  dis <- x-y
+dis_euc <- function(x,y) {
+  dis <- x - y
   dis2 <- dis^2
   dis2 <- sum(dis2, na.rm = TRUE)
   euc <- sqrt(dis2)
   return(euc)
 }
 
-dis_log <- function(x,y){
+dis_log <- function(x,y) {
   log.x <- log10(x)
   log.y <- log10(y)
   log.diff <- abs(log.x - log.y)
   avg <- mean(log.diff, na.rm = TRUE)
 }
 
-mod_select <- function(tdf, stats, fun){
+mod_select <- function(tdf, stats, fun) {
   num <- apply()
   data <- apply(tdf[,c(2,5)], 1, dis_cos, y = stats)
   #min <- which(datas == min(data, na.rm = TRUE))

@@ -23,7 +23,7 @@ param <- param_msm(epistats = epistats,
 init <- init_msm()
 
 control1 <- control_msm(simno = 1001,
-                        nsteps =100,
+                        nsteps = 100,
                         ncores = 1,
                         nsims = 1)
 
@@ -46,7 +46,7 @@ control2 <- control_msm(simno = 1001,
 sim[[1]] <- netsim(burnin, param, init, control2)
 
 
-## hiv.scrn.rate: HIV testing rate for partners of individualls who are incident HIV+.
+## hiv.scrn.rate: HIV testing rate for partners of incident HIV+ MSM
 # Low screen rate
 param$part.hiv.test.rate <- c(0.5, 0.25, 0.125)
 
@@ -62,12 +62,20 @@ param$part.hiv.test.rate <- c(0.95, 0.75, 0.5)
 
 sim[[4]] <- netsim(burnin, param, init, control2)
 
-plot(sim[[1]], y = "part.screened", xlim = c(100, 200), xlab = "Timestep", ylab = "Partners Screened", main = "Validation: part.hiv.test.rate", ylim = c(0, 150))
-plot(sim[[2]], y = "part.screened", mean.col = "red", qnts.col = "red", add = TRUE)
-plot(sim[[3]], y = "part.screened", mean.col = "green", qnts.col = "green", add = TRUE)
-plot(sim[[4]], y = "part.screened", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
-legend(100, 150, legend=c("part.hiv.test.rate = 1, 1, 1", "part.hiv.test.rate = 0, 0, 0",
-                          "part.hiv.test.rate = 0.5, 0.25, 0.125", "part.hiv.test.rate = 0.95, 0.75, 0.5"),
-       text.col=c("blue", "green", "red", "yellow"), cex=0.75, bg = "lightblue")
+plot(sim[[1]], y = "part.screened", xlim = c(100, 200),
+     xlab = "Timestep", ylab = "Partners Screened",
+     main = "Validation: part.hiv.test.rate", ylim = c(0, 150))
+plot(sim[[2]], y = "part.screened",
+     mean.col = "red", qnts.col = "red", add = TRUE)
+plot(sim[[3]], y = "part.screened",
+     mean.col = "green", qnts.col = "green", add = TRUE)
+plot(sim[[4]], y = "part.screened",
+     mean.col = "yellow", qnts.col = "yellow", add = TRUE)
+legend(100, 150, legend = c("part.hiv.test.rate = 1, 1, 1",
+                            "part.hiv.test.rate = 0, 0, 0",
+                            "part.hiv.test.rate = 0.5, 0.25, 0.125",
+                            "part.hiv.test.rate = 0.95, 0.75, 0.5"),
+       text.col = c("blue", "green", "red", "yellow"),
+       cex = 0.75, bg = "lightblue")
 
 saveRDS(sim, file = "process2.sim.rds")

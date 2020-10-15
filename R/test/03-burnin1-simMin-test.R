@@ -48,7 +48,7 @@ init <- init_msm()
 
 pkgload::load_all("~/git/EpiModelHIV-p")
 control <- control_msm(simno = fsimno,
-                       nsteps = 52*2,
+                       nsteps = 52 * 2,
                        nsims = ncores,
                        ncores = ncores)
 

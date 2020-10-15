@@ -26,15 +26,15 @@ init <- init_msm()
 
 control1 <- control_msm(simno = 1001,
                         start = 1,
-                        nsteps =100,
+                        nsteps = 100,
                         ncores = 1,
                         nsims = 1)
 
 control2 <- control_msm(simno = 1001,
                         start = 101,
-                        nsteps =200,
+                        nsteps = 200,
                         ncores = 1,
-                        nsims = 10
+                        nsims = 10,
                         initialize.FUN = reinit_msm)
 
 set.seed(123)
@@ -46,29 +46,37 @@ sim <- list()
 sim[[1]] <- netsim(burnin, param, init, control2)
 
 ## Average prob. of initiating PreP
-param$part.prep.start.prob = 0.5
+param$part.prep.start.prob <- 0.5
 sim[[2]] <- netsim(burnin, param, init, control2)
 
 ## High prob. of initiating PreP
-param$part.prep.start.prob = 0.75
+param$part.prep.start.prob <- 0.75
 sim[[3]] <- netsim(burnin, param, init, control2)
 
 ## Full partner initiation of PreP once identified
-param$part.prep.start.prob = 1
+param$part.prep.start.prob <- 1
 sim[[4]] <- netsim(burnin, param, init, control2)
 
 ## Delay prep intervention for parnters
 param$part.prep.start <- 150
 sim[[5]] <- netsim(burnin, param, init, control2)
 
-plot(sim[[1]], y = "prep.part", xlim = c(0, 200), ylim = c(0, 150), ylab = "Total PreP Initiation", main = "Validation: PreP Initiation")
-plot(sim[[2]], y = "prep.part", mean.col = "red", qnts.col = "red", add = TRUE)
-plot(sim[[3]], y = "prep.part", mean.col = "green", qnts.col = "green", add = TRUE)
-plot(sim[[4]], y = "prep.part", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
-plot(sim[[5]], y = "prep.part", mean.col = "purple", qnts.col = "purple", add = TRUE)
-legend(0, 140, legend=c("part.prep.start.prob = 0, 0, 0", "part.prep.start.prob = 0.5, 0.5, 0.5",
-                          "part.prep.start.prob = 0.75, 0.75, 0.75", "part.prep.start.prob = 1, 1, 1", "part.prep.start = 150"),
-       text.col=c("blue", "red", "green", "yellow", "purple"), cex=0.75, bg = "lightblue")
+plot(sim[[1]], y = "prep.part", xlim = c(0, 200), ylim = c(0, 150),
+     ylab = "Total PreP Initiation", main = "Validation: PreP Initiation")
+plot(sim[[2]], y = "prep.part",
+     mean.col = "red", qnts.col = "red", add = TRUE)
+plot(sim[[3]], y = "prep.part",
+     mean.col = "green", qnts.col = "green", add = TRUE)
+plot(sim[[4]], y = "prep.part",
+     mean.col = "yellow", qnts.col = "yellow", add = TRUE)
+plot(sim[[5]], y = "prep.part",
+     mean.col = "purple", qnts.col = "purple", add = TRUE)
+legend(0, 140, legend = c("part.prep.start.prob = 0, 0, 0",
+                          "part.prep.start.prob = 0.5, 0.5, 0.5",
+                          "part.prep.start.prob = 0.75, 0.75, 0.75",
+                          "part.prep.start.prob = 1, 1, 1",
+                          "part.prep.start = 150"),
+       text.col = c("blue", "red", "green", "yellow", "purple"),
+       cex = 0.75, bg = "lightblue")
 
 saveRDS(sim, file = "process3.sim.rds")
-

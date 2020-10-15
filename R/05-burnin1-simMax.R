@@ -19,7 +19,7 @@ param <- readRDS("data/input/param.burnin1.rds")
 
 init <- init_msm()
 control <- control_msm(simno = fsimno,
-                       nsteps = 52*60,
+                       nsteps = 52 * 60,
                        nsims = ncores,
                        ncores = ncores)
 

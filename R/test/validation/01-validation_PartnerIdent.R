@@ -75,12 +75,18 @@ sim[[4]] <- netsim(burnin, param, init, control2)
 
 plot(sim[[1]], y = "part.identified", xlim = c(100, 200), xlab = "Timestep",
      ylab = "Partners Identified", main = "Validation: part.ident")
-plot(sim[[2]], y = "part.identified", mean.col = "red", qnts.col = "red", add = TRUE)
-plot(sim[[3]], y = "part.identified", mean.col = "green", qnts.col = "green", add = TRUE)
-plot(sim[[4]], y = "part.identified", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
-legend(100, 450, legend=c("part.ident = 52, 52, 52", "part.ident = 52, 26, 4",
-                         "part.ident = 104, 52, 26", "part.ident = 12, 6, 2"),
-       text.col=c("blue", "red", "green", "yellow"), cex=0.75, bg = "lightblue")
+plot(sim[[2]], y = "part.identified",
+     mean.col = "red", qnts.col = "red", add = TRUE)
+plot(sim[[3]], y = "part.identified",
+     mean.col = "green", qnts.col = "green", add = TRUE)
+plot(sim[[4]], y = "part.identified",
+     mean.col = "yellow", qnts.col = "yellow", add = TRUE)
+legend(100, 450, legend = c("part.ident = 52, 52, 52",
+                            "part.ident = 52, 26, 4",
+                            "part.ident = 104, 52, 26",
+                            "part.ident = 12, 6, 2"),
+       text.col = c("blue", "red", "green", "yellow"),
+       cex = 0.75, bg = "lightblue")
 
 ## part.ident: probability of identifying eligible partner
 param$part.ident.main.window <- 52
@@ -98,7 +104,7 @@ param$part.ident.main.prob <- 1
 param$part.ident.casl.prob <- 1
 param$part.ident.ooff.prob <- 1
 
-sim[[6]] <- netsim(burnin, param, init,control2)
+sim[[6]] <- netsim(burnin, param, init, control2)
 
 # Stratified partner identification rates - high
 param$part.ident.main.prob <- 0.75
@@ -115,13 +121,20 @@ param$part.ident.ooff.prob <- 0.05
 sim[[8]] <- netsim(burnin, param, init, control2)
 
 plot(sim[[5]], y = "part.identified", xlim = c(100, 200), ylim = c(0, 250),
-     xlab = "Timestep", ylab = "Partners Identified", main = "Validation: part.ident.prob")
-plot(sim[[6]], y = "part.identified", mean.col = "red", qnts.col = "red", add = TRUE)
-plot(sim[[7]], y = "part.identified", mean.col = "green", qnts.col = "green", add = TRUE)
-plot(sim[[8]], y = "part.identified", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
-legend(100, 200, legend = c("part.ident.prob = 0, 0, 0", "part.ident.prob = 1, 1, 1",
-                           "part.ident.prob = 0.75, 0.6, 0.3", "part.ident.prob = 0.03, 0.1, 0.05"),
-       text.col = c("blue", "red", "green", "yellow"), cex=0.75, bg = "lightblue")
+     xlab = "Timestep", ylab = "Partners Identified",
+     main = "Validation: part.ident.prob")
+plot(sim[[6]], y = "part.identified",
+     mean.col = "red", qnts.col = "red", add = TRUE)
+plot(sim[[7]], y = "part.identified",
+     mean.col = "green", qnts.col = "green", add = TRUE)
+plot(sim[[8]], y = "part.identified",
+     mean.col = "yellow", qnts.col = "yellow", add = TRUE)
+legend(100, 200, legend = c("part.ident.prob = 0, 0, 0",
+                            "part.ident.prob = 1, 1, 1",
+                           "part.ident.prob = 0.75, 0.6, 0.3",
+                           "part.ident.prob = 0.03, 0.1, 0.05"),
+       text.col = c("blue", "red", "green", "yellow"),
+       cex = 0.75, bg = "lightblue")
 
 # Stratified partner identification rates - high main/casl recall,
 # low one off partner recall
@@ -140,11 +153,16 @@ param$part.ident.ooff.prob <- 0.8
 sim[[10]] <- netsim(burnin, param, init, control2)
 
 plot(sim[[5]], y = "part.identified", xlim = c(100, 200), ylim = c(0, 250),
-     xlab = "Timestep", ylab = "Partners Identified", main = "Validation: part.ident")
-plot(sim[[9]], y = "part.identified", mean.col = "red", qnts.col = "red", add = TRUE)
-plot(sim[[10]], y = "part.identified", mean.col = "green", qnts.col = "green", add = TRUE)
-legend(100, 250, legend = c("part.ident.prob = 0, 0, 0", "part.ident.prob = 0.9, 0.8, 0.05",
+     xlab = "Timestep", ylab = "Partners Identified",
+     main = "Validation: part.ident")
+plot(sim[[9]], y = "part.identified",
+     mean.col = "red", qnts.col = "red", add = TRUE)
+plot(sim[[10]], y = "part.identified",
+     mean.col = "green", qnts.col = "green", add = TRUE)
+legend(100, 250, legend = c("part.ident.prob = 0, 0, 0",
+                            "part.ident.prob = 0.9, 0.8, 0.05",
                            "part.ident.prob = 0.3, 0.1, 0.9"),
-       text.col = c("blue", "red", "green"), cex=0.75, bg = "lightblue")
+       text.col = c("blue", "red", "green"),
+       cex = 0.75, bg = "lightblue")
 
 saveRDS(sim, file = "process1.sim.rds")

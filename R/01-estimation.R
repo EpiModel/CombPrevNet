@@ -13,7 +13,7 @@ epistats <- build_epistats(geog.lvl = "city", geog.cat = "Atlanta", race = TRUE,
                            init.hiv.prev = rep(0.17, 3))
 saveRDS(epistats, file = "data/input/epistats.rds")
 netparams <- build_netparams(epistats = epistats, smooth.main.dur = TRUE)
-netstats <- build_netstats(epistats, netparams, expect.mort = 0.000478213, 
+netstats <- build_netstats(epistats, netparams, expect.mort = 0.000478213,
                            network.size = 25000)
 saveRDS(netstats, file = "data/input/netstats.rds")
 
@@ -74,7 +74,7 @@ fit_main <- netest(nw_main,
 # Formula
 model_casl <- ~edges +
   nodematch("age.grp", diff = TRUE) +
-  nodefactor("age.grp", levels = c(-1,-5)) +
+  nodefactor("age.grp", levels = c(-1, -5)) +
   nodematch("race", diff = FALSE) +
   nodefactor("race", levels = -1) +
   nodefactor("deg.main", levels = -3) +
@@ -86,7 +86,7 @@ model_casl <- ~edges +
 netstats_casl <- c(
   edges = netstats$casl$edges,
   nodematch_age.grp = netstats$casl$nodematch_age.grp,
-  nodefactor_age.grp = netstats$casl$nodefactor_age.grp[-c(1,5)],
+  nodefactor_age.grp = netstats$casl$nodefactor_age.grp[-c(1, 5)],
   nodematch_race = netstats$casl$nodematch_race_diffF,
   nodefactor_race = netstats$casl$nodefactor_race[-1],
   nodefactor_deg.main = netstats$casl$nodefactor_deg.main[-3],
