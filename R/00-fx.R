@@ -44,13 +44,6 @@ dis_log <- function(x,y) {
   avg <- mean(log.diff, na.rm = TRUE)
 }
 
-mod_select <- function(tdf, stats, fun) {
-  num <- apply()
-  data <- apply(tdf[,c(2,5)], 1, dis_cos, y = stats)
-  #min <- which(datas == min(data, na.rm = TRUE))
-  return(min)
-}
-
 calc_quants_prev <- function(x, var, at = 520, mult = 1, round = 1,
                              qnt.low = 0.025, qnt.high = 0.975) {
   if (is.null(x$epi[[var]])) {
