@@ -132,8 +132,8 @@ dev.off()
 
 # Add PrEP to negative connected
 ids.neg <- setdiff(1:n, all.inf)
-ids.nprep <- setdiff(ids.neg, ids.prep)                       
-ids.nprep.deg1 <- intersect(ids.nprep, which(EpiModel::get_degree(sim2)>0))                          
+ids.nprep <- setdiff(ids.neg, ids.prep)
+ids.nprep.deg1 <- intersect(ids.nprep, which(EpiModel::get_degree(sim2)>0))
 
 v.col[ids.nprep.deg1] <- 3
 
@@ -177,7 +177,7 @@ dev.off()
 
 # Network model
 library("EpiModel")
-library("ndtv")
+# library("ndtv")
 
 nw <- network_initialize(n = 250, directed = FALSE)
 # neg nprep, neg prep, pos nsupp, pos supp
