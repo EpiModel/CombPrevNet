@@ -1,4 +1,4 @@
-## Model Schematic 4: Identified HIV+ Partners, 
+## Model Schematic 4: Identified HIV+ Partners,
 ## Treatment Initiation and Reinitiation
 ## --------------------------------------------------------------- ##
 
@@ -32,10 +32,7 @@ control <- control_msm(simno = 1001,
                        start = 1,
                        nsteps = 100,
                        ncores = 1,
-                       nsims = 1,
-                       save.nwstats = FALSE,
-                       save.clin.hist = FALSE,
-                       tergmLite = TRUE)
+                       nsims = 1)
 
 set.seed(123)
 
@@ -47,9 +44,6 @@ control1 <- control_msm(simno = 1001,
                         nsteps = 200,
                         ncores = 1,
                         nsims = 5,
-                        save.nwstats = FALSE,
-                        save.clin.hist = FALSE,
-                        tergmLite = TRUE,
                         initialize.FUN = reinit_msm)
 
 ## ART Initiation
@@ -80,8 +74,8 @@ plot(sim[[3]], y = "part.init", mean.col = "green", qnts.col = "green", add = TR
 plot(sim[[4]], y = "part.init", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
 plot(sim[[5]], y = "part.init", mean.col = "purple", qnts.col = "purple", add = TRUE)
 legend(0, 20, legend=c("part.tx.init.prob = 1, 1, 1", "part.tx.init.prob = 0.75, 0.75, 0.75",
-                       "part.tx.init.prob = 0.5, 0.5, 0.5", "part.tx.init.prob = 0.01, 0.01, 0.01",   
-                       "part.tx.init.prob = 0, 0, 0"), 
+                       "part.tx.init.prob = 0.5, 0.5, 0.5", "part.tx.init.prob = 0.01, 0.01, 0.01",
+                       "part.tx.init.prob = 0, 0, 0"),
        text.col=c("red", "purple", "green", "yellow", "blue"), cex=0.75, bg = "lightblue")
 
 ## ART Renitiation

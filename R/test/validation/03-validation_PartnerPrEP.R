@@ -16,7 +16,6 @@ param <- param_msm(epistats = epistats,
                         part.ident.main = 1,
                         part.ident.casl = 1,
                         part.ident.ooff = 1,
-                        ptype.lookup = c(1, 2, 3),
                         part.prep.start.prob = 1,
                         prep.start = 101,
                         part.prep.start = 101,
@@ -29,19 +28,13 @@ control1 <- control_msm(simno = 1001,
                         start = 1,
                         nsteps =100,
                         ncores = 1,
-                        nsims = 1,
-                        save.nwstats = FALSE,
-                        save.clin.hist = FALSE,
-                        tergmLite = TRUE)
+                        nsims = 1)
 
 control2 <- control_msm(simno = 1001,
                         start = 101,
                         nsteps =200,
                         ncores = 1,
-                        nsims = 10,
-                        save.nwstats = FALSE,
-                        save.clin.hist = FALSE,
-                        tergmLite = TRUE, 
+                        nsims = 10
                         initialize.FUN = reinit_msm)
 
 set.seed(123)
@@ -74,7 +67,7 @@ plot(sim[[3]], y = "prep.part", mean.col = "green", qnts.col = "green", add = TR
 plot(sim[[4]], y = "prep.part", mean.col = "yellow", qnts.col = "yellow", add = TRUE)
 plot(sim[[5]], y = "prep.part", mean.col = "purple", qnts.col = "purple", add = TRUE)
 legend(0, 140, legend=c("part.prep.start.prob = 0, 0, 0", "part.prep.start.prob = 0.5, 0.5, 0.5",
-                          "part.prep.start.prob = 0.75, 0.75, 0.75", "part.prep.start.prob = 1, 1, 1", "part.prep.start = 150"), 
+                          "part.prep.start.prob = 0.75, 0.75, 0.75", "part.prep.start.prob = 1, 1, 1", "part.prep.start = 150"),
        text.col=c("blue", "red", "green", "yellow", "purple"), cex=0.75, bg = "lightblue")
 
 saveRDS(sim, file = "process3.sim.rds")

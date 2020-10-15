@@ -31,8 +31,7 @@ init <- init_msm()
 control <- control_msm(simno = fsimno,
                        nsteps = 52*60,
                        nsims = ncores,
-                       ncores = ncores,
-                       tergmLite = TRUE)
+                       ncores = ncores)
 ## Simulation
 sim <- netsim(est, param, init, control)
 

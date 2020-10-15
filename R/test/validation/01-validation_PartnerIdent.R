@@ -29,10 +29,7 @@ init <- init_msm()
 control1 <- control_msm(simno = 1001,
                         nsteps = 100,
                         ncores = 1,
-                        nsims = 1,
-                        save.nwstats = FALSE,
-                        save.clin.hist = FALSE,
-                        tergmLite = TRUE)
+                        nsims = 1)
 
 sim <- list()
 
@@ -47,9 +44,6 @@ control2 <- control_msm(simno = 1001,
                         nsteps = 200,
                         ncores = 1,
                         nsims = 5,
-                        save.nwstats = FALSE,
-                        save.clin.hist = FALSE,
-                        tergmLite = TRUE, 
                         initialize.FUN = reinit_msm)
 
 
@@ -64,7 +58,7 @@ param$part.ident.ooff.window <- 4
 sim[[2]] <- netsim(burnin, param, init, control2)
 
 # Longer recall periods
-# 
+#
 param$part.ident.main.window <- 104
 param$part.ident.casl.window <- 52
 param$part.ident.ooff.window <- 26
@@ -72,14 +66,14 @@ param$part.ident.ooff.window <- 26
 sim[[3]] <- netsim(burnin, param, init, control2)
 
 # Very short recall periods
-# 
+#
 param$part.ident.main.window <- 12
 param$part.ident.casl.window <- 6
 param$part.ident.ooff.window <- 2
 
 sim[[4]] <- netsim(burnin, param, init, control2)
 
-plot(sim[[1]], y = "part.identified", xlim = c(100, 200), xlab = "Timestep", 
+plot(sim[[1]], y = "part.identified", xlim = c(100, 200), xlab = "Timestep",
      ylab = "Partners Identified", main = "Validation: part.ident")
 plot(sim[[2]], y = "part.identified", mean.col = "red", qnts.col = "red", add = TRUE)
 plot(sim[[3]], y = "part.identified", mean.col = "green", qnts.col = "green", add = TRUE)
@@ -120,7 +114,7 @@ param$part.ident.ooff.prob <- 0.05
 
 sim[[8]] <- netsim(burnin, param, init, control2)
 
-plot(sim[[5]], y = "part.identified", xlim = c(100, 200), ylim = c(0, 250), 
+plot(sim[[5]], y = "part.identified", xlim = c(100, 200), ylim = c(0, 250),
      xlab = "Timestep", ylab = "Partners Identified", main = "Validation: part.ident.prob")
 plot(sim[[6]], y = "part.identified", mean.col = "red", qnts.col = "red", add = TRUE)
 plot(sim[[7]], y = "part.identified", mean.col = "green", qnts.col = "green", add = TRUE)
@@ -145,7 +139,7 @@ param$part.ident.ooff.prob <- 0.8
 
 sim[[10]] <- netsim(burnin, param, init, control2)
 
-plot(sim[[5]], y = "part.identified", xlim = c(100, 200), ylim = c(0, 250), 
+plot(sim[[5]], y = "part.identified", xlim = c(100, 200), ylim = c(0, 250),
      xlab = "Timestep", ylab = "Partners Identified", main = "Validation: part.ident")
 plot(sim[[9]], y = "part.identified", mean.col = "red", qnts.col = "red", add = TRUE)
 plot(sim[[10]], y = "part.identified", mean.col = "green", qnts.col = "green", add = TRUE)

@@ -23,9 +23,7 @@ control <- control_msm(simno = fsimno,
                        nsteps = 52*65,
                        nsims = ncores,
                        ncores = ncores,
-                       initialize.FUN = reinit_msm,
-                       save.nwstats = FALSE,
-                       save.clin.hist = FALSE)
+                       initialize.FUN = reinit_msm)
 
 # Intervention parameters
 part.ident.start = Inf
@@ -36,7 +34,6 @@ part.ident.ooff.window = 12
 part.ident.main.prob = 1
 part.ident.casl.prob = 1
 part.ident.ooff.prob = 1
-ptype.lookup = c(1, 2, 3)
 part.hiv.test.rate = c(1, 1, 1)
 part.prep.start.prob = 0.5
 part.tx.init.prob = c(0.6, 0.6, 0.8)
