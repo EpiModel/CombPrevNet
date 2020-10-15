@@ -27,4 +27,5 @@ control <- control_msm(simno = fsimno,
 sim <- netsim(est, param, init, control)
 
 ## Save-Max
-savesim(sim, save.min = FALSE, save.max = TRUE, compress = TRUE, time.stamp = FALSE)
+savesim(sim, save.min = FALSE, save.max = TRUE,
+        compress = TRUE, time.stamp = FALSE)

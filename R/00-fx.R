@@ -15,21 +15,21 @@ gather_netsim <- function(fn) {
 }
 
 
-dis_per <- function(x,y) {
+dis_per <- function(x, y) {
   num <- abs(x - y)
-  avg <- num/y
+  avg <- num / y
   avg <- mean(avg, na.rm = TRUE)
   return(avg)
 }
 
-dis_cos <- function(x,y) {
-  num <- sum(x*y)
-  denom <- sqrt(sum(x^2))*sqrt(sum(y^2))
-  cos.sim <- num/denom
+dis_cos <- function(x, y) {
+  num <- sum(x * y)
+  denom <- sqrt(sum(x^2)) * sqrt(sum(y^2))
+  cos.sim <- num / denom
   return(cos.sim)
 }
 
-dis_euc <- function(x,y) {
+dis_euc <- function(x, y) {
   dis <- x - y
   dis2 <- dis^2
   dis2 <- sum(dis2, na.rm = TRUE)
@@ -51,11 +51,12 @@ mod_select <- function(tdf, stats, fun) {
   return(min)
 }
 
-calc_quants_prev <- function(x, var, at = 520, mult = 1, round = 1, qnt.low = 0.025, qnt.high = 0.975) {
+calc_quants_prev <- function(x, var, at = 520, mult = 1, round = 1,
+                             qnt.low = 0.025, qnt.high = 0.975) {
   if (is.null(x$epi[[var]])) {
     stop("var ", var, " does not exist on x", call. = FALSE)
   }
-  out <- as.numeric(x$epi[[var]][at, ])*mult
+  out <- as.numeric(x$epi[[var]][at, ]) * mult
   out <- quantile(out, c(0.5, qnt.low, qnt.high), names = FALSE)
   format <- paste0("%.", round, "f")
   out <- sprintf(format, out)
@@ -63,7 +64,8 @@ calc_quants_prev <- function(x, var, at = 520, mult = 1, round = 1, qnt.low = 0.
   return(out)
 }
 
-calc_quants_ir <- function(x, var, qnt.low = 0.025, qnt.high = 0.975, round = 2) {
+calc_quants_ir <- function(x, var,
+                           qnt.low = 0.025, qnt.high = 0.975, round = 2) {
   if (is.null(x$epi[[var]])) {
     stop("var ", var, " does not exist on x", call. = FALSE)
   }

@@ -25,7 +25,8 @@ tdf <- data.frame("batch" = 0, "cc.dx.B" = 0, "cc.dx.H" = 0, "cc.dx.W" = 0,
 #     df <- as.data.frame(x = sim, sim = j)
 #     df <- select(df, cc.dx, i.prev.dx, cc.linked1m, cc.vsupp)
 #     df <- tail(df, 52)
-#     batch <- paste(paste(strsplit(fn[i], "[.]")[[1]][2:3], collapse = "."), j, sep = ".")
+#     batch <- paste(paste(strsplit(fn[i], "[.]")[[1]][2:3],
+#                    collapse = "."), j, sep = ".")
 #     out <- c(batch, colMeans(df))
 #     return(out)
 #   }
@@ -43,7 +44,8 @@ for (i in seq_len(fn)) {
                    cc.linked1m.B, cc.linked1m.H, cc.linked1m.W,
                    cc.vsupp.B, cc.vsupp.H, cc.vsupp.W)
       df <- tail(df, 52)
-      batch <- paste(paste(strsplit(fn[i], "[.]")[[1]][2:3], collapse = "."), j, sep = ".")
+      batch <- paste(paste(strsplit(fn[i], "[.]")[[1]][2:3],
+                           collapse = "."), j, sep = ".")
       out <- c(batch, colMeans(df))
       return(out)
     }
@@ -56,27 +58,29 @@ names(tdf)[1:5] <- c("batch", "cc.dx", "i.prev.dx", "cc.linked1m", "cc.vsupp")
 tdf[2:13] <- sapply(tdf[2:13], as.numeric)
 
 ## Model Performance
-stats <- c(0.804,0.799, 0.88, 0.33, 0.126, 0.085,
+stats <- c(0.804, 0.799, 0.88, 0.33, 0.126, 0.085,
            0.62, 0.65, 0.76, 0.55, 0.6, 0.72)
 
-data <- apply(tdf[,c(2:13)], 1, dis_per, y = stats)
+data <- apply(tdf[, c(2:13)], 1, dis_per, y = stats)
 temp.per <- which(data >= quantile(data, 0.999))
-tdf[temp.per,]
+tdf[temp.per, ]
 
-data <- apply(tdf[,c(2:13)], 1, dis_euc, y = stats)
+data <- apply(tdf[, c(2:13)], 1, dis_euc, y = stats)
 temp.euc <- which(data <= quantile(data, 0.01))
-tdf[temp.euc,]
+tdf[temp.euc, ]
 
-data <- apply(tdf[,c(2:13)], 1, dis_log, y = stats)
+data <- apply(tdf[, c(2:13)], 1, dis_log, y = stats)
 temp.log <- which(data <= quantile(data, 0.01))
-tdf[temp.log,]
+tdf[temp.log, ]
 
-data <- apply(tdf[,c(2:13)], 1, dis_cos, y = stats)
+data <- apply(tdf[, c(2:13)], 1, dis_cos, y = stats)
 temp.cos <- which(data >= quantile(data, 0.999, na.rm = TRUE))
-tdf[temp.cos,]
+tdf[temp.cos, ]
 
-tdf.select <- list("Percent" = tdf[temp.per,], "Euclidean" = tdf[temp.euc,],
-                   "Log-Diff" = tdf[temp.log,], "Cosine Sim." = tdf[temp.cos,])
+tdf.select <- list("Percent" = tdf[temp.per, ],
+                   "Euclidean" = tdf[temp.euc, ],
+                   "Log-Diff" = tdf[temp.log, ],
+                   "Cosine Sim." = tdf[temp.cos, ])
 
 load("data/sim.n1002.36.rda")
 ls()
@@ -87,7 +91,7 @@ df <- select(df, cc.dx.B, cc.dx.H, cc.dx.W,
              i.prev.dx.B, i.prev.dx.H, i.prev.dx.W,
              cc.linked1m.B, cc.linked1m.H, cc.linked1m.W,
              cc.vsupp.B, cc.vsupp.H, cc.vsupp.W)
-df <- tail(df,1)
+df <- tail(df, 1)
 df
 colMeans(df)
 
