@@ -54,7 +54,6 @@ for (i in seq_len(fn)) {
 }
 
 tdf <- data.frame(do.call("rbind", tdf), stringsAsFactors = FALSE)
-names(tdf)[1:5] <- c("batch", "cc.dx", "i.prev.dx", "cc.linked1m", "cc.vsupp")
 tdf[2:13] <- sapply(tdf[2:13], as.numeric)
 
 ## Model Performance
