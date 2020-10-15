@@ -32,6 +32,13 @@ tdf <- data.frame("batch" = 0, "cc.dx.B" = 0, "cc.dx.H" = 0, "cc.dx.W" = 0,
 #   }
 #   t(sapply(1:sim$control$nsims, f))
 # }
+# colnames(tdf) <- c("batch", "cc.dx.B", "cc.dx.H", "cc.dx.W",
+#                    "i.prev.dx.B", "i.prev.dx.H", "i.prev.dx.W",
+#                    "cc.linked1m.B", "cc.linked1m.H", "cc.linked1.W",
+#                    "cc.vsupp.B", "cc.vsupp.H", "cc.vsupp.W")
+#
+# tdf <- data.frame(do.call("rbind", tdf), stringsAsFactors = FALSE)
+# tdf[2:13] <- sapply(tdf[2:13], as.numeric)
 
 
 for (i in seq_len(fn)) {
