@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.0.2",
+    "Version": "4.0.3",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -49,10 +49,10 @@
     },
     "EpiModel": {
       "Package": "EpiModel",
-      "Version": "2.0.2",
+      "Version": "2.0.3",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "5914e15822073ab226e5b2653cce0937"
+      "Hash": "f773d42fae4fe40b8ea5f389e909db93"
     },
     "EpiModelHIV": {
       "Package": "EpiModelHIV",
