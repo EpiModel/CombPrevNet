@@ -9,8 +9,8 @@ suppressMessages(library("dplyr"))
 suppressMessages(library("foreach"))
 source("post/fx.R")
 
-list.files("data/")
-fn <- list.files("data/", full.names = TRUE, pattern = "1002")
+list.files("data/output/")
+fn <- list.files("data/output/", full.names = TRUE, pattern = "1002")
 
 
 tdf <- data.frame("batch" = 0, "cc.dx.B" = 0, "cc.dx.H" = 0, "cc.dx.W" = 0,
@@ -88,7 +88,7 @@ tdf.select <- list("Percent" = tdf[temp.per, ],
                    "Log-Diff" = tdf[temp.log, ],
                    "Cosine Sim." = tdf[temp.cos, ])
 
-load("data/sim.n1002.36.rda")
+load("data/output/sim.n1002.36.rda")
 ls()
 s11 <- get_sims(sim, sims = 24)
 

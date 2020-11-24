@@ -14,7 +14,7 @@ pull_env_vars()
 ## Parameters
 netstats <- readRDS("data/input/netstats.rds")
 epistats <- readRDS("data/input/epistats.rds")
-burnin <- readRDS("data/input/burnin.ATL.3race.rds")
+burnin <- readRDS("data/input/burnin1.rds")
 param <- readRDS("data/input/param.burnin1.rds")
 
 init <- init_msm()

@@ -14,7 +14,6 @@ gather_netsim <- function(fn) {
   return(out)
 }
 
-
 dis_per <- function(x, y) {
   num <- abs(x - y)
   avg <- num / y
