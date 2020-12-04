@@ -62,9 +62,9 @@
       "RemoteUsername": "statnet",
       "RemoteRepo": "EpiModel",
       "RemoteRef": "HEAD",
-      "RemoteSha": "6672b6b0d3feb757d6187d31955c0728ca998fb6",
+      "RemoteSha": "ef8aaa9b8b10815254129653460709169303e6b6",
       "RemoteHost": "api.github.com",
-      "Hash": "067e8ea1b4df85f4f0cdfe395362045d"
+      "Hash": "2dd2d00ba075750582b528ea21118470"
     },
     "EpiModelHIV": {
       "Package": "EpiModelHIV",
