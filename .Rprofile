@@ -20,3 +20,5 @@ if (!dir.exists("out/")) {
   dir.create("out/")
 }
 
+# 3. Helpful aliases
+rs <- function() .rs.restartR()
