@@ -54,6 +54,18 @@
       "Repository": "CRAN",
       "Hash": "d5936480794a48cc85c6ccb5351bf8d2"
     },
+    "EpiABC": {
+      "Package": "EpiABC",
+      "Version": "1.0",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteUsername": "EpiModel",
+      "RemoteRepo": "EpiABC",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "ad80ccb31734e24d42d282232796716afbd00383",
+      "RemoteHost": "api.github.com",
+      "Hash": "ce8fdf37ee6a43d97fd5912042002b7e"
+    },
     "EpiModel": {
       "Package": "EpiModel",
       "Version": "2.0.4",
@@ -62,9 +74,9 @@
       "RemoteUsername": "statnet",
       "RemoteRepo": "EpiModel",
       "RemoteRef": "HEAD",
-      "RemoteSha": "2ab42348554adc047ef18168f7e75582bc39dbb8",
+      "RemoteSha": "ae2a36c065a7be08b236919b67bf5a4c0bf1fe89",
       "RemoteHost": "api.github.com",
-      "Hash": "c781f071b5a80d769315c324b2926ece"
+      "Hash": "1ae7527695e4f3f7efc0db53bcf872d4"
     },
     "EpiModelHIV": {
       "Package": "EpiModelHIV",
@@ -656,6 +668,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "6f76f71042411426ec8df6c54f34e6dd"
+    },
+    "snow": {
+      "Package": "snow",
+      "Version": "0.4-3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "11b822ad6214111a4188d5e5fd1b144c"
     },
     "statnet.common": {
       "Package": "statnet.common",
