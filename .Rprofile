@@ -9,6 +9,10 @@ if (dir.exists("renv/")) {
   cat("* Run renv::init() to install the R packages for this project\n")
 }
 
+if (Sys.getenv("GITHUB_PAT") == "") {
+  cat("* To install the ARTnetData package, you need a valid GITHUB_PAT defined in .Renviron")
+}
+
 # 2. directory structure
 if (!dir.exists("data/input/")) {
   dir.create("data/input/", recursive = TRUE)
@@ -22,3 +26,7 @@ if (!dir.exists("out/")) {
 
 # 3. Helpful aliases
 rs <- function() .rs.restartR()
+
+# 4. Standard options
+options(deparse.max.lines = 5)
+
