@@ -29,7 +29,7 @@ model_main_dx <- ~edges +
   concurrent +
   nodematch("role.class", diff = TRUE) +
   degree(0:3)
-dx_main <- netdx(fit_main, nsims = nsims, ncores = ncores, nsteps = 500,
+dx_main <- netdx(fit_main, nsims = nsims, ncores = ncores, nsteps = 1000,
                  nwstats.formula = model_main_dx, skip.dissolution = TRUE,
                  set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5))
 print(dx_main, digits = 2)
@@ -41,20 +41,6 @@ dx_main_static <- netdx(fit_main, dynamic = FALSE, nsims = 10000,
                         nwstats.formula = model_main_dx, skip.dissolution = TRUE,
                         set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5))
 print(dx_main_static, digits = 1)
-
-est_main_new <- netest_refit_abc(fit_main, nsims = 30, ncores = 30, nsteps = 300,
-                                 coefs.to.fit = 1:10, prior.min = -0.25, prior.max = 0.25)
-
-est_main_new$refit
-
-fit_main$coef.form
-est_main_new$coef.form
-
-dx_main_new <- netdx(est_main_new, nsims = nsims, ncores = ncores, nsteps = 500,
-                     nwstats.formula = model_main_dx, skip.dissolution = TRUE,
-                     set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5))
-print(dx_main_new, digits = 2)
-
 
 
 # Casual ------------------------------------------------------------------

@@ -13,6 +13,8 @@ suppressMessages(
 ## Environmental Arguments
 pull_env_vars()
 
+nsims = ncores = 25
+
 ## Parameters
 netstats <- readRDS("data/input/netstats.rds")
 epistats <- readRDS("data/input/epistats.rds")
@@ -46,9 +48,9 @@ param <- param_msm(netstats = netstats,
 )
 init <- init_msm()
 
-pkgload::load_all("~/git/EpiModelHIV-p")
+# pkgload::load_all("~/git/EpiModelHIV-p")
 control <- control_msm(simno = fsimno,
-                       nsteps = 52 * 10,
+                       nsteps = 52 * 50,
                        nsims = ncores,
                        ncores = ncores,
                        save.nwstats = TRUE)
@@ -56,7 +58,40 @@ control <- control_msm(simno = fsimno,
 ## Simulation
 sim <- netsim(est, param, init, control)
 
-sim <- get_nwstats(sim)
+saveRDS(sim, file = "tsim.rds")
 
-debugonce(initialize_msm)
-debugonce(hivtest_msm)
+system("scp mox:/gscratch/csde/sjenness/CombPrevNet/tsim.rds data/output/")
+sim <- readRDS("data/output/tsim.rds")
+
+nws1 <- get_nwstats(sim, network = 1)
+nws2 <- get_nwstats(sim, network = 2)
+nws3 <- get_nwstats(sim, network = 3)
+
+ggplot(nws1, aes(time, mdeg, col = as.factor(sim))) +
+  geom_line(alpha = 0.5) +
+  ylim(0, 1) +
+  theme_minimal()
+
+mmd <- group_by(nws1, time) %>%
+  summarise(mmd = mean(mdeg))
+plot(mmd, type = "l", ylim = c(0.3, 0.6))
+
+ggplot(nws2, aes(time, mdeg, col = as.factor(sim))) +
+  geom_line(alpha = 0.5) +
+  ylim(0, 1) +
+  theme_minimal()
+
+ggplot(nws3, aes(time, mdeg, col = as.factor(sim))) +
+  geom_line(alpha = 0.5) +
+  ylim(0, 0.2) +
+  theme_minimal()
+
+par(mar = c(3,3,1,1))
+plot(sim, y = "num", ylim = c(0, 20000))
+plot(sim, y = "dep.gen", mean.smooth = FALSE, ylim = c(0, 5))
+plot(sim, y = "dep.AIDS")
+
+df <- tail(as.data.frame(sim, out = "mean"), 1000)
+head(df)
+totD <- df$dep.gen + df$dep.AIDS
+mean(totD/df$num, na.rm = TRUE)
