@@ -14,7 +14,7 @@ epistats <- build_epistats(geog.lvl = "city", geog.cat = "Atlanta", race = TRUE,
 saveRDS(epistats, file = "data/input/epistats.rds")
 netparams <- build_netparams(epistats = epistats, smooth.main.dur = TRUE)
 netstats <- build_netstats(epistats, netparams, expect.mort = 0.000478213,
-                           network.size = 25000)
+                           network.size = 10000)
 saveRDS(netstats, file = "data/input/netstats.rds")
 
 
@@ -64,8 +64,10 @@ fit_main <- netest(nw_main,
                    coef.diss = netstats$main$diss.byage,
                    set.control.ergm = control.ergm(MCMLE.maxit = 500,
                                                    SAN.maxit = 3,
-                                                   SAN.nsteps.times = 3),
-                   verbose = FALSE)
+                                                   SAN.nsteps.times = 3,
+                                                   MCMC.samplesize = 10000,
+                                                   MCMC.interval = 5000),
+                   verbose = TRUE)
 
 
 
