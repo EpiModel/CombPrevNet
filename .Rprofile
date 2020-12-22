@@ -8,7 +8,8 @@ if (dir.exists("renv/")) {
 } else {
   cat("* Run renv::init() to install the R packages for this project\n")
   if (Sys.getenv("GITHUB_PAT") == "") {
-    cat("* To install the ARTnetData package, you need a valid GITHUB_PAT defined in .Renviron")
+    cat("* To install the ARTnetData package, you need a valid GITHUB_PAT
+        defined in .Renviron")
   }
 }
 
