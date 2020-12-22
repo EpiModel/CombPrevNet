@@ -29,8 +29,8 @@ param <- param_msm(netstats = netstats,
                    prep.start = 26,
                    prep.start.prob = 0.66,
 
-                   truncate.plist = 52,
-                   part.ident.start = 52,
+                   truncate.plist = 1,
+                   part.ident.start = Inf,
                    part.index.window = 0,
                    part.ident.main.window = 12,
                    part.ident.casl.window = 12,
@@ -48,9 +48,15 @@ init <- init_msm()
 
 pkgload::load_all("~/git/EpiModelHIV-p")
 control <- control_msm(simno = fsimno,
-                       nsteps = 52 * 2,
+                       nsteps = 52 * 10,
                        nsims = ncores,
-                       ncores = ncores)
+                       ncores = ncores,
+                       save.nwstats = TRUE)
 
 ## Simulation
 sim <- netsim(est, param, init, control)
+
+sim <- get_nwstats(sim)
+
+debugonce(initialize_msm)
+debugonce(hivtest_msm)
