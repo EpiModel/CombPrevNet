@@ -13,7 +13,7 @@ suppressMessages(
 ## Environmental Arguments
 pull_env_vars()
 
-nsims = ncores = 25
+nsims <- ncores <- 4
 
 ## Parameters
 netstats <- readRDS("data/input/netstats.rds")
@@ -67,6 +67,9 @@ nws1 <- get_nwstats(sim, network = 1)
 nws2 <- get_nwstats(sim, network = 2)
 nws3 <- get_nwstats(sim, network = 3)
 
+library(ggplot2)
+library(dplyr)
+
 ggplot(nws1, aes(time, mdeg, col = as.factor(sim))) +
   geom_line(alpha = 0.5) +
   ylim(0, 1) +
@@ -86,7 +89,7 @@ ggplot(nws3, aes(time, mdeg, col = as.factor(sim))) +
   ylim(0, 0.2) +
   theme_minimal()
 
-par(mar = c(3,3,1,1))
+par(mar = c(3, 3, 1, 1))
 plot(sim, y = "num", ylim = c(0, 20000))
 plot(sim, y = "dep.gen", mean.smooth = FALSE, ylim = c(0, 5))
 plot(sim, y = "dep.AIDS")
@@ -95,3 +98,11 @@ df <- tail(as.data.frame(sim, out = "mean"), 1000)
 head(df)
 totD <- df$dep.gen + df$dep.AIDS
 mean(totD/df$num, na.rm = TRUE)
+
+df_sim <- as.data.frame(sim)
+
+ggplot(df_sim, aes(x = time, y = i.prev, col = as.factor(sim))) +
+  geom_line()
+
+
+
