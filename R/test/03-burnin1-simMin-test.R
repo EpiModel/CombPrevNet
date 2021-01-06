@@ -13,7 +13,7 @@ suppressMessages(
 ## Environmental Arguments
 pull_env_vars()
 
-nsims <- ncores <- 4
+nsims <- ncores <- 1
 
 ## Parameters
 netstats <- readRDS("data/input/netstats.rds")
@@ -34,8 +34,8 @@ param <- param_msm(netstats = netstats,
                    truncate.plist = 1,
                    part.ident.start = Inf,
                    part.index.window = 0,
-                   part.ident.main.window = 12,
-                   part.ident.casl.window = 12,
+                   part.ident.main.window = 120,
+                   part.ident.casl.window = 120,
                    part.ident.ooff.window = 12,
                    part.ident.main.prob = 0.5,
                    part.ident.casl.prob = 0.5,
@@ -49,14 +49,23 @@ param <- param_msm(netstats = netstats,
 init <- init_msm()
 
 # pkgload::load_all("~/git/EpiModelHIV-p")
-control <- control_msm(simno = fsimno,
-                       nsteps = 52 * 50,
-                       nsims = ncores,
-                       ncores = ncores,
-                       save.nwstats = TRUE)
+control <- control_msm(
+  simno = fsimno,
+  nsteps = 52 * 10,
+  nsims = ncores,
+  ncores = ncores,
+  save.nwstats = TRUE,
+  raw.output = TRUE,
+  verbose = FALSE
+)
 
 ## Simulation
 sim <- netsim(est, param, init, control)
+
+sim[[1]]$temp$plist %>%
+  as_tibble() %>%
+  filter(!is.na(stop)) %>%
+  print(n = 500)
 
 saveRDS(sim, file = "tsim.rds")
 
