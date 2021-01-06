@@ -86,9 +86,9 @@
       "RemoteUsername": "EpiModel",
       "RemoteRepo": "EpiModelHIV-p",
       "RemoteRef": "CombPrevNet",
-      "RemoteSha": "596c69cc8562c7fb9d4168ad60d5c741e3501f2c",
+      "RemoteSha": "f51df926ef52dd55a91c99c0c619e911520fb5fb",
       "RemoteHost": "api.github.com",
-      "Hash": "d4209aa809a9e294c5b489db0c7c1c1a"
+      "Hash": "f191de935cf90f4361777dd931afca39"
     },
     "EpiModelHPC": {
       "Package": "EpiModelHPC",
@@ -262,6 +262,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "0d57bc8e27b7ba9e45dba825ebc0de6b"
+    },
+    "data.table": {
+      "Package": "data.table",
+      "Version": "1.13.6",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "813fa8857aaa949b243e2e0b4abb8592"
     },
     "deSolve": {
       "Package": "deSolve",

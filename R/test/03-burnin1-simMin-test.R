@@ -55,7 +55,7 @@ control <- control_msm(
   nsims = ncores,
   ncores = ncores,
   save.nwstats = TRUE,
-  raw.output = TRUE,
+  # raw.output = TRUE,
   verbose = FALSE
 )
 
