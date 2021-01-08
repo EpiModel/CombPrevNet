@@ -46,6 +46,40 @@ param <- param_msm(
   prep.risk.reassess.method = "year",
   prep.require.lnt = TRUE, # FALSE -> start with random PrEP initiation
 
+  ## STI PARAMS (default: from combprev2, make it gaps)
+  ## Using values in prep-race: scripts/burnin/sim.burn.R
+  ## If not mentionned -> default from prep disparities
+  ## for H : mean(c(B, W))
+  #ok
+  rgc.tprob      = 0.2267303, #logistic(logit(0.19) + log(1.25)) #0.357,  # gaps appendix 9.4
+  ugc.tprob      = 0.19, # 0.248,  # gaps appendix 9.4
+  rct.tprob      = 0.2038369, #logistic(logit(0.17) + log(1.25)) #0.3216, # gaps appendix 9.3
+  uct.tprob      = 0.17, #0.213,  # gaps appendix 9.3
+  rgc.sympt.prob = 0.1, #0.077, # gaps appendix 10.3
+  ugc.sympt.prob = 0.9333333, #0.824, # gaps appendix 10.3
+  rct.sympt.prob = 0.1, #0.1035,# gaps appendix 10.2
+  uct.sympt.prob = 0.95, #0.885, # gaps appendix 10.2
+  rgc.ntx.int    = 26, #35.11851, # gaps appendix 11.2
+  ugc.ntx.int    = 26, #35.11851, # gaps appendix 11.2
+  gc.tx.int      = 2, # gaps appendix 11.2 - mentionned, not explicit
+  rct.ntx.int    = 32, #44.24538, # gaps appendix 11.1
+  uct.ntx.int    = 32, #44.24538, # gaps appendix 11.1
+  ct.tx.int      = 2, # gaps appendix 11.1 - mentionned, not explicit
+
+  gc.sympt.prob.tx =  rep(0.9, 3),  #c(0.86, 0.91, 0.96),
+  ct.sympt.prob.tx =  rep(0.9, 3),  #c(0.72, 0.785, 0.85),
+  gc.asympt.prob.tx = rep(0.1, 3), #c(0.10, 0.145, 0.19),
+  ct.asympt.prob.tx = rep(0.1, 3), #c(0.05, 0.525, 0.10),
+  # gaps appendix 9.3 - 9.4 (not explained this way but similar result)
+  sti.cond.eff = 0.95,
+  sti.cond.fail = c(0.39, 0.3, 0.21),
+  # gaps appendix 9.2
+  hiv.rgc.rr = 2.78,
+  hiv.ugc.rr = 1.73,
+  hiv.rct.rr = 2.78,
+  hiv.uct.rr = 1.73,
+ # if both ct + gc -> log(RRgc) + 0.2 * log(RRct) | swap ct and gc if RRct > RRgc
+  hiv.dual.rr = 0.2, # not mentionned in appendix
   netresim.form.rr = rep(1, 3),
   netresim.disl.rr = rep(1, 2),
 
@@ -83,8 +117,8 @@ if (lnt == FALSE) {
 }
 
 init <- init_msm(
-  prev.ugc = 0,
-  prev.rct = 0,
-  prev.rgc = 0,
-  prev.uct = 0
+  prev.ugc = 0.05,
+  prev.rct = 0.05,
+  prev.rgc = 0.05,
+  prev.uct = 0.05
 )
