@@ -1,14 +1,12 @@
 
-##
+#
 ## 03. Epidemic Model Burnin, Stage 1, Parameter Calibration
 ## CombPrevNet (https://github.com/EpiModel/CombPrevNet)
 ##
 
 ## Packages
 library("methods")
-suppressMessages(
-  library("EpiModelHIV")
-)
+devtools::load_all("../EpiModelHIV-p")
 
 ## Environmental Arguments
 pull_env_vars()
@@ -16,9 +14,9 @@ pull_env_vars()
 nsims <- ncores <- 1
 
 ## Parameters
-netstats <- readRDS("data/input/netstats.rds")
-epistats <- readRDS("data/input/epistats.rds")
-est <- readRDS("data/input/netest.rds")
+netstats <- readRDS("out/est/netstats.rds")
+epistats <- readRDS("out/est/epistats.rds")
+est      <- readRDS("out/est/netest.rds")
 
 param <- param_msm(netstats = netstats,
                    epistats = epistats,
@@ -62,6 +60,10 @@ control <- control_msm(
 ## Simulation
 sim <- netsim(est, param, init, control)
 
+
+
+
+library(dplyr)
 sim[[1]]$temp$plist %>%
   as_tibble() %>%
   filter(!is.na(stop)) %>%

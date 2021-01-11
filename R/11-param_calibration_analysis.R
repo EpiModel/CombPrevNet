@@ -26,9 +26,11 @@ for (job in job_names) {
   for (fle in sim_files) {
     btch <- btch + 1
     sim <- readRDS(fle)
-    dff <- if (is.null(infos$df_keep)) as.data.table(sim) else sim
-    dff[, batch := btch]
-    dff <- dff[, .SD, .SDcols = c("batch", "sim", "time", names(targets))]
+    dff <- as.data.table(sim)
+    dff[, `:=`(batch = btch, param_batch = infos$unique_proposals[btch])]
+    dff <- dff[,
+      .SD, .SDcols = c("param_batch", "batch", "sim", "time", names(targets))
+    ]
     # do some transforms here (or not but risk memory overflow)
     #
     df_ls[[btch]] <- dff

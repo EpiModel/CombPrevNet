@@ -4,7 +4,7 @@ test_simulation <- TRUE
 
 # Set slurm parameters ---------------------------------------------------------
 batch_per_set <- 10      # How many 28 replications to do per parameter
-steps_to_keep <- NULL # Steps to keep in the output df. If NULL, return sim obj
+steps_to_keep <- 52 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
 job_name <- "CPN_dry_run"
 ssh_host <- "hyak_mox"
@@ -40,13 +40,7 @@ param_proposals <- list(
   trans.scale = seq_cross( # 4^3 values to test; See utils-slurm_prep_helpers.R
     c(1.5, 0.5, 0.5),
     c(2.5, 1.5, 1.5),
-    length.out = 4
-  ),
-  uct.tprob = as.list(seq(0.8, 0.98, length.out = 4)), # 4 values to test
-  ugc.tprob = list(0.3, 0.1), # 2 values to test
-  tx.init.prob = list( # 2 values to test (each contains a set of 3)
-    c(0.12, 0.15, 0.16),
-    c(0.11, 0.10, 0.14)
+    length.out = 2
   )
 )
 
@@ -54,6 +48,7 @@ param_proposals <- list(
 param_proposals <- list(base_params__ = TRUE)
 
 # Cross all possible combinations? Can grow super fast
+# If FALSE, proposal must be of same size (else ragged)
 test_all_combination <- FALSE
 # Finalize param_proposal list
 if (test_all_combination) {
@@ -62,28 +57,13 @@ if (test_all_combination) {
   param_proposals <- transpose_ragged(param_proposals)
 }
 
-# Make some additional changes to param_proposals using the present values
-# must return NULL if the required elements are NULL
-relative_params <- list(
-  rgc.tprob = function(param) {
-    out <- NULL
-    if (!is.null(param$ugc.tprob))
-      out <- logistic(logit(param$ugc.tprob) + log(1.25))
-    out
-  },
-  rct.tprob = function(param) {
-    out <- NULL
-    if (!is.null(param$uct.tprob))
-      out <- logistic(logit(param$uct.tprob) + log(1.25))
-    out
-  }
-)
 
-# Apply the relative_params functions; See utils-slurm_prep_helpers.R
-param_proposals <- make_relative_params(param_proposals, relative_params)
+# # Apply the relative_params functions; See utils-slurm_prep_helpers.R
+# param_proposals <- make_relative_params(param_proposals, relative_params)
 
 # Automatic --------------------------------------------------------------------
 #
+unique_proposals <- rep(seq_along(param_proposals), batch_per_set)
 param_proposals <- rep(param_proposals, batch_per_set)
 sim_nums <- seq_along(param_proposals)
 
@@ -101,6 +81,7 @@ info$ssh_host <- ssh_host
 info$root_dir <- fs::path(paths$jobs_dir, job_name, paths$slurm_wf)
 info$df_keep <- steps_to_keep
 info$param_proposals <- param_proposals
+info$unique_proposals <- unique_proposals
 
 slurm_wf_tmpl_dir("inst/slurm_wf/", info$root_dir, force = T)
 

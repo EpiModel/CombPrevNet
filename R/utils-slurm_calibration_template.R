@@ -68,13 +68,13 @@ relative_params <- list(
   rgc.tprob = function(param) {
     out <- NULL
     if (!is.null(param$ugc.tprob))
-      out <- logistic(logit(param$ugc.tprob) + log(1.25))
+      out <- plogis(qlogis(param$ugc.tprob) + log(1.25))
     out
   },
   rct.tprob = function(param) {
     out <- NULL
     if (!is.null(param$uct.tprob))
-      out <- logistic(logit(param$uct.tprob) + log(1.25))
+      out <- plogis(qlogis(param$uct.tprob) + log(1.25))
     out
   }
 )
