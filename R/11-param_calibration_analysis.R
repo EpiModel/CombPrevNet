@@ -21,7 +21,7 @@ for (job in job_names) {
   out_dir <- fs::path(infos$paths$local_job_dir, "out")
 
   sim_files <- fs::dir_ls(out_dir, regexp = "\\d*.rds")
-  jobs[[job]]$data <- data.table()
+  df_ls <- vector(mode = "list", length = length(sim_files))
   btch <- 0
   for (fle in sim_files) {
     btch <- btch + 1
@@ -31,33 +31,14 @@ for (job in job_names) {
     dff <- dff[, .SD, .SDcols = c("batch", "sim", "time", names(targets))]
     # do some transforms here (or not but risk memory overflow)
     #
-
-    jobs[[job]]$data <- rbind(jobs[[job]]$data, dff)
+    df_ls[[btch]] <- dff
   }
+  jobs[[job]]$data <- rbindlist(df_ls)
 }
 
 df <- jobs[[1]]$data
 
-as.list(df[, lapply(.SD, max, na.rm = T), .SDcols = names(targets)])
+df <- df[time >= max(time) - 52, ]
+df[, lapply(.SD, median), .SDcols = names(targets)]#, by = "batch"]
 
-
-sim_folders <- paste0("out/param_calibration/", job_names)
-sim_files <- fs::dir_ls(sim_folders, recurse = TRUE,
-                        regexp = "df_sim\\d*.rds")
-
-param_proposals <- lapply(sim_folders, function(folder) {
-  readRDS(paste0(folder, "/params.R"))
-
-})
-
-df <- data.table()
-i <- 0
-
-for (f_name in sim_files) {
-  i <- i + 1
-
-  df <- readRDS(f_name)
-  setDT(df)
-  df[, file_name := f_name]
-  dt <- rbind(dt, df)
-}
+# match param_proposal to file at some point (in `infos`)

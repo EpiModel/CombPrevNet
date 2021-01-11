@@ -7,10 +7,13 @@ targets <- c(
   cc.dx.B = 0.804,
   cc.dx.H = 0.799,
   cc.dx.W = 0.88,
-  cc.linked1m.int.B = 0.62,
-  cc.linked1m.int.H = 0.65,
-  cc.linked1m.int.W = 0.76,
+  cc.linked1m.B = 0.62,
+  cc.linked1m.H = 0.65,
+  cc.linked1m.W = 0.76,
   cc.vsupp.B = 0.55,
   cc.vsupp.H = 0.60,
-  cc.vsupp.W = 0.72
+  cc.vsupp.W = 0.72,
+  # STIs
+  ir100.gc = 12.81,
+  ir100.ct = 14.59
 )
