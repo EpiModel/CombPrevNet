@@ -4,7 +4,7 @@ pkgload::load_all("../EpiModelHIV-p")
 ## Environmental Arguments
 pull_env_vars()
 
-nsims <- ncores <- 1
+nsims <- ncores <- 2
 
 lnt <- TRUE
 source("R/utils-params.R")
@@ -13,7 +13,7 @@ source("R/utils-params.R")
 # pkgload::load_all("~/git/EpiModelHIV-p")
 control <- control_msm(
   simno = 1,
-  nsteps = 52 * 60,
+  nsteps = 52 * 4,
   nsims = ncores,
   ncores = ncores,
   save.nwstats = TRUE,
@@ -25,4 +25,4 @@ control <- control_msm(
 sim <- netsim(orig, param, init, control)
 
 df <- as.data.frame(sim)
-df <- df[df$time > 52 * 60 - 10,]
+df <- df[df$time > max(df$time) - 10,]
