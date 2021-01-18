@@ -1,5 +1,5 @@
 library(EpiModelHIV)
-## devtools::load_all("../EpiModelHIV-p/")
+## pkgload::load_all("../EpiModelHIV-p/")
 
 orig <- readRDS("out/est/netest.rds")
 netstats <- readRDS("out/est/netstats.rds")
@@ -18,7 +18,7 @@ param <- param_msm(
   tt.dur.supp = rep(0, 3),
   tx.halt.part.prob = c(0.0065, 0.0053, 0.003),
   tx.halt.full.rr = rep(0.45, 3),
-  tx.halt.dur.rr = rep(0.45, 3),
+  tx.halt.durable.rr = rep(0.45, 3),
   tx.reinit.part.prob = rep(0.00255, 3),
   tx.reinit.full.rr = rep(1, 3),
   tx.reinit.dur.rr = rep(1, 3),

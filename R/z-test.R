@@ -1,5 +1,5 @@
 library("methods")
-devtools::load_all("../EpiModelHIV-p")
+pkgload::load_all("../EpiModelHIV-p")
 
 ## Environmental Arguments
 pull_env_vars()
