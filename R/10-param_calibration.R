@@ -38,10 +38,8 @@ control <- control_msm(
 #
 param_proposals <- list(
   tx.halt.full.rr = list(
+    rep(1, 3),
     rep(0.45, 3),
-    rep(0.40, 3),
-    rep(0.35, 3),
-    rep(0.30, 3),
     rep(0.25, 3)
   )
 )
