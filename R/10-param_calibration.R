@@ -6,7 +6,7 @@ test_simulation <- TRUE
 batch_per_set <- 10      # How many 28 replications to do per parameter
 steps_to_keep <- 52 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "CPN_halt_full"
+job_name <- "CPN_trans_scale"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
@@ -37,10 +37,10 @@ control <- control_msm(
 # Parameters to test -----------------------------------------------------------
 #
 param_proposals <- list(
-  tx.halt.full.rr = list(
-    rep(1, 3),
-    rep(0.45, 3),
-    rep(0.25, 3)
+  trans.scale = seq_cross( # 4^3 values to test; See utils-slurm_prep_helpers.R
+    c(2.65, 0.39, 0.253),
+    c(2.75, 0.42, 0.256),
+    length.out = 4
   )
 )
 
@@ -103,7 +103,7 @@ slurm_wf_Map(
 )
 
 if (test_simulation) {
-  control$nsteps <- 3 * 52
+  control$nsteps <- 1 * 52
   control$nsims <- 1
   control$ncores <- 1
   control$verbose <- TRUE

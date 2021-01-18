@@ -99,3 +99,14 @@ epi_i_sup_dur <- function(r_ind) {
     })
   }
 }
+
+epi_tt_traj <- function(traj) {
+  function(r_ind) {
+    function(dat, at) {
+      needed_attributes <- c("race", "tt.traj")
+      with(get_attr_list(dat, needed_attributes), {
+        sum(race %in% r_ind & tt.traj == traj, na.rm = TRUE)
+      })
+    }
+  }
+}

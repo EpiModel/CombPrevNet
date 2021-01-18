@@ -11,7 +11,10 @@ ls_trackers <- list(
   i_dx        = epi_i_dx,
   i_tx        = epi_i_tx,
   i_sup       = epi_i_sup,
-  i_sup_dur   = epi_i_sup_dur
+  i_sup_dur   = epi_i_sup_dur,
+  traj_1      = epi_tt_traj(1),
+  traj_2      = epi_tt_traj(2),
+  traj_3      = epi_tt_traj(3)
 )
 
 epi_trackers <- epi_tracker_by_race(ls_trackers, full = TRUE)
@@ -31,10 +34,10 @@ param <- param_msm(
   tt.part.supp = 1 - full_tx_eff,
   tt.full.supp = full_tx_eff,
   tt.dur.supp = rep(0, 3),
-  tx.halt.part.prob = c(0.0065, 0.0053, 0.003),
+  tx.halt.partial.prob = c(0.0065, 0.0053, 0.003),
   tx.halt.full.rr = rep(0.45, 3),
   tx.halt.durable.rr = rep(0.45, 3),
-  tx.reinit.part.prob = rep(0.00255, 3),
+  tx.reinit.partial.prob = rep(0.00255, 3),
   tx.reinit.full.rr = rep(1, 3),
   tx.reinit.dur.rr = rep(1, 3),
   max.time.off.tx.full.int = 52 * 15,
