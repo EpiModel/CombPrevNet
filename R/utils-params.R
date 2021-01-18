@@ -1,6 +1,21 @@
 library(EpiModelHIV)
 ## pkgload::load_all("../EpiModelHIV-p/")
 
+# Epi Trackers
+source("R/utils-epi_trackers.R")
+ls_trackers <- list(
+  s           = epi_s,
+  s_prep_elig = epi_s_prep_elig,
+  s_prep      = epi_s_prep,
+  i           = epi_i,
+  i_dx        = epi_i_dx,
+  i_tx        = epi_i_tx,
+  i_sup       = epi_i_sup,
+  i_sup_dur   = epi_i_sup_dur
+)
+
+epi_trackers <- epi_tracker_by_race(ls_trackers, full = TRUE)
+
 orig <- readRDS("out/est/netest.rds")
 netstats <- readRDS("out/est/netstats.rds")
 epistats <- readRDS("out/est/epistats.rds")
@@ -92,7 +107,9 @@ param <- param_msm(
   part.ident.main.prob = 1,
   part.ident.casl.prob = 1,
   part.ident.ooff.prob = 1,
-  part.hiv.test.rate = c(1, 1, 1)
+  part.hiv.test.rate = c(1, 1, 1),
+
+  epi_trackers = epi_trackers
 )
 
 # Ensure that we do not truncate more than what is needed

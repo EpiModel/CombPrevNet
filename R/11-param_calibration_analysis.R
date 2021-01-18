@@ -39,8 +39,11 @@ for (job in job_names) {
 }
 
 df <- jobs[[1]]$data
+proposals <- jobs[[1]]$infos$param_proposals[1:max(df$param_batch)]
 
 df <- df[time >= max(time) - 52, ]
-df[, lapply(.SD, median), .SDcols = names(targets)]#, by = "batch"]
+df[, lapply(.SD, median), .SDcols = names(targets), by = "param_batch"]
+
+#as.list(df[, lapply(.SD, median), .SDcols = names(targets)])
 
 # match param_proposal to file at some point (in `infos`)

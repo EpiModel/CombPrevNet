@@ -6,7 +6,7 @@ test_simulation <- TRUE
 batch_per_set <- 10      # How many 28 replications to do per parameter
 steps_to_keep <- 52 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "CPN_dry_run"
+job_name <- "CPN_halt_full"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
@@ -37,15 +37,17 @@ control <- control_msm(
 # Parameters to test -----------------------------------------------------------
 #
 param_proposals <- list(
-  trans.scale = seq_cross( # 4^3 values to test; See utils-slurm_prep_helpers.R
-    c(1.5, 0.5, 0.5),
-    c(2.5, 1.5, 1.5),
-    length.out = 2
+  tx.halt.full.rr = list(
+    rep(0.45, 3),
+    rep(0.40, 3),
+    rep(0.35, 3),
+    rep(0.30, 3),
+    rep(0.25, 3)
   )
 )
 
 # Use this line to run only the default values
-param_proposals <- list(base_params__ = TRUE)
+# param_proposals <- list(base_params__ = TRUE)
 
 # Cross all possible combinations? Can grow super fast
 # If FALSE, proposal must be of same size (else ragged)
