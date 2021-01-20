@@ -28,6 +28,11 @@ full_tx_eff <- rep(1, 3)
 param <- param_msm(
   netstats = netstats,
   epistats = epistats,
+  # Update on HIV natural history
+  vl.acute.rise.int = 3,
+  vl.acute.fall = 3,
+
+
   hiv.test.rate = c(0.00385, 0.00385, 0.0069),
   hiv.test.late.prob = rep(0, 3),
   tx.init.prob = c(0.1775, 0.19, 0.2521),
@@ -44,7 +49,7 @@ param <- param_msm(
   max.time.on.tx.part.int = 52 * 10,
   max.time.off.tx.part.int = 52 * 10,
   aids.mr = 1 / 250,
-  trans.scale =  c(2.7, 0.35, 0.243), #c(2.21, 0.405, 0.255),
+  trans.scale =  c(2.75, 0.4, 0.255), #c(2.21, 0.405, 0.255),
   acts.scale = 1.00,
   acts.scale.main = 1.00,
   acts.scale.casl = 1.00,

@@ -49,10 +49,12 @@ df %>%
   group_by(param_batch) %>%
   summarise(across(all_of(names(targets)), median))
 
-
 df %>%
   group_by(param_batch) %>%
+  filter(
+    ir100.gc != 0,
+    ir100.ct != 0
+  ) %>%
   summarise(across(all_of(names(targets)), median)) %>%
-  select(starts_with("i.prev")) %>%
-  arrange(i.prev.dx.B) %>%
+  select(c(param_batch, ir100.gc, ir100.ct)) %>%
   print(n = 200)

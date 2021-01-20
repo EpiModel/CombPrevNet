@@ -22,10 +22,10 @@ cmd_usage() {
 }
 
 case "$1" in
-    get) shift;                 cmd_get "$@" ;;
-    send) shift;                cmd_send "$@" ;;
-    list) shift;                cmd_list "$@" ;;
-    *)                          cmd_usage ;;
+    get)  shift; cmd_get "$@" ;;
+    send) shift; cmd_send "$@" ;;
+    list) shift; cmd_list "$@" ;;
+    *)           cmd_usage ;;
 esac
 
 exit 0
