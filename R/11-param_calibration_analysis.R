@@ -57,4 +57,5 @@ df %>%
   ) %>%
   summarise(across(all_of(names(targets)), median)) %>%
   select(c(param_batch, ir100.gc, ir100.ct)) %>%
+  filter(between(ir100.gc, 10, 20), between(ir100.ct, 10, 20)) %>%
   print(n = 200)

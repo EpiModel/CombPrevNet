@@ -1,28 +1,31 @@
 library("methods")
-pkgload::load_all("../EpiModelHIV-p")
+# to use devl EpiModelHIV change in "R/utils-params.R"x
 
-## Environmental Arguments
-pull_env_vars()
-
-nsims <- ncores <- 2
+nsims <- ncores <- 1
 
 lnt <- TRUE
 source("R/utils-params.R")
-## Parameters
+pull_env_vars()
 
-# pkgload::load_all("~/git/EpiModelHIV-p")
 control <- control_msm(
   simno = 1,
   nsteps = 52 * 4,
   nsims = ncores,
   ncores = ncores,
   save.nwstats = TRUE,
-  # raw.output = TRUE,
+  raw.output = TRUE,
   verbose = TRUE
 )
+
+param$part.ident.start <- 5
 
 ## Simulation
 sim <- netsim(orig, param, init, control)
 
-df <- as.data.frame(sim)
-df <- df[df$time > max(df$time) - 10,]
+# Tests
+if (control$raw.output) {
+  dat <- sim[[1]]
+} else {
+  df <- as.data.frame(sim)
+  df <- df[df$time > max(df$time) - 10, ]
+}

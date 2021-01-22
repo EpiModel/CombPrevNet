@@ -38,8 +38,7 @@ control <- control_msm(
 # Parameters to test -----------------------------------------------------------
 #
 param_proposals <- list(
-  ugc.tprob = list(0.16, 0.17, 0.18, 0.18, 0.20),
-  uct.tprob = list(0.16, 0.17, 0.18, 0.18, 0.20)
+  ugc.tprob = as.list(seq(0.16, 0.2, length.out = 10))
 )
 
 # Use this line to run only the default values
@@ -55,18 +54,9 @@ if (test_all_combination) {
 
 # Relative parameters
 relative_params <- list(
-  rgc.tprob = function(param) {
-    out <- NULL
-    if (!is.null(param$ugc.tprob))
-      out <- plogis(qlogis(param$ugc.tprob) + log(1.25))
-    out
-  },
-  rct.tprob = function(param) {
-    out <- NULL
-    if (!is.null(param$uct.tprob))
-      out <- plogis(qlogis(param$uct.tprob) + log(1.25))
-    out
-  }
+  rgc.tprob = function(param)  plogis(qlogis(param$ugc.tprob) + log(1.25)),
+  uct.tprob = function(param)  param$ugc.tprob,
+  rct.tprob = function(param)  plogis(qlogis(param$ugc.tprob) + log(1.25))
 )
 
 # Apply the relative_params functions; See utils-slurm_prep_helpers.R

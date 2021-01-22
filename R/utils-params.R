@@ -1,5 +1,5 @@
 library(EpiModelHIV)
-## pkgload::load_all("../EpiModelHIV-p/")
+# pkgload::load_all("../EpiModelHIV-p/")
 
 # Epi Trackers
 source("R/utils-epi_trackers.R")
@@ -109,6 +109,8 @@ param <- param_msm(
   # Part ident parameters
   part.ident.start = Inf,
   part.index.window = 0,
+  part.index.degree = 1,
+  part.index.prob = 1,
   part.ident.main.window = 12,
   part.ident.casl.window = 12,
   part.ident.ooff.window = 12,
@@ -127,7 +129,7 @@ param <- update_params(
       param$part.ident.main.window,
       param$part.ident.casl.window,
       param$part.ident.ooff.window
-    )
+    ) + 1
   )
 )
 
