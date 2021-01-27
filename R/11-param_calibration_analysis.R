@@ -22,7 +22,7 @@ for (job in job_names) {
   sim_files <- fs::dir_ls(out_dir, regexp = "\\d*.rds")
   df_ls <- vector(mode = "list", length = length(sim_files))
   for (fle in sim_files) {
-    btch <- as.numeric(stringr::str_extract(fle, "\\d+"))
+    btch <- as.numeric(stringr::str_extract(fs::path_file(fle), "\\d+"))
     sim <- readRDS(fle)
     dff <- as.data.table(sim)
     dff[, `:=`(batch = btch, param_batch = infos$unique_proposals[btch])]
@@ -47,15 +47,11 @@ df <- filter(df, time >= max(time) - 52)
 
 df %>%
   group_by(param_batch) %>%
-  summarise(across(all_of(names(targets)), median))
+  summarise(across(all_of(names(targets)), median)) %>%
+  print(n = 200)
 
 df %>%
   group_by(param_batch) %>%
-  filter(
-    ir100.gc != 0,
-    ir100.ct != 0
-  ) %>%
   summarise(across(all_of(names(targets)), median)) %>%
-  select(c(param_batch, ir100.gc, ir100.ct)) %>%
-  filter(between(ir100.gc, 10, 20), between(ir100.ct, 10, 20)) %>%
+  select(c(param_batch, i.prev.dx.B, i.prev.dx.H, i.prev.dx.W)) %>%
   print(n = 200)

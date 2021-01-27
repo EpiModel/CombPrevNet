@@ -74,10 +74,10 @@ param <- param_msm(
   ## If not mentionned -> default from prep disparities
   ## for H : mean(c(B, W))
   #ok
-  rgc.tprob      = 0.2267303, #logistic(logit(0.19) + log(1.25)) #0.357,  # gaps appendix 9.4
-  ugc.tprob      = 0.19, # 0.248,  # gaps appendix 9.4
-  rct.tprob      = 0.2038369, #logistic(logit(0.17) + log(1.25)) #0.3216, # gaps appendix 9.3
-  uct.tprob      = 0.17, #0.213,  # gaps appendix 9.3
+  rgc.tprob      = 0.2305246, # plogis(qlogis(0.19) + log(1.25)) #0.357,  # gaps appendix 9.4
+  ugc.tprob      = 0.1933333, # 0.248,  # gaps appendix 9.4
+  rct.tprob      = 0.208432, # plogis(qlogis(0.174) + log(1.25)) #0.3216, # gaps appendix 9.3
+  uct.tprob      = 0.174, #0.213,  # gaps appendix 9.3
   rgc.sympt.prob = 0.1, #0.077, # gaps appendix 10.3
   ugc.sympt.prob = 0.9333333, #0.824, # gaps appendix 10.3
   rct.sympt.prob = 0.1, #0.1035,# gaps appendix 10.2

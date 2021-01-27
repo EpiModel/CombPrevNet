@@ -1,13 +1,13 @@
 source("R/utils-slurm_prep_helpers.R") # requires `purrr`
 source("R/utils-slurm_wf.R")
 test_simulation <- TRUE
-test_all_combination <- TRUE # Can grow super fast
+test_all_combination <- FALSE # Can grow super fast
 
 # Set slurm parameters ---------------------------------------------------------
 batch_per_set <- 10      # How many 28 replications to do per parameter
 steps_to_keep <- 52 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "CPN_sti_trans_new_vl"
+job_name <- "CPN_transcale"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
@@ -36,31 +36,14 @@ control <- control_msm(
 )
 
 # Parameters to test -----------------------------------------------------------
-#
+
 param_proposals <- list(
-  ugc.tprob = as.list(seq(0.16, 0.2, length.out = 10))
+  trans.scale = seq_cross( # 4^3 values to test; See utils-slurm_prep_helpers.R
+    c(2.75, 0.4, 0.255),
+    c(2.95, 0.5, 0.3),
+    length.out = 4
+  )
 )
-
-# Use this line to run only the default values
-# param_proposals <- list(base_params__ = TRUE)
-
-# If `!test_all_combination`, proposals must be of same size (else, ragged ok)
-# Finalize param_proposal list
-if (test_all_combination) {
-  param_proposals <- purrr::cross(param_proposals)
-} else {
-  param_proposals <- transpose_ragged(param_proposals)
-}
-
-# Relative parameters
-relative_params <- list(
-  rgc.tprob = function(param)  plogis(qlogis(param$ugc.tprob) + log(1.25)),
-  uct.tprob = function(param)  param$ugc.tprob,
-  rct.tprob = function(param)  plogis(qlogis(param$ugc.tprob) + log(1.25))
-)
-
-# Apply the relative_params functions; See utils-slurm_prep_helpers.R
-param_proposals <- make_relative_params(param_proposals, relative_params)
 
 
 # Automatic --------------------------------------------------------------------
