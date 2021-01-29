@@ -1,6 +1,7 @@
 source("R/utils-slurm_prep_helpers.R") # requires `purrr`
 source("R/utils-slurm_wf.R")
 test_simulation <- TRUE
+test_all_combination <- FALSE # Can grow super fast
 
 # Set slurm parameters ---------------------------------------------------------
 batch_per_set <- 10      # How many 28 replications to do per parameter
@@ -53,15 +54,6 @@ param_proposals <- list(
 # Use this line to run only the default values
 param_proposals <- list(base_params__ = TRUE)
 
-# Cross all possible combinations? Can grow super fast
-test_all_combination <- FALSE
-# Finalize param_proposal list
-if (test_all_combination) {
-  param_proposals <- purrr::cross(param_proposals)
-} else {
-  param_proposals <- transpose_ragged(param_proposals)
-}
-
 # Make some additional changes to param_proposals using the present values
 # must return NULL if the required elements are NULL
 relative_params <- list(
@@ -79,11 +71,19 @@ relative_params <- list(
   }
 )
 
-# Apply the relative_params functions; See utils-slurm_prep_helpers.R
-param_proposals <- make_relative_params(param_proposals, relative_params)
-
 # Automatic --------------------------------------------------------------------
-#
+
+# Finalize param_proposal list
+if (test_all_combination) {
+  param_proposals <- purrr::cross(param_proposals)
+} else {
+  param_proposals <- transpose_ragged(param_proposals)
+}
+
+# Apply the relative_params functions; See utils-slurm_prep_helpers.R
+if (exists("relative_params"))
+  param_proposals <- make_relative_params(param_proposals, relative_params)
+
 param_proposals <- rep(param_proposals, batch_per_set)
 sim_nums <- seq_along(param_proposals)
 

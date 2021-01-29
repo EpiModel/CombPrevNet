@@ -4,10 +4,10 @@ test_simulation <- TRUE
 test_all_combination <- FALSE # Can grow super fast
 
 # Set slurm parameters ---------------------------------------------------------
-batch_per_set <- 10      # How many 28 replications to do per parameter
+batch_per_set <- 100      # How many 28 replications to do per parameter
 steps_to_keep <- 52 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "CPN_transcale"
+job_name <- "CPN_prep_calib"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
@@ -27,7 +27,7 @@ lnt <- TRUE # if FALSE: set `require.lnt` to FALSE and adjust ` prep.start.prob`
 source("R/utils-params.R", local = TRUE)
 
 control <- control_msm(
-  nsteps = 60 * 52,
+  nsteps = 65 * 52,
   nsims = 28,
   ncores = 28,
   save.nwstats = FALSE,
@@ -45,9 +45,23 @@ param_proposals <- list(
   )
 )
 
+# Use this line to run only the default values
+param_proposals <- list(base_params__ = TRUE)
+
+# Finalize param_proposal list
+if (test_all_combination) {
+  param_proposals <- purrr::cross(param_proposals)
+} else {
+  param_proposals <- transpose_ragged(param_proposals)
+}
+
+relative_params <- list()
 
 # Automatic --------------------------------------------------------------------
-#
+
+# Apply the relative_params functions; See utils-slurm_prep_helpers.R
+param_proposals <- make_relative_params(param_proposals, relative_params)
+
 unique_proposals <- rep(seq_along(param_proposals), batch_per_set)
 param_proposals <- rep(param_proposals, batch_per_set)
 sim_nums <- seq_along(param_proposals)

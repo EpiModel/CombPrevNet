@@ -49,7 +49,7 @@ param <- param_msm(
   max.time.on.tx.part.int = 52 * 10,
   max.time.off.tx.part.int = 52 * 10,
   aids.mr = 1 / 250,
-  trans.scale =  c(2.75, 0.4, 0.255), #c(2.21, 0.405, 0.255),
+  trans.scale =  c(2.95, 0.43333333, 0.3), #c(2.75, 0.4, 0.), #c(2.21, 0.405, 0.255),
   acts.scale = 1.00,
   acts.scale.main = 1.00,
   acts.scale.casl = 1.00,

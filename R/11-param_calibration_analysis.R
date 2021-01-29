@@ -48,10 +48,16 @@ df <- filter(df, time >= max(time) - 52)
 df %>%
   group_by(param_batch) %>%
   summarise(across(all_of(names(targets)), median)) %>%
+  select(ir100.gc, ir100.ct) %>%
   print(n = 200)
 
 df %>%
   group_by(param_batch) %>%
   summarise(across(all_of(names(targets)), median)) %>%
   select(c(param_batch, i.prev.dx.B, i.prev.dx.H, i.prev.dx.W)) %>%
+  filter(
+    between(i.prev.dx.B, 0.325, 0.335),
+    between(i.prev.dx.H, 0.123, 0.13),
+    between(i.prev.dx.W, 0.08, 0.09)
+  ) %>%
   print(n = 200)
