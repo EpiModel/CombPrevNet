@@ -60,8 +60,8 @@ param <- param_msm(
   riskh.start = 52 * 59,
   prep.adhr.dist = c(0.089, 0.127, 0.784),
   prep.adhr.hr = c(0.69, 0.19, 0.01),
-  prep.start.prob =  0.71, # 0.00896,
-  prep.discont.rate = 0.02138792, # 1 - (2^(-1/(224.4237/7)))
+  prep.start.prob =  rep(0.71, 3), # 0.00896,
+  prep.discont.rate = rep(0.02138792, 3), # 1 - (2^(-1/(224.4237/7)))
   ## prep.tst.int = 90/7,         # do I need that?
   ## prep.risk.int = 182/7,       # do I need that?
   ## prep.sti.screen.int = 182/7,
@@ -118,6 +118,7 @@ param <- param_msm(
   part.ident.casl.prob = 1,
   part.ident.ooff.prob = 1,
   part.hiv.test.rate = c(1, 1, 1),
+  part.prep.start.prob = c(0.5, 0.5, 0.5),
 
   epi_trackers = epi_trackers
 )

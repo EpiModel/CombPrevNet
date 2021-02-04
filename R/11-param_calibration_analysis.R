@@ -51,13 +51,15 @@ df %>%
   select(ir100.gc, ir100.ct) %>%
   print(n = 200)
 
+
 df %>%
+  select(c(param_batch, starts_with("s_prep")))  %>%
   group_by(param_batch) %>%
-  summarise(across(all_of(names(targets)), median)) %>%
-  select(c(param_batch, i.prev.dx.B, i.prev.dx.H, i.prev.dx.W)) %>%
-  filter(
-    between(i.prev.dx.B, 0.325, 0.335),
-    between(i.prev.dx.H, 0.123, 0.13),
-    between(i.prev.dx.W, 0.08, 0.09)
-  ) %>%
+  summarise(across(starts_with("s_prep"), median)) %>%
+  pivot_longer(cols = -param_batch) %>%
+  separate(name, c("name", "pop"), sep = "___") %>%
+  pivot_wider(names_from = name, values_from = value) %>%
+  mutate(prep = s_prep / s_prep_elig)
+
   print(n = 200)
+
