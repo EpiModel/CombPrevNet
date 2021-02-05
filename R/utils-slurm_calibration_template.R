@@ -122,7 +122,7 @@ slurm_wf_Map(
 )
 
 if (test_simulation) {
-  control$nsteps <- 3 * 52
+  control$nsteps <- 1 * 52
   control$nsims <- 1
   control$ncores <- 1
   control$verbose <- TRUE

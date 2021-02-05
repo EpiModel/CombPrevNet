@@ -1,24 +1,32 @@
 library(EpiModelHIV)
 # pkgload::load_all("../EpiModelHIV-p/")
 
-# Epi Trackers
-source("R/utils-epi_trackers.R")
-ls_trackers <- list(
-  s           = epi_s,
-  s_prep_elig = epi_s_prep_elig,
-  s_prep      = epi_s_prep,
-  i           = epi_i,
-  i_dx        = epi_i_dx,
-  i_tx        = epi_i_tx,
-  i_sup       = epi_i_sup,
-  i_sup_dur   = epi_i_sup_dur,
-  traj_1      = epi_tt_traj(1),
-  traj_2      = epi_tt_traj(2),
-  traj_3      = epi_tt_traj(3)
-)
+# # Epi Trackers
+# source("R/utils-epi_trackers.R")
+# ls_trackers <- list(
+#   s           = epi_s,
+#   s_prep_elig = epi_s_prep_elig,
+#   s_prep      = epi_s_prep,
+#   i           = epi_i,
+#   i_dx        = epi_i_dx,
+#   i_tx        = epi_i_tx,
+#   i_sup       = epi_i_sup,
+#   i_sup_dur   = epi_i_sup_dur,
+#   traj_1      = epi_tt_traj(1),
+#   traj_2      = epi_tt_traj(2),
+#   traj_3      = epi_tt_traj(3)
+# )
+# epi_trackers <- epi_tracker_by_race(ls_trackers, full = TRUE)
+# param$epi_trackers <- c(
+#   param$epi_trackers,
+#   list(
+#     "part_1" = epi_part_count(1),
+#     "part_2" = epi_part_count(2),
+#     "part_3" = epi_part_count(3))
+# )
+epi_trackers <- list()
 
-epi_trackers <- epi_tracker_by_race(ls_trackers, full = TRUE)
-
+# Params and inits
 orig <- readRDS("out/est/netest.rds")
 netstats <- readRDS("out/est/netstats.rds")
 epistats <- readRDS("out/est/epistats.rds")
@@ -31,7 +39,6 @@ param <- param_msm(
   # Update on HIV natural history
   vl.acute.rise.int = 3,
   vl.acute.fall = 3,
-
 
   hiv.test.rate = c(0.00385, 0.00385, 0.0069),
   hiv.test.late.prob = rep(0, 3),
@@ -107,16 +114,19 @@ param <- param_msm(
   netresim.disl.rr = rep(1, 2),
 
   # Part ident parameters
-  part.ident.start = Inf,
+  part.ident.start = 65 * 52 + 1, # start ident after prep burnin
   part.index.window = 0,
   part.index.degree = 1,
   part.index.prob = 1,
   part.ident.main.window = 12,
   part.ident.casl.window = 12,
   part.ident.ooff.window = 12,
-  part.ident.main.prob = 1,
-  part.ident.casl.prob = 1,
-  part.ident.ooff.prob = 1,
+  # 0.432: number of partners reported in ATL
+  # 2.1: number of partnes per node in the model see `epi_part_count`
+  # c(1.04, 1.48, 3.91) number of partners
+  part.ident.main.prob = 0.432 / 2.1,
+  part.ident.casl.prob = 0.432 / 2.1,
+  part.ident.ooff.prob = 0.432 / 2.1 * 0.5,
   part.hiv.test.rate = c(1, 1, 1),
   part.prep.start.prob = c(0.5, 0.5, 0.5),
 
@@ -150,3 +160,4 @@ init <- init_msm(
   prev.rgc = 0.05,
   prev.uct = 0.05
 )
+

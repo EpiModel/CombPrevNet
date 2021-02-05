@@ -110,3 +110,11 @@ epi_tt_traj <- function(traj) {
     }
   }
 }
+
+epi_part_count <- function(rel_type) {
+  function(dat, at) {
+    plist <- dat$temp$plist
+    plist <- plist[plist[,3] == rel_type, ]
+    mean(table(plist[, c(1,2)]))
+  }
+}

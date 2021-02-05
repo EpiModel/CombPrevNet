@@ -1,7 +1,7 @@
 library("methods")
 # to use devl EpiModelHIV change in "R/utils-params.R"x
 
-nsims <- ncores <- 1
+nsims <- ncores <- 3
 
 lnt <- TRUE
 source("R/utils-params.R")
@@ -13,11 +13,11 @@ param$riskh.start <- param$prep.start - 52
 # param$part.prep.start.prob <- c(0, 0, 0.5)
 param$prep.discont.rate <- c(0, 0, 0.99)
 
-param$part.ident.start <- Inf
+param$part.ident.start <- 5
 
 control <- control_msm(
   simno = 1,
-  nsteps = 52 * 4,
+  nsteps = 52 * 10,
   nsims = ncores,
   ncores = ncores,
   save.nwstats = TRUE,
@@ -41,4 +41,13 @@ if (control$raw.output) {
 
 library(dplyr)
 
-df %>% select(starts_with("s_prep")) %>% print()
+df <- as.data.frame(sim)
+
+df %>%
+  select(starts_with("part_")) %>%
+  summarize(across(everything(), ~ mean(.x, na.rm = T))) %>%
+  as.numeric() %>% weighted.mean(, c(1, 1, 0.5))
+
+part.ident.main.prob = 0.432 / 2.1
+part.ident.casl = 0.432 / 2.1
+part.ident. = 0.432 / 2.1

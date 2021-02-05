@@ -19,4 +19,5 @@ targets <- c(
 )
 
 prep_targets <- c(
+  prep_prop = 0.15
 )
