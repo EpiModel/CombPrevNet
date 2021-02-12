@@ -63,8 +63,8 @@ param <- param_msm(
   acts.aids.vl = 5.75,
   circ.prob = c(0.874, 0.874, 0.918),
   a.rate = 0.00052,
-  prep.start = (52 * 60) + 1,
-  riskh.start = 52 * 59,
+  prep.start = (52 * 65) + 1,
+  riskh.start = 52 * 64,
   prep.adhr.dist = c(0.089, 0.127, 0.784),
   prep.adhr.hr = c(0.69, 0.19, 0.01),
   prep.start.prob =  rep(0.71, 3), # 0.00896,
@@ -96,8 +96,8 @@ param <- param_msm(
   uct.ntx.int    = 32, #44.24538, # gaps appendix 11.1
   ct.tx.int      = 2, # gaps appendix 11.1 - mentionned, not explicit
 
-  gc.sympt.prob.tx =  rep(0.9, 3),  #c(0.86, 0.91, 0.96),
-  ct.sympt.prob.tx =  rep(0.9, 3),  #c(0.72, 0.785, 0.85),
+  gc.sympt.prob.tx =  rep(0.9, 3), #c(0.86, 0.91, 0.96),
+  ct.sympt.prob.tx =  rep(0.9, 3), #c(0.72, 0.785, 0.85),
   gc.asympt.prob.tx = rep(0.1, 3), #c(0.10, 0.145, 0.19),
   ct.asympt.prob.tx = rep(0.1, 3), #c(0.05, 0.525, 0.10),
   # gaps appendix 9.3 - 9.4 (not explained this way but similar result)
@@ -114,13 +114,13 @@ param <- param_msm(
   netresim.disl.rr = rep(1, 2),
 
   # Part ident parameters
-  part.ident.start = 65 * 52 + 1, # start ident after prep burnin
+  part.ident.start = 70 * 52 + 1, # start ident after prep burnin
   part.index.window = 0,
   part.index.degree = 1,
   part.index.prob = 1,
-  part.ident.main.window = 12,
-  part.ident.casl.window = 12,
-  part.ident.ooff.window = 12,
+  part.ident.main.window = 52,
+  part.ident.casl.window = 52,
+  part.ident.ooff.window = 52,
   # 0.432: number of partners reported in ATL
   # 2.1: number of partnes per node in the model see `epi_part_count`
   # c(1.04, 1.48, 3.91) number of partners

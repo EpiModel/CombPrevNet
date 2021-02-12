@@ -48,6 +48,6 @@ df %>%
   summarize(across(everything(), ~ mean(.x, na.rm = T))) %>%
   as.numeric() %>% weighted.mean(, c(1, 1, 0.5))
 
-part.ident.main.prob = 0.432 / 2.1
-part.ident.casl = 0.432 / 2.1
-part.ident. = 0.432 / 2.1
+part.ident.main.prob <- 0.432 / 2.1
+part.ident.casl <- 0.432 / 2.1
+part.ident.oof <- 0.432 / 2.1

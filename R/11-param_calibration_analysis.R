@@ -16,7 +16,6 @@ for (job in job_names) {
   jobs[[job]] <- list()
   infos <- readRDS(fs::path("out/remote_jobs/", job, "job_info.rds"))
   jobs[[job]]$infos <- infos
-
   out_dir <- fs::path(infos$paths$local_job_dir, "out")
 
   sim_files <- fs::dir_ls(out_dir, regexp = "\\d*.rds")
