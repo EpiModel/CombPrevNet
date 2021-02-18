@@ -1,30 +1,31 @@
 library(EpiModelHIV)
 # pkgload::load_all("../EpiModelHIV-p/")
 
-# # Epi Trackers
-# source("R/utils-epi_trackers.R")
-# ls_trackers <- list(
-#   s           = epi_s,
-#   s_prep_elig = epi_s_prep_elig,
-#   s_prep      = epi_s_prep,
-#   i           = epi_i,
-#   i_dx        = epi_i_dx,
-#   i_tx        = epi_i_tx,
-#   i_sup       = epi_i_sup,
-#   i_sup_dur   = epi_i_sup_dur,
-#   traj_1      = epi_tt_traj(1),
-#   traj_2      = epi_tt_traj(2),
-#   traj_3      = epi_tt_traj(3)
-# )
-# epi_trackers <- epi_tracker_by_race(ls_trackers, full = TRUE)
-# param$epi_trackers <- c(
-#   param$epi_trackers,
-#   list(
-#     "part_1" = epi_part_count(1),
-#     "part_2" = epi_part_count(2),
-#     "part_3" = epi_part_count(3))
-# )
-epi_trackers <- list()
+# Epi Trackers
+source("R/utils-epi_trackers.R")
+ls_trackers <- list(
+  s           = epi_s,
+  s_prep_elig = epi_s_prep_elig,
+  s_prep      = epi_s_prep,
+  i           = epi_i,
+  i_dx        = epi_i_dx,
+  i_tx        = epi_i_tx,
+  i_sup       = epi_i_sup,
+  i_sup_dur   = epi_i_sup_dur,
+  traj_1      = epi_tt_traj(1),
+  traj_2      = epi_tt_traj(2),
+  traj_3      = epi_tt_traj(3)
+)
+epi_trackers <- epi_tracker_by_race(ls_trackers, full = TRUE)
+
+epi_trackers <- c(
+  epi_trackers,
+  list(
+    "part_1" = epi_part_count(1),
+    "part_2" = epi_part_count(2),
+    "part_3" = epi_part_count(3))
+)
+# epi_trackers <- list()
 
 # Params and inits
 orig <- readRDS("out/est/netest.rds")
@@ -32,6 +33,7 @@ netstats <- readRDS("out/est/netstats.rds")
 epistats <- readRDS("out/est/epistats.rds")
 
 full_tx_eff <- rep(1, 3)
+prep_start_time <- 52 * 65 + 1
 
 param <- param_msm(
   netstats = netstats,
@@ -63,8 +65,8 @@ param <- param_msm(
   acts.aids.vl = 5.75,
   circ.prob = c(0.874, 0.874, 0.918),
   a.rate = 0.00052,
-  prep.start = (52 * 65) + 1,
-  riskh.start = 52 * 64,
+  prep.start = prep_start_time,
+  riskh.start = prep_start_time - 52,
   prep.adhr.dist = c(0.089, 0.127, 0.784),
   prep.adhr.hr = c(0.69, 0.19, 0.01),
   prep.start.prob =  rep(0.71, 3), # 0.00896,
@@ -114,19 +116,17 @@ param <- param_msm(
   netresim.disl.rr = rep(1, 2),
 
   # Part ident parameters
-  part.ident.start = 70 * 52 + 1, # start ident after prep burnin
+  part.ident.start = prep_start_time,
   part.index.window = 0,
   part.index.degree = 1,
   part.index.prob = 1,
   part.ident.main.window = 52,
   part.ident.casl.window = 52,
   part.ident.ooff.window = 52,
-  # 0.432: number of partners reported in ATL
-  # 2.1: number of partnes per node in the model see `epi_part_count`
-  # c(1.04, 1.48, 3.91) number of partners
-  part.ident.main.prob = 0.432 / 2.1,
-  part.ident.casl.prob = 0.432 / 2.1,
-  part.ident.ooff.prob = 0.432 / 2.1 * 0.5,
+  # see "R/z-indent_prob_calib.R"
+  part.ident.main.prob = 0.13090909,
+  part.ident.casl.prob = 0.09000000,
+  part.ident.ooff.prob = 0.01484536,
   part.hiv.test.rate = c(1, 1, 1),
   part.prep.start.prob = c(0.5, 0.5, 0.5),
 

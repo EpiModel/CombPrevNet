@@ -114,7 +114,17 @@ epi_tt_traj <- function(traj) {
 epi_part_count <- function(rel_type) {
   function(dat, at) {
     plist <- dat$temp$plist
-    plist <- plist[plist[,3] == rel_type, ]
-    mean(table(plist[, c(1,2)]))
+    plist <- plist[plist[, 3] == rel_type, ]
+    mean(table(plist[, c(1, 2)]))
   }
 }
+
+epi_part_screened <- function(dat, at) {
+  needed_attributes <- c("part.scrnd", "part.scrnd.elig") #last does not exist yet
+  with(get_attr_list(dat, needed_attributes), {
+    sum(!is.null(part.scrnd), na.rm = TRUE) /
+    sum(!is.null(part.scrnd.elig), na.rm = TRUE)
+  })
+}
+
+
