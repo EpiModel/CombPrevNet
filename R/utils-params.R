@@ -119,7 +119,7 @@ param <- param_msm(
   part.ident.start = prep_start_time,
   part.index.window = 0,
   part.index.degree = 1,
-  part.index.prob = 1,
+  part.index.prob = 0.666,
   part.ident.main.window = 52,
   part.ident.casl.window = 52,
   part.ident.ooff.window = 52,
@@ -127,8 +127,11 @@ param <- param_msm(
   part.ident.main.prob = 0.13090909,
   part.ident.casl.prob = 0.09000000,
   part.ident.ooff.prob = 0.01484536,
-  part.hiv.test.rate = c(1, 1, 1),
-  part.prep.start.prob = c(0.5, 0.5, 0.5),
+  part.hiv.test.rate = rep(0.394, 3),
+  part.prep.start.prob = rep(0, 3),
+  part.tx.init.prob = rep(0.387, 3),
+  part.tx.halt.prob = rep(0, 3),
+  part.tx.reinit.prob = rep(0, 3),
 
   epi_trackers = epi_trackers
 )
@@ -160,4 +163,3 @@ init <- init_msm(
   prev.rgc = 0.05,
   prev.uct = 0.05
 )
-

@@ -1,9 +1,8 @@
 library(tidyverse)
-library(future.apply)
-plan(multiprocess, workers = 4)
 
 # prepare targets
 source("R/utils-targets.R")
+target_names <- names(targets)
 
 for (l in c("H", "B", "W")) {
   names(targets) <- str_replace(
@@ -18,7 +17,8 @@ tgts <- map(tgts, as.character)
 
 df_targets <- tibble(
   target = tgts[[1]],
-  pop = tgts[[2]]
+  pop = tgts[[2]],
+  value = targets
 )
 
 df_targets <- df_targets %>%
@@ -31,29 +31,63 @@ races <- c(
   "a" = "All"
 )
 
-get_targets <- function(fle, tgt) {
+df_targets$pop <- races[df_targets$pop]
 
-  df_tmp <- as_tibble(readRDS(fle)) %>%
+get_targets <- function(df_part, tgt, target_names) {
+  df_tmp <- df_part %>%
+    select(c(time, all_of(target_names))) %>%
     filter(time %% 4 == T) %>%
-    select(c(time, starts_with(tgt))) %>%
-    pivot_longer(-time)
+    select(c(time, starts_with(tgt)))
 
   if (ncol(df_tmp) > 3) {
-    df_tmp <- separate(df_tmp, name, into = c("name", "pop"), sep = "-1")
+    df_tmp <- df_tmp %>%
+      pivot_longer(-time) %>%
+      separate(name, into = c("name", "pop"), sep = -1) %>%
+      filter(pop != "x")
   } else {
     df_tmp <- mutate(df_tmp, pop = "a")
+    names(df_tmp)[names(df_tmp) == tgt] <- "value"
   }
+
+  df_tmp <- df_tmp %>%
+    mutate(name = tgt) %>%
+    select(time, name, pop, value)
 
   df_tmp
 }
 
+# Read files -------------------------------------------------------------------
 filenames <- fs::dir_ls("out/CPN_restart_select/out")
 
-for (tgt in unique(df_targets$target)) {
+n <- 1
+tgt_names <- unique(df_targets$target)
+names(tgt_names) <- tgt_names
+dir_part <- "out/part_dfs"
+
+if (!fs::dir_exists(dir_part))
+  fs::dir_create(dir_part)
+
+for (fle in filenames) {
+  df_part <- as_tibble(readRDS(fle))
+
+  l_dfs <- lapply(tgt_names, get_targets,
+                  df_part = df_part, target_names = target_names)
+
+  for (tgt in tgt_names) {
+    saveRDS(l_dfs[[tgt]], fs::path(dir_part, paste0(tgt, "_", n, ".rds")),
+            compress = FALSE)
+  }
+
+  n <- n + 1
+}
+
+# Make df files ----------------------------------------------------------------
+for (tgt in tgt_names) {
+  filenames <- fs::dir_ls(dir_part, regexp = tgt)
   tgt_file <- paste0("out/df_calplot_", tgt, ".rds")
 
   if (!file.exists(tgt_file)) {
-    df_calib <- bind_rows(future_lapply(filenames, get_targets, tgt = tgt))
+    df_calib <- bind_rows(lapply(filenames, readRDS))
     df_calib <- df_calib %>%
       group_by(time, pop) %>%
       summarise(
@@ -62,13 +96,20 @@ for (tgt in unique(df_targets$target)) {
         q3 = quantile(value, prob = 0.75, na.rm = TRUE)
       )
       gc()
-      df_targets$pop <- races[df_targets$pop]
-      saveRDS(df_targets, tgt_file)
+      df_calib$pop <- races[df_calib$pop]
+      saveRDS(df_calib, tgt_file)
   }
+  print(paste0("Finised: ", tgt))
 }
 
+
+tgt <- "i.prev.dx"
+df_tgts <- df_targets %>%
+  filter(target == tgt)
+
 # Prev
-df_calib <- readRDS(paste0("out/df_calplot_", "i.prev.dx", ".rds"))
+df_calib <- readRDS(paste0("out/df_calplot_", tgt, ".rds"))
+
 ggplot(
   df_calib,
   aes(x = time / 52, y = q2, ymin = q1, ymax = q3, color = pop, fill = pop)
@@ -81,11 +122,11 @@ ggplot(
   geom_line(size = 0.5) +
   geom_text(
     data = df_tgts,
-    aes(y = value + 0.015, color = pop, label = value, x = 67),
+    aes(y = value + 0.005, color = pop, label = value, x = 61),
     inherit.aes = FALSE, size = 3
   ) +
   theme_classic() +
-  scale_y_continuous(lim = c(0.15, 0.55)) +
+  scale_y_continuous(lim = c(0.08, 0.35)) +
   theme(
     legend.position = "right",
     axis.text.x = element_text(margin = margin(5, 0, 10, 0, "pt")),
