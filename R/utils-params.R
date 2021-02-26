@@ -116,7 +116,7 @@ param <- param_msm(
   netresim.disl.rr = rep(1, 2),
 
   # Part ident parameters
-  part.ident.start = prep_start_time,
+  part.ident.start = Inf,
   part.index.window = 0,
   part.index.degree = 1,
   part.index.prob = 0.666,

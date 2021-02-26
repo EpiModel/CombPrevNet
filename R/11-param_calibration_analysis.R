@@ -54,9 +54,7 @@ df %>%
 df %>%
   select(c(param_batch, starts_with("part_")))  %>%
   group_by(param_batch) %>%
-  summarise(across(starts_with("part_"), median))
-
-%>%
+  summarise(across(starts_with("part_"), median)) %>%
   pivot_longer(cols = -param_batch) %>%
   separate(name, c("name", "pop"), sep = "___") %>%
   pivot_wider(names_from = name, values_from = value) %>%

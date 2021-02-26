@@ -48,7 +48,7 @@ run_netsim_fun <- function(param_proposal, sim_num,
   sim <- netsim(orig, param, init, control)
 
   prefix <- ""
-  if (!is.null(info$df_keep)){
+  if (!is.null(info$df_keep)) {
     prefix <- "df_"
     df <- as.data.frame(sim)
     df <- df[df$time > max(df$time) - info$df_keep, ]
@@ -68,7 +68,7 @@ run_netsim_updaters_fun <- function(updaters, sim_num, scenario,
   sim <- netsim(orig, param, init, control)
 
   prefix <- ""
-  if (!is.null(info$df_keep)){
+  if (!is.null(info$df_keep)) {
     prefix <- "df_"
     df <- as.data.frame(sim)
     df <- df[df$time > max(df$time) - info$df_keep, ]
@@ -79,9 +79,8 @@ run_netsim_updaters_fun <- function(updaters, sim_num, scenario,
     saveRDS(sim, paste0(info$root_dir, "/out/", prefix, "sim", sim_num, ".rds"),
             compress = "xz")
   }
-
-
 }
+
 make_job_paths <- function(job_name, ssh_dir, ssh_host) {
   p <- list()
 
