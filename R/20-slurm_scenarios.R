@@ -1,13 +1,12 @@
 source("R/utils-slurm_prep_helpers.R") # requires `purrr`
 source("R/utils-slurm_wf.R")
 test_simulation <- TRUE
-test_all_combination <- FALSE # Can grow super fast
 
 # Set slurm parameters ---------------------------------------------------------
-batch_per_set <- 10      # How many 28 replications to do per parameter
-steps_to_keep <- 52 # Steps to keep in the output df. If NULL, return sim obj
-partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "CPN_new_EMH"
+batch_per_set <- 5      # How many 28 replications to do per parameter
+steps_to_keep <- 20 * 52 # Steps to keep in the output df. If NULL, return sim obj
+partition <- "csde"     # On hyak, either ckpt or csde
+job_name <- "CPN_bases_2"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
@@ -18,7 +17,7 @@ slurm_ressources <- list(
   account = if (partition == "csde") "csde" else "csde-ckpt",
   n_cpus = 28,
   memory = 5 * 1e3, # in Mb and PER CPU
-  walltime = 60
+  walltime = 15
 )
 
 # Set orig, param, init, control -----------------------------------------------
@@ -26,44 +25,32 @@ slurm_ressources <- list(
 lnt <- TRUE # if FALSE: set `require.lnt` to FALSE and adjust ` prep.start.prob`
 source("R/utils-params.R", local = TRUE)
 
+orig <- readRDS("out/est/restart.rds")
+
+# run 20 rng years before scenarios
+scenario_start_step <- 70 * 52 + 1
+
 control <- control_msm(
-  nsteps = 70 * 52,
+  start = 60 * 52 + 1,
+  nsteps = 80 * 52, # 60->65 rng; 65->70 calib2; 70->80 scenario
   nsims = 28,
   ncores = 28,
   save.nwstats = FALSE,
+  initialize.FUN = reinit_msm,
   save.clin.hist = FALSE,
   verbose = FALSE
 )
 
-# Parameters to test -----------------------------------------------------------
+# Scenarios --------------------------------------------------------------------
+# requires <list variables>
+source("R/utils-scenarios.R")
 
-param_proposals <- list(
-  trans.scale = seq_cross( # 4^3 values to test; See utils-slurm_prep_helpers.R
-    c(2.75, 0.4, 0.255),
-    c(2.95, 0.5, 0.3),
-    length.out = 4
-  )
-)
-
-# Use this line to run only the default values
-param_proposals <- list(base_params__ = TRUE)
-
-# Finalize param_proposal list
-if (test_all_combination) {
-  param_proposals <- purrr::cross(param_proposals)
-} else {
-  param_proposals <- transpose_ragged(param_proposals)
-}
-
-relative_params <- list()
+# To subset scenarios:
+scenarios <- scenarios[c("no_ident_no_prep", "ident_default")]
 
 # Automatic --------------------------------------------------------------------
-
-# Apply the relative_params functions; See utils-slurm_prep_helpers.R
-param_proposals <- make_relative_params(param_proposals, relative_params)
-
-unique_proposals <- rep(seq_along(param_proposals), batch_per_set)
-param_proposals <- rep(param_proposals, batch_per_set)
+#
+param_proposals <- rep(scenarios, batch_per_set)
 sim_nums <- seq_along(param_proposals)
 
 # Required directories
@@ -80,16 +67,8 @@ info$ssh_host <- ssh_host
 info$root_dir <- fs::path(paths$jobs_dir, job_name, paths$slurm_wf)
 info$df_keep <- steps_to_keep
 info$param_proposals <- param_proposals
-info$unique_proposals <- unique_proposals
 
 slurm_wf_tmpl_dir("inst/slurm_wf/", info$root_dir, force = T)
-
-shared_res <- list(
-  partition = partition,
-  account = if (partition == "csde") "csde" else "csde-ckpt",
-  n_cpus = 28,
-  memory = 5 * 1e3 # in Mb and PER CPU
-)
 
 slurm_wf_Map(
   info$root_dir,
@@ -102,7 +81,7 @@ slurm_wf_Map(
 )
 
 if (test_simulation) {
-  control$nsteps <- 1 * 52
+  control$nsteps <- control$start + 1 * 52
   control$nsims <- 1
   control$ncores <- 1
   control$verbose <- TRUE

@@ -5,7 +5,7 @@ test_simulation <- TRUE
 # Set slurm parameters ---------------------------------------------------------
 batch_per_set <- 5      # How many 28 replications to do per parameter
 steps_to_keep <- 20 * 52 # Steps to keep in the output df. If NULL, return sim obj
-partition <- "ckpt"     # On hyak, either ckpt or csde
+partition <- "csde"     # On hyak, either ckpt or csde
 job_name <- "CPN_bases"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
@@ -71,13 +71,6 @@ info$param_proposals <- param_proposals
 
 slurm_wf_tmpl_dir("inst/slurm_wf/", info$root_dir, force = T)
 
-shared_res <- list(
-  partition = partition,
-  account = if (partition == "csde") "csde" else "csde-ckpt",
-  n_cpus = 28,
-  memory = 5 * 1e3 # in Mb and PER CPU
-)
-
 slurm_wf_Map(
   info$root_dir,
   resources = slurm_ressources,
@@ -129,4 +122,5 @@ scp_get_script <- c(
 writeLines(scp_send_script, fs::path(paths$local_job_dir, "send_to_ssh.sh"))
 writeLines(scp_get_script, fs::path(paths$local_job_dir, "get_from_ssh.sh"))
 
-write(job_name, file = fs::path(paths$local_out, paths$jobs_dir, "last_jobs"))
+write(job_name, file = fs::path(paths$local_out, paths$jobs_dir, "last_jobs"),
+      append = TRUE)
