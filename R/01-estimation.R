@@ -11,14 +11,26 @@ suppressMessages(library("ARTnet"))
 if (!dir.exists("out/est"))
   dir.create("out/est")
 
-epistats <- build_epistats(geog.lvl = "city", geog.cat = "Atlanta", race = TRUE,
-                           init.hiv.prev = rep(0.17, 3))
+epistats <- build_epistats(
+  geog.lvl = "city",
+  geog.cat = "Atlanta",
+  race = TRUE,
+  init.hiv.prev = c(
+    0.33 / 0.804,
+    0.137 / 0.799,
+    0.084 / 0.88
+  )
+)
 saveRDS(epistats, file = "out/est/epistats.rds")
-netparams <- build_netparams(epistats = epistats, smooth.main.dur = TRUE)
-netstats <- build_netstats(epistats, netparams, expect.mort = 0.000478213,
-                           network.size = 10000)
-saveRDS(netstats, file = "out/est/netstats.rds")
 
+netparams <- build_netparams(epistats = epistats, smooth.main.dur = TRUE)
+netstats <- build_netstats(
+  epistats,
+  netparams,
+  expect.mort = 0.000478213,
+  network.size = 10000
+)
+saveRDS(netstats, file = "out/est/netstats.rds")
 
 # 0. Initialize Network ---------------------------------------------------
 
@@ -29,7 +41,6 @@ attr.names <- names(netstats$attr)
 attr.values <- netstats$attr
 nw <- network::set.vertex.attribute(nw, attr.names, attr.values)
 nw_main <- nw_casl <- nw_inst <- nw
-
 
 # 1. Main Model -----------------------------------------------------------
 
