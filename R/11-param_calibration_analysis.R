@@ -42,7 +42,7 @@ library(tidyverse)
 df <- as_tibble(jobs[[1]]$data)
 proposals <- jobs[[1]]$infos$param_proposals[1:max(df$param_batch)]
 
-df <- filter(df, time >= max(time) - 52)
+# df <- filter(df, time >= max(time) - 52)
 
 df %>%
   group_by(param_batch) %>%
@@ -60,5 +60,8 @@ df %>%
   pivot_wider(names_from = name, values_from = value) %>%
   mutate(prep = s_prep / s_prep_elig)
 
-  print(n = 200)
-
+df %>%
+  group_by(time) %>%
+  summarise(y = median(i.prev.B)) %>%
+  ggplot(aes(x = time, y = y)) +
+    geom_line()

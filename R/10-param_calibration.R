@@ -5,7 +5,7 @@ test_all_combination <- FALSE # Can grow super fast
 
 # Set slurm parameters ---------------------------------------------------------
 batch_per_set <- 10      # How many 28 replications to do per parameter
-steps_to_keep <- 52 # Steps to keep in the output df. If NULL, return sim obj
+steps_to_keep <- 52 * 2 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
 job_name <- "CPN_new_EMH"
 ssh_host <- "hyak_mox"
@@ -39,14 +39,14 @@ control <- control_msm(
 
 param_proposals <- list(
   trans.scale = seq_cross( # 4^3 values to test; See utils-slurm_prep_helpers.R
-    c(2.75, 0.4, 0.255),
-    c(2.95, 0.5, 0.3),
+    c(2.85, 0.4, 0.27),
+    c(3, 0.5, 0.32),
     length.out = 4
   )
 )
 
 # Use this line to run only the default values
-param_proposals <- list(base_params__ = TRUE)
+# param_proposals <- list(base_params__ = TRUE)
 
 # Finalize param_proposal list
 if (test_all_combination) {

@@ -1,48 +1,53 @@
-library("methods")
-# to use devl EpiModelHIV change in "R/utils-params.R"x
-
-nsims <- ncores <- 3
+library(EpiModelHIV)
+library(tidyverse)
 
 lnt <- TRUE
-source("R/utils-params.R")
-pull_env_vars()
+source("R/utils-params.R", local = TRUE)
+orig <- readRDS("out/est/restart.rds")
 
-param$part.ident.start <- 5
-
-control <- control_msm(
-  simno = 1,
-  nsteps = 52 * 60,
-  nsims = ncores,
-  ncores = ncores,
-  save.nwstats = TRUE,
-  # raw.output = TRUE,
-  raw.output = FALSE,
-  verbose = FALSE
+test_params <- list(
+  part.ident.start = 60 * 52 + 1,
+  # Part ident parameters
+  part.index.window = 0,
+  part.index.degree = 1,
+  part.index.prob = 1,
+  part.ident.main.window = 12,
+  part.ident.casl.window = 12,
+  part.ident.ooff.window = 12,
+  # see "R/z-indent_prob_calib.R"
+  part.ident.main.prob = 1,
+  part.ident.casl.prob = 1,
+  part.ident.ooff.prob = 1,
+  part.hiv.test.rate = rep(1, 3),
+  part.prep.start.prob = rep(0.5, 3),
+  part.tx.init.prob = c(0.6, 0.6, 0.8),
+  part.tx.halt.prob = c(0.00102, 0.00102, 0.00071),
+  part.tx.reinit.prob = rep(0.5, 3)
 )
 
-## Simulation
+param <- update_params(param, test_params)
+
+control <- control_msm(
+  start = 60 * 52 + 1,
+  nsteps = 65 * 52, # 60->65 rng; 65->70 calib2; 70->80 scenario
+  nsims = 1,
+  ncores = 1,
+  save.nwstats = FALSE,
+  initialize.FUN = reinit_msm,
+  save.clin.hist = FALSE,
+  verbose = TRUE,
+  raw_output = TRUE
+)
+
+
+debug(partident_msm)
 sim <- netsim(orig, param, init, control)
 
-# Tests
-if (control$raw.output) {
-  dat <- sim[[1]]
-} else {
-  df <- as.data.frame(sim)
-  df <- df[df$time > max(df$time) - 10, ]
-}
+df <- as_tibble(process_out.net(sim[[1]]))
 
-
-library(dplyr)
-
-df <- as.data.frame(sim)
-
-df %>%
-  filter(time > max(time - 520)) %>%
-  select(starts_with("part_")) %>%
-  summarize(across(
-    everything(),
-    list(
-      m = ~ mean(.x, na.rm = T),
-      s = ~ sd(.x, na.rm = T)
-    )
-  ))
+# next step
+#
+# - prints in partindent
+#   - how many new diag
+#   - selected a different lvls (degree, window, prob)
+#   - at least one print per section that can be skiped

@@ -1,7 +1,7 @@
 library(tidyverse)
 
 files_folder <- "out/CPN_restart_select/out" # where are the calibration files
-reprocess <- FALSE # set to TRUE to redo the file processing
+reprocess <- TRUE # set to TRUE to redo the file processing
 
 # prepare targets
 source("R/utils-targets.R")
@@ -135,7 +135,7 @@ ggplot(
     inherit.aes = FALSE, size = 3
   ) +
   theme_classic() +
-  scale_y_continuous(lim = c(0.08, 0.35), breaks = seq(0.05, 0.35, 0.05)) +
+  scale_y_continuous(lim = c(0.08, 0.45), breaks = seq(0.05, 0.45, 0.05)) +
   theme(
     legend.position = "right",
     axis.text.x = element_text(margin = margin(5, 0, 10, 0, "pt")),

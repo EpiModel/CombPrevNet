@@ -14,12 +14,8 @@ if (!dir.exists("out/est"))
 epistats <- build_epistats(
   geog.lvl = "city",
   geog.cat = "Atlanta",
-  race = TRUE,
-  init.hiv.prev = c(
-    0.33 / 0.804,
-    0.137 / 0.799,
-    0.084 / 0.88
-  )
+  init.hiv.prev = c( 0.33, 0.137, 0.084),
+  race = TRUE
 )
 saveRDS(epistats, file = "out/est/epistats.rds")
 
