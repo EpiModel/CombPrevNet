@@ -39,8 +39,8 @@ control <- control_msm(
 
 param_proposals <- list(
   trans.scale = seq_cross( # 4^3 values to test; See utils-slurm_prep_helpers.R
-    c(2.85, 0.4, 0.27),
-    c(3, 0.5, 0.32),
+    c(2.7, 0.35, 0.20),
+    c(3.2, 0.55, 0.32),
     length.out = 4
   )
 )

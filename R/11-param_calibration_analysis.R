@@ -44,24 +44,17 @@ proposals <- jobs[[1]]$infos$param_proposals[1:max(df$param_batch)]
 
 # df <- filter(df, time >= max(time) - 52)
 
+source("R/utils-targets.R")
+prevs <- targets[startsWith(names(targets), "i.prev")]
+
+m <- 0.2
 df %>%
   group_by(param_batch) %>%
-  summarise(across(all_of(names(targets)), median)) %>%
-  select(ir100.gc, ir100.ct) %>%
+  summarise(across(c(i.prev.dx.B, i.prev.dx.H, i.prev.dx.W), median)) %>%
+  arrange(i.prev.dx.B) %>%
+  filter(
+    between(i.prev.dx.B, prevs["i.prev.dx.B"] * (1 - m), prevs["i.prev.dx.B"] * (1 + m)),
+    between(i.prev.dx.H, prevs["i.prev.dx.H"] * (1 - m), prevs["i.prev.dx.H"] * (1 + m)),
+    between(i.prev.dx.W, prevs["i.prev.dx.W"] * (1 - m), prevs["i.prev.dx.W"] * (1 + m))
+  ) %>%
   print(n = 200)
-
-
-df %>%
-  select(c(param_batch, starts_with("part_")))  %>%
-  group_by(param_batch) %>%
-  summarise(across(starts_with("part_"), median)) %>%
-  pivot_longer(cols = -param_batch) %>%
-  separate(name, c("name", "pop"), sep = "___") %>%
-  pivot_wider(names_from = name, values_from = value) %>%
-  mutate(prep = s_prep / s_prep_elig)
-
-df %>%
-  group_by(time) %>%
-  summarise(y = median(i.prev.B)) %>%
-  ggplot(aes(x = time, y = y)) +
-    geom_line()
