@@ -47,14 +47,20 @@ proposals <- jobs[[1]]$infos$param_proposals[1:max(df$param_batch)]
 source("R/utils-targets.R")
 prevs <- targets[startsWith(names(targets), "i.prev")]
 
-m <- 0.2
-df %>%
+m <- 0.005
+lst <- df %>%
   group_by(param_batch) %>%
   summarise(across(c(i.prev.dx.B, i.prev.dx.H, i.prev.dx.W), median)) %>%
   arrange(i.prev.dx.B) %>%
   filter(
-    between(i.prev.dx.B, prevs["i.prev.dx.B"] * (1 - m), prevs["i.prev.dx.B"] * (1 + m)),
-    between(i.prev.dx.H, prevs["i.prev.dx.H"] * (1 - m), prevs["i.prev.dx.H"] * (1 + m)),
-    between(i.prev.dx.W, prevs["i.prev.dx.W"] * (1 - m), prevs["i.prev.dx.W"] * (1 + m))
+    # between(i.prev.dx.B, prevs["i.prev.dx.B"] * (1 - m), prevs["i.prev.dx.B"] * (1 + m)),
+    # between(i.prev.dx.H, prevs["i.prev.dx.H"] * (1 - m), prevs["i.prev.dx.H"] * (1 + m)),
+    # between(i.prev.dx.W, prevs["i.prev.dx.W"] * (1 - m), prevs["i.prev.dx.W"] * (1 + m))
+    between(i.prev.dx.B, prevs["i.prev.dx.B"] - m, prevs["i.prev.dx.B"] + m),
+    between(i.prev.dx.H, prevs["i.prev.dx.H"] - m, prevs["i.prev.dx.H"] + m),
+    between(i.prev.dx.W, prevs["i.prev.dx.W"] - m, prevs["i.prev.dx.W"] + m)
   ) %>%
-  print(n = 200)
+  print(n = 200) %>%
+  pull(param_batch)
+
+proposals[lst]
