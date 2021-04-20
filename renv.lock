@@ -83,11 +83,11 @@
       "Version": "2.0.5",
       "Source": "GitHub",
       "RemoteType": "github",
-      "RemoteUsername": "EpiModel",
+      "RemoteHost": "api.github.com",
       "RemoteRepo": "EpiModelHIV-p",
+      "RemoteUsername": "EpiModel",
       "RemoteRef": "CombPrevNet",
       "RemoteSha": "bd956d892be2defb1729c5f4428dab7c24dca504",
-      "RemoteHost": "api.github.com",
       "Hash": "eea30c2355deb7f0a76874f328e04cfd"
     },
     "EpiModelHPC": {
@@ -837,10 +837,10 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "0.12.3",
+      "Version": "0.13.2",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "b5510c50c7f31d453c385c7b460af2b9"
+      "Hash": "079cb1f03ff972b30401ed05623cbe92"
     },
     "reprex": {
       "Package": "reprex",
