@@ -2,6 +2,8 @@
 
 LAST_JOB=$(tail -n 1 "out/remote_jobs/last_jobs")
 
+echo "Current job is: $LAST_JOB"
+
 cmd_get() {
     . "out/remote_jobs/$LAST_JOB/get_from_ssh.sh"
 }

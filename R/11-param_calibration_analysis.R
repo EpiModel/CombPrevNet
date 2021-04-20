@@ -1,8 +1,8 @@
 library(data.table)
 
 # One or many job_names
-job_names <- c()
-job_last_n <- 1 # if not NULL, get last N jobs. Otherwise, use job_names
+job_names <- c("CPN_new_EMH")
+job_last_n <- NULL # if not NULL, get last N jobs. Otherwise, use job_names
 keep_all_epi <- TRUE # set to false to keep only the "targets"
 
 if (!is.null(job_last_n))
@@ -47,15 +47,12 @@ proposals <- jobs[[1]]$infos$param_proposals[1:max(df$param_batch)]
 source("R/utils-targets.R")
 prevs <- targets[startsWith(names(targets), "i.prev")]
 
-m <- 0.005
+m <- 0.003
 lst <- df %>%
   group_by(param_batch) %>%
   summarise(across(c(i.prev.dx.B, i.prev.dx.H, i.prev.dx.W), median)) %>%
   arrange(i.prev.dx.B) %>%
   filter(
-    # between(i.prev.dx.B, prevs["i.prev.dx.B"] * (1 - m), prevs["i.prev.dx.B"] * (1 + m)),
-    # between(i.prev.dx.H, prevs["i.prev.dx.H"] * (1 - m), prevs["i.prev.dx.H"] * (1 + m)),
-    # between(i.prev.dx.W, prevs["i.prev.dx.W"] * (1 - m), prevs["i.prev.dx.W"] * (1 + m))
     between(i.prev.dx.B, prevs["i.prev.dx.B"] - m, prevs["i.prev.dx.B"] + m),
     between(i.prev.dx.H, prevs["i.prev.dx.H"] - m, prevs["i.prev.dx.H"] + m),
     between(i.prev.dx.W, prevs["i.prev.dx.W"] - m, prevs["i.prev.dx.W"] + m)
@@ -64,3 +61,26 @@ lst <- df %>%
   pull(param_batch)
 
 proposals[lst]
+
+d2 <- df %>%
+  group_by(param_batch) %>%
+  summarise(across(
+    c(i.prev.dx.B, i.prev.dx.H, i.prev.dx.W),
+    list(
+      q1 = ~ quantile(.x, prob = 0.25),
+      q2 = ~ quantile(.x, prob = 0.5),
+      q3 = ~ quantile(.x, prob = 0.75)
+    )
+  ))
+
+
+df %>%
+  group_by(param_batch) %>%
+  summarise(across(
+    c(ir100.gc, ir100.ct),
+    list(
+      # q1 = ~ quantile(.x, prob = 0.25),
+      q2 = ~ quantile(.x, prob = 0.5)
+      # q3 = ~ quantile(.x, prob = 0.75)
+    )
+  ))

@@ -58,7 +58,7 @@ param <- param_msm(
   max.time.on.tx.part.int = 52 * 10,
   max.time.off.tx.part.int = 52 * 10,
   aids.mr = 1 / 250,
-  trans.scale =  c(2.95, 0.43333333, 0.3), #c(2.75, 0.4, 0.), #c(2.21, 0.405, 0.255),
+  trans.scale =  c(3.16, 0.40, 0.30), #c(2.75, 0.4, 0.), #c(2.21, 0.405, 0.255),
   acts.scale = 1.00,
   acts.scale.main = 1.00,
   acts.scale.casl = 1.00,
@@ -117,7 +117,7 @@ param <- param_msm(
 
   # Part ident parameters
   part.ident.start = Inf,
-  part.index.window = 0,
+  part.index.window = 0, # ALWAYS KEEP AT 0
   part.index.degree = 1,
   part.index.prob = 0.666,
   part.ident.main.window = 52,

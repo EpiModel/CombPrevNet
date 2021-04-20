@@ -84,8 +84,13 @@ slurm_wf_Map(
   FUN = run_netsim_fun,
   sim_num = sim_nums,
   param_proposal = param_proposals,
-  MoreArgs = list(orig = orig, param = param, init = init, control = control,
-                  info = info)
+  MoreArgs = list(
+    orig = orig,
+    param = param,
+    init = init,
+    control = control,
+    info = info
+  )
 )
 
 if (test_simulation) {
@@ -106,7 +111,6 @@ saveRDS(info, fs::path(paths$remote_job_dir, "job_info.rds"))
 # move slurm to out and cleanup
 fs::file_move(paths$remote_job_dir, fs::path(paths$local_out, paths$jobs_dir))
 fs::dir_delete(paths$jobs_dir)
-
 
 scp_send_script <- c(
   "#!/bin/sh",
