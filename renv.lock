@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.0.4",
+    "Version": "4.0.5",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -86,9 +86,9 @@
       "RemoteUsername": "EpiModel",
       "RemoteRepo": "EpiModelHIV-p",
       "RemoteRef": "CombPrevNet",
-      "RemoteSha": "62191ce1df574b08479457137d474936ec799ad8",
+      "RemoteSha": "bd956d892be2defb1729c5f4428dab7c24dca504",
       "RemoteHost": "api.github.com",
-      "Hash": "1ccc85ccc69d4b963ed438373cbb7cbe"
+      "Hash": "eea30c2355deb7f0a76874f328e04cfd"
     },
     "EpiModelHPC": {
       "Package": "EpiModelHPC",
