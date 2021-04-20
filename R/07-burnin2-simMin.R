@@ -29,6 +29,7 @@ control <- control_msm(simno = fsimno,
 interv_params <- list(
   part.ident.start = Inf,
   part.index.window = 0,
+  part.index.degree = 1,
   part.ident.main.window = 12,
   part.ident.casl.window = 12,
   part.ident.ooff.window = 12,
