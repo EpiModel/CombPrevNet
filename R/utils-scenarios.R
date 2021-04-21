@@ -6,24 +6,23 @@ scenarios <- list(
     part.ident.start = Inf,
     prep.start = Inf
   ),
-  ident_default = list(
+  ident_prob1 = list(
     part.ident.start = param$prep.start,
     # Part ident parameters
     part.index.window = 0,
     part.index.degree = 1,
     part.index.prob = 1,
-    part.ident.main.window = 12,
-    part.ident.casl.window = 12,
-    part.ident.ooff.window = 12,
+    part.ident.main.window = 52,
+    part.ident.casl.window = 52,
+    part.ident.ooff.window = 52,
     # see "R/z-indent_prob_calib.R"
     part.ident.main.prob = 1,
     part.ident.casl.prob = 1,
     part.ident.ooff.prob = 1,
     part.hiv.test.rate = rep(1, 3),
-    part.prep.start.prob = rep(0.5, 3),
-    part.tx.init.prob = c(0.6, 0.6, 0.8),
-    part.tx.halt.prob = c(0.00102, 0.00102, 0.00071),
-    part.tx.reinit.prob = rep(0.5, 3)
+    part.prep.start.prob = rep(1, 3),
+    part.tx.init.prob = rep(1, 3),
+    part.tx.reinit.prob = rep(1, 3)
   ),
   base_atlanta_complete = list(
     part.ident.start = param$prep.start,
@@ -41,7 +40,6 @@ scenarios <- list(
     part.hiv.test.rate = rep(0.394, 3),
     part.prep.start.prob = rep(0, 3),
     part.tx.init.prob = rep(0.387, 3),
-    part.tx.halt.prob = rep(0, 3),
     part.tx.reinit.prob = rep(0, 3)
   ),
   base_atlanta_missing = list(
@@ -60,7 +58,6 @@ scenarios <- list(
     part.hiv.test.rate = rep(0.84, 3),
     part.prep.start.prob = rep(0, 3),
     part.tx.init.prob = rep(0.96, 3),
-    part.tx.halt.prob = rep(0, 3),
     part.tx.reinit.prob = rep(0, 3)
   )
 )

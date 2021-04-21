@@ -1,10 +1,10 @@
 source("R/utils-slurm_prep_helpers.R") # requires `purrr`
 source("R/utils-slurm_wf.R")
 test_simulation <- TRUE
-test_all_combination <- FALSE # Can grow super fast
+test_all_combination <- TRUE # Can grow super fast
 
 # Set slurm parameters ---------------------------------------------------------
-batch_per_set <- 200      # How many 28 replications to do per parameter
+batch_per_set <- 10      # How many 28 replications to do per parameter
 steps_to_keep <- 52 * 2 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
 job_name <- "CPN_new_EMH"
@@ -38,11 +38,8 @@ control <- control_msm(
 # Parameters to test -----------------------------------------------------------
 
 param_proposals <- list(
-  trans.scale = seq_cross( # 4^3 values to test; See utils-slurm_prep_helpers.R
-    c(3.16, 0.38, 0.29),
-    c(3.19, 0.41, 0.32),
-    length.out = 4
-  )
+  uct.tprob = as.list(seq(0.2, 0.4, length.out = 5)), # 4 values to test
+  ugc.tprob = as.list(seq(0.2, 0.4, length.out = 5)) # 2 values to test
 )
 
 # Use this line to run only the default values
@@ -55,7 +52,20 @@ if (test_all_combination) {
   param_proposals <- transpose_ragged(param_proposals)
 }
 
-relative_params <- list()
+relative_params <- list(
+  rgc.tprob = function(param) {
+    out <- NULL
+    if (!is.null(param$ugc.tprob))
+      out <- plogis(qlogis(param$ugc.tprob) + log(1.25))
+    out
+  },
+  rct.tprob = function(param) {
+    out <- NULL
+    if (!is.null(param$uct.tprob))
+      out <- plogis(qlogis(param$uct.tprob) + log(1.25))
+    out
+  }
+)
 
 # Automatic --------------------------------------------------------------------
 
