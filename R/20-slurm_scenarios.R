@@ -6,7 +6,7 @@ test_simulation <- TRUE
 batch_per_set <- 10      # How many 28 replications to do per parameter
 steps_to_keep <- 20 * 52 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "csde"     # On hyak, either ckpt or csde
-job_name <- "CPN_bases_2"
+job_name <- "CPN_scenarios_all"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
@@ -46,7 +46,7 @@ control <- control_msm(
 source("R/utils-scenarios.R")
 
 # To subset scenarios:
-scenarios <- scenarios[c("no_ident_no_prep", "ident_default")]
+# scenarios <- scenarios[c("no_ident_no_prep", "ident_default")]
 
 # Automatic --------------------------------------------------------------------
 #
