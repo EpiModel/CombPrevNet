@@ -1,7 +1,7 @@
 library(data.table)
 
 # One or many job_names
-job_names <- "CPN_bases_2"
+job_names <- "CPN_scenarios_all"
 job_last_n <- 2 # if not NULL, get last N jobs. Otherwise, use job_names
 
 if (!is.null(job_last_n))
@@ -63,24 +63,24 @@ plot_time_smooth <- function(df, y_label) {
     ylab(y_label)
 }
 
-df <- filter(
-  df_b,
-  scenario %in% c(
-    "no_ident",
-    "no_ident_no_prep",
-    # "ident_default",
-    "base_atlanta_complete",
-    "base_atlanta_missing",
-    ""
+scenarios_labels <- c(
+    "no_ident"              = "0 - No Partner Services",
+    "no_ident_no_prep"      = "1 - Neither Partner Services or PrEP",
+    "base_atlanta_missing"  = "3 - Partner Services (Atlanta Missing)",
+    "base_atlanta_complete" = "4 - Partner Services (Atlanta Complete)",
+    "ident_prob1"           = "5 - Partner Services (all probs = 100%)"
   )
-)
 
 
-# PrEP
+df <- df_b %>%
+  filter(scenario %in% names(scenarios_labels)) %>%
+  mutate(scenario = scenarios_labels[scenario])
+
+# prep
 df %>%
-  filter(scenario == "no_ident") %>%
-  mutate(y = s_prep___ALL / s_prep_elig___ALL) %>%
-  plot_time_quants("PrEP Coverage (Among Eligibles)", c(0.025, 0.975)) +
+  filter(scenario == scenarios_labels["no_ident"]) %>%
+  mutate(y = s_prep___all / s_prep_elig___all) %>%
+  plot_time_quants("prep coverage (among eligibles)", c(0.025, 0.975)) +
   geom_hline(yintercept = 0.15, linetype = 2, alpha = .8) +
   expand_limits(y = c(0, 0.25))
 
@@ -91,11 +91,11 @@ ggsave(
   units = "in"
 )
 
-# Prev
+# prev
 
 df %>%
-  mutate(y = i___ALL / (s___ALL + i___ALL)) %>%
-  plot_time_smooth("HIV Prevalence") +
+  mutate(y = i___all / (s___all + i___all)) %>%
+  plot_time_smooth("hiv prevalence") +
   expand_limits(y = c(0.2, 0.3))
 
 ggsave(
@@ -106,8 +106,8 @@ ggsave(
 )
 
 df %>%
-  mutate(y = i_dx___ALL /  i___ALL) %>%
-  plot_time_smooth("Proportion of Infected Who Are Diagnosed") +
+  mutate(y = i_dx___all /  i___all) %>%
+  plot_time_smooth("proportion of infected who are diagnosed") +
   expand_limits(y = c(0.8, 0.9))
 
 ggsave(
@@ -118,8 +118,8 @@ ggsave(
 )
 
 df %>%
-  mutate(y = i_tx___ALL /  i___ALL) %>%
-  plot_time_smooth("Proportion of Infected Who Are Treated") +
+  mutate(y = i_tx___all /  i___all) %>%
+  plot_time_smooth("proportion of infected who are treated") +
   expand_limits(y = c(0.45, 0.5))
 
 ggsave(
@@ -130,8 +130,8 @@ ggsave(
 )
 
 df %>%
-  mutate(y = i_tx___ALL /  i_dx___ALL) %>%
-  plot_time_smooth("Proportion of Diagnosed Who Are Treated") +
+  mutate(y = i_tx___all /  i_dx___all) %>%
+  plot_time_smooth("proportion of diagnosed who are treated") +
   expand_limits(y = c(0.55, 0.6))
 
 ggsave(
@@ -142,8 +142,8 @@ ggsave(
 )
 
 df %>%
-  mutate(y = i_sup___ALL /  i_dx___ALL) %>%
-  plot_time_smooth("Proportion of Diagnosed Who Are Suppressed") +
+  mutate(y = i_sup___all /  i_dx___all) %>%
+  plot_time_smooth("proportion of diagnosed who are suppressed") +
   expand_limits(y = c(0.55, 0.6))
 
 ggsave(
@@ -155,7 +155,7 @@ ggsave(
 
 df %>%
   mutate(y = ir100) %>%
-  plot_time_smooth("Standardized Incidence") +
+  plot_time_smooth("standardized incidence") +
   expand_limits(y = c(1.2, 1.7))
 
 ggsave(
@@ -165,5 +165,5 @@ ggsave(
   units = "in"
 )
 
-rmarkdown::render("Rmd/CDC_presentation.Rmd", output_dir = "out/renders/",
+rmarkdown::render("rmd/cdc_presentation.rmd", output_dir = "out/renders/",
                   knit_root_dir = here::here())
