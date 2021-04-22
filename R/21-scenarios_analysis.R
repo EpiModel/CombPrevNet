@@ -10,6 +10,15 @@ if (!is.null(job_last_n))
 # Read targets
 source("R/utils-targets.R")
 
+needed_cols <- c(
+  "sim", "time", "batch", "scenario",
+  "incid", "ir100",
+  "s_prep___ALL", "s_prep_elig___ALL",
+  "i___ALL", "i_dx___ALL", "i_tx___ALL", "i_sup___ALL",
+  "part_ident___ALL", "part_sneg___ALL", "part_spos___ALL",
+  "part_prep___ALL", "part_txinit___ALL", "part_txreinit___ALL"
+)
+
 jobs <- list()
 for (job in job_names) {
   jobs[[job]] <- list()
@@ -24,7 +33,7 @@ for (job in job_names) {
     sim <- readRDS(fle)
     dff <- as.data.table(sim)
     dff[, `:=`(batch = btch, scenario = names(infos$param_proposals)[btch])]
-    df_ls[[btch]] <- dff
+    df_ls[[btch]] <- dff[, ..needed_cols]
   }
   jobs[[job]]$data <- rbindlist(df_ls, fill = TRUE)
 }
@@ -33,6 +42,8 @@ library(tidyverse)
 theme_set(theme_classic())
 
 df <- map_dfr(jobs, ~ as_tibble(.x$data))
+saveRDS(df, "out/scdf.rds")
+
 df_b <- df
 
 plot_time_quants <- function(df, y_label, interval = c(0.25, 0.75)) {
@@ -64,11 +75,14 @@ plot_time_smooth <- function(df, y_label) {
 }
 
 scenarios_labels <- c(
-    "no_ident_no_prep"      = "0 - Neither Partner Services or PrEP",
-    "no_ident"              = "1 - No Partner Services",
-    "base_atlanta_missing"  = "3 - Partner Services (Atlanta Missing)",
-    "base_atlanta_complete" = "4 - Partner Services (Atlanta Complete)",
-    "ident_max"             = "5 - Partner Services (all probs = 100%)"
+    "no_ident_no_prep"      = "Neither Partner Services or PrEP",
+    "no_ident"              = "No Partner Services",
+    "base_atlanta_missing"  = "Partner Services (Atlanta Missing)",
+    "base_atlanta_complete" = "Partner Services (Atlanta Complete)",
+    "ident_max_test"        = "Partner Services (Max Test)",
+    "ident_max_prep"        = "Partner Services (Max Test + PrEP)",
+    "ident_max_tx"          = "Partner Services (Max Test + Tx)",
+    "ident_max"             = "Partner Services (All Max)"
   )
 
 
@@ -76,7 +90,20 @@ df <- df_b %>%
   filter(scenario %in% names(scenarios_labels)) %>%
   mutate(scenario = scenarios_labels[scenario])
 
+df <- df_b %>%
+  filter(
+    scenario %in% c(
+      "no_ident",
+      "ident_max",
+      "ident_max_test",
+      "ident_max_prep",
+      "ident_max_tx"
+    )
+  ) %>%
+  mutate(scenario = scenarios_labels[scenario])
+
 # prep
+
 df %>%
   filter(scenario == scenarios_labels["no_ident"]) %>%
   mutate(y = s_prep___ALL / s_prep_elig___ALL) %>%
