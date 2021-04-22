@@ -111,20 +111,76 @@ epi_tt_traj <- function(traj) {
   }
 }
 
-epi_part_count <- function(rel_type) {
+epi_part_ident <- function(r_ind) {
   function(dat, at) {
-    plist <- dat$temp$plist
-    plist <- plist[plist[, 3] == rel_type, ]
-    mean(table(plist[, c(1, 2)]))
+    needed_attributes <- c("race", "part.ident")
+    with(get_attr_list(dat, needed_attributes), {
+      sum(race %in% r_ind & part.ident == at, na.rm = TRUE)
+    })
   }
 }
 
-epi_part_screened <- function(dat, at) {
-  needed_attributes <- c("part.scrnd", "part.scrnd.elig") #last does not exist yet
-  with(get_attr_list(dat, needed_attributes), {
-    sum(!is.null(part.scrnd), na.rm = TRUE) /
-    sum(!is.null(part.scrnd.elig), na.rm = TRUE)
-  })
+epi_part_spos <- function(r_ind) {
+  function(dat, at) {
+    needed_attributes <- c("race", "part.ident", "diag.time")
+    with(get_attr_list(dat, needed_attributes), {
+      sum(
+        race %in% r_ind &
+        part.ident == at &
+        diag.time == at,
+        na.rm = TRUE)
+    })
+  }
 }
 
+epi_part_sneg <- function(r_ind) {
+  function(dat, at) {
+    needed_attributes <- c("race", "part.ident", "last.neg.test")
+    with(get_attr_list(dat, needed_attributes), {
+      sum(
+        race %in% r_ind &
+        part.ident == at &
+        last.neg.test == at,
+        na.rm = TRUE)
+    })
+  }
+}
 
+epi_part_prep <- function(r_ind) {
+  function(dat, at) {
+    needed_attributes <- c("race", "part.ident", "prepStartTime")
+    with(get_attr_list(dat, needed_attributes), {
+      sum(
+        race %in% r_ind &
+        part.ident == at &
+        prepStartTime == at,
+        na.rm = TRUE)
+    })
+  }
+}
+
+epi_part_txinit <- function(r_ind) {
+  function(dat, at) {
+    needed_attributes <- c("race", "part.ident", "part.tx.init.time")
+    with(get_attr_list(dat, needed_attributes), {
+      sum(
+        race %in% r_ind &
+        part.ident == at &
+        part.tx.init.time == at,
+        na.rm = TRUE)
+    })
+  }
+}
+
+epi_part_txreinit <- function(r_ind) {
+  function(dat, at) {
+    needed_attributes <- c("race", "part.ident", "part.tx.reinit.time")
+    with(get_attr_list(dat, needed_attributes), {
+      sum(
+        race %in% r_ind &
+        part.ident == at &
+        part.tx.reinit.time == at,
+        na.rm = TRUE)
+    })
+  }
+}

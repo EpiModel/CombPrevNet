@@ -64,8 +64,8 @@ plot_time_smooth <- function(df, y_label) {
 }
 
 scenarios_labels <- c(
-    "no_ident"              = "0 - No Partner Services",
-    "no_ident_no_prep"      = "1 - Neither Partner Services or PrEP",
+    "no_ident_no_prep"      = "0 - Neither Partner Services or PrEP",
+    "no_ident"              = "1 - No Partner Services",
     "base_atlanta_missing"  = "3 - Partner Services (Atlanta Missing)",
     "base_atlanta_complete" = "4 - Partner Services (Atlanta Complete)",
     "ident_prob1"           = "5 - Partner Services (all probs = 100%)"
@@ -79,7 +79,7 @@ df <- df_b %>%
 # prep
 df %>%
   filter(scenario == scenarios_labels["no_ident"]) %>%
-  mutate(y = s_prep___all / s_prep_elig___all) %>%
+  mutate(y = s_prep___ALL / s_prep_elig___ALL) %>%
   plot_time_quants("prep coverage (among eligibles)", c(0.025, 0.975)) +
   geom_hline(yintercept = 0.15, linetype = 2, alpha = .8) +
   expand_limits(y = c(0, 0.25))
@@ -94,7 +94,7 @@ ggsave(
 # prev
 
 df %>%
-  mutate(y = i___all / (s___all + i___all)) %>%
+  mutate(y = i___ALL / (s___ALL + i___ALL)) %>%
   plot_time_smooth("hiv prevalence") +
   expand_limits(y = c(0.2, 0.3))
 
@@ -106,7 +106,7 @@ ggsave(
 )
 
 df %>%
-  mutate(y = i_dx___all /  i___all) %>%
+  mutate(y = i_dx___ALL /  i___ALL) %>%
   plot_time_smooth("proportion of infected who are diagnosed") +
   expand_limits(y = c(0.8, 0.9))
 
@@ -118,7 +118,7 @@ ggsave(
 )
 
 df %>%
-  mutate(y = i_tx___all /  i___all) %>%
+  mutate(y = i_tx___ALL /  i___ALL) %>%
   plot_time_smooth("proportion of infected who are treated") +
   expand_limits(y = c(0.45, 0.5))
 
@@ -130,7 +130,7 @@ ggsave(
 )
 
 df %>%
-  mutate(y = i_tx___all /  i_dx___all) %>%
+  mutate(y = i_tx___ALL /  i_dx___ALL) %>%
   plot_time_smooth("proportion of diagnosed who are treated") +
   expand_limits(y = c(0.55, 0.6))
 
@@ -142,7 +142,7 @@ ggsave(
 )
 
 df %>%
-  mutate(y = i_sup___all /  i_dx___all) %>%
+  mutate(y = i_sup___ALL /  i_dx___ALL) %>%
   plot_time_smooth("proportion of diagnosed who are suppressed") +
   expand_limits(y = c(0.55, 0.6))
 
@@ -165,5 +165,5 @@ ggsave(
   units = "in"
 )
 
-rmarkdown::render("rmd/cdc_presentation.rmd", output_dir = "out/renders/",
+rmarkdown::render("Rmd/CDC_presentation.Rmd", output_dir = "out/renders/",
                   knit_root_dir = here::here())

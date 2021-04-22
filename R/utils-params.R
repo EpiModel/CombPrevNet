@@ -4,28 +4,23 @@ library(EpiModelHIV)
 # Epi Trackers
 source("R/utils-epi_trackers.R")
 ls_trackers <- list(
-  s           = epi_s,
-  s_prep_elig = epi_s_prep_elig,
-  s_prep      = epi_s_prep,
-  i           = epi_i,
-  i_dx        = epi_i_dx,
-  i_tx        = epi_i_tx,
-  i_sup       = epi_i_sup,
-  i_sup_dur   = epi_i_sup_dur,
-  traj_1      = epi_tt_traj(1),
-  traj_2      = epi_tt_traj(2),
-  traj_3      = epi_tt_traj(3)
+  s             = epi_s,
+  s_prep_elig   = epi_s_prep_elig,
+  s_prep        = epi_s_prep,
+  i             = epi_i,
+  i_dx          = epi_i_dx,
+  i_tx          = epi_i_tx,
+  i_sup         = epi_i_sup,
+  i_sup_dur     = epi_i_sup_dur,
+  part_ident    = epi_part_ident,
+  part_sneg     = epi_part_sneg,
+  part_spos     = epi_part_spos,
+  part_prep     = epi_part_prep,
+  part_txinit   = epi_part_txinit,
+  part_txreinit = epi_part_txreinit
 )
 epi_trackers <- epi_tracker_by_race(ls_trackers, full = TRUE)
 
-epi_trackers <- c(
-  epi_trackers,
-  list(
-    "part_1" = epi_part_count(1),
-    "part_2" = epi_part_count(2),
-    "part_3" = epi_part_count(3))
-)
-# epi_trackers <- list()
 
 # Params and inits
 orig <- readRDS("out/est/netest.rds")
