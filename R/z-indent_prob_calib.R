@@ -2,7 +2,7 @@
 ## the observed number of partners in my simulations is
 ## x <- c(1.1, 1.6, 9.7) (main, casl, oof)
 ##
-## with a 52 week window and the `part_` epi trackers
+## with a 52 week window and the `epi_partner_count` epi tracker
 ##
 ##
 library("methods")
@@ -31,7 +31,7 @@ df <- as.data.frame(sim)
 
 df %>%
   filter(time > max(time - 520)) %>%
-  select(starts_with("part_")) %>%
+  select(starts_with("partner_count")) %>%
   summarize(across(
     everything(),
     list(
@@ -41,9 +41,10 @@ df %>%
   ))
 
 x <- c(1.1, 1.6, 9.7)
+target_ident <- 0.432
 
 ## option 1 - we enforce part.indent.main.prob == part.indent.casl.prob == 2 * part.indent.oof.prob
-p_temp <- 0.432 / sum(x * c(1, 1, 1/2))
+p_temp <- target_ident / sum(x * c(1, 1, 1/2))
 p_temp
 # [1] 0.09653631
 p <- c(p_temp, p_temp, p_temp / 2)
@@ -57,7 +58,7 @@ sum(p * x)
 ## option 2
 ##
 ## we force each partnership type to give the same "number" of partners
-p <- 0.432 / 3 / x
+p <- target_ident / 3 / x
 p
 # [1] 0.13846154 0.09729730 0.03682864# number of partners identified by type
 p * x

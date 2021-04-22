@@ -1,5 +1,5 @@
-# library(EpiModelHIV)
-pkgload::load_all("../EpiModelHIV-p/")
+library(EpiModelHIV)
+# pkgload::load_all("../EpiModelHIV-p/")
 
 # Epi Trackers
 source("R/utils-epi_trackers.R")
@@ -110,7 +110,7 @@ param <- param_msm(
   netresim.form.rr = rep(1, 3),
   netresim.disl.rr = rep(1, 2),
 
-  # Part ident parameters
+  # Part ident parameters (defaut is ATL Complete)
   part.ident.start = Inf,
   part.index.window = 0, # ALWAYS KEEP AT 0
   part.index.degree = 1,
@@ -122,10 +122,10 @@ param <- param_msm(
   part.ident.main.prob = 0.13090909,
   part.ident.casl.prob = 0.09000000,
   part.ident.ooff.prob = 0.01484536,
+  # Part Serv Params
   part.hiv.test.rate = rep(0.394, 3),
   part.prep.start.prob = rep(0, 3),
   part.tx.init.prob = rep(0.387, 3),
-  part.tx.halt.prob = rep(0, 3),
   part.tx.reinit.prob = rep(0, 3),
 
   epi_trackers = epi_trackers

@@ -184,3 +184,16 @@ epi_part_txreinit <- function(r_ind) {
     })
   }
 }
+
+epi_partner_count <- function(rel_type) {
+  function(dat, at) {
+    function(dat, at) {
+      plist <- dat$temp$plist
+      plist <- dat$temp$plist
+      plist <- plist[plist[,3] == rel_type, ]
+      plist <- plist[plist[, 3] == rel_type, ]
+      mean(table(plist[, c(1,2)]))
+      mean(table(plist[, c(1, 2)]))
+    }
+  }
+}

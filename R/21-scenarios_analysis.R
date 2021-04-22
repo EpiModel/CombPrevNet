@@ -2,7 +2,7 @@ library(data.table)
 
 # One or many job_names
 job_names <- "CPN_scenarios_all"
-job_last_n <- 2 # if not NULL, get last N jobs. Otherwise, use job_names
+job_last_n <- NULL # if not NULL, get last N jobs. Otherwise, use job_names
 
 if (!is.null(job_last_n))
   job_names <- tail(readLines("out/remote_jobs/last_jobs"), job_last_n)
@@ -68,7 +68,7 @@ scenarios_labels <- c(
     "no_ident"              = "1 - No Partner Services",
     "base_atlanta_missing"  = "3 - Partner Services (Atlanta Missing)",
     "base_atlanta_complete" = "4 - Partner Services (Atlanta Complete)",
-    "ident_prob1"           = "5 - Partner Services (all probs = 100%)"
+    "ident_max"             = "5 - Partner Services (all probs = 100%)"
   )
 
 

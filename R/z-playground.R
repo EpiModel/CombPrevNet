@@ -4,7 +4,10 @@ orig <- readRDS("out/est/restart.rds")
 
 window_size <- 52
 
+prep_start_time <- 52 * 61 + 1
 test_params <- list(
+  prep.start = prep_start_time,
+  riskh.start = prep_start_time - 52,
   part.ident.start = 60 * 52 + 1,
   # Part ident parameters
   part.index.window = 0,
@@ -27,19 +30,20 @@ test_params <- list(
 
 param <- update_params(param, test_params)
 
+nsteps <- 100
+
 control <- control_msm(
   start = 60 * 52 + 1,
-  nsteps = 60 * 52 + 1 + 20 * 52,
+  nsteps = 61 * 52 + 1 + nsteps, # one year for prep riskhist then nsteps
   nsims = 1,
   ncores = 1,
   save.nwstats = FALSE,
   initialize.FUN = reinit_msm,
   save.clin.hist = FALSE,
-  verbose = TRUE,
+  verbose = FALSE,
   raw_output = FALSE
 )
 
 
-# debug(partident_msm)
+# debug(hivtest_msm)
 sim <- netsim(orig, param, init, control)
-
