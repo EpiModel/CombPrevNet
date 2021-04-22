@@ -1,6 +1,10 @@
 library(dplyr)
 library(tidyr)
 
+# Uncomment one at a time
+#
+# res_name defines the name of the table
+# cur_scenarios defines the scenarios to include
 res_name <- ("No_ident_vs_Max")
 cur_scenarios <- c( # first 1 is the reference for NIA PIA
   "no_ident",
@@ -19,15 +23,15 @@ cur_scenarios <- c( # first 1 is the reference for NIA PIA
 #   "tx_100"
 # )
 
-res_name <- ("ATL_vs_IDx2")
-cur_scenarios <- c( # first 1 is the reference for NIA PIA
-  "base_atlanta_complete",
-  "ident_x2",
-  "ident_x2_test_100",
-  "ident_x2_prep_100",
-  "ident_x2_test_prep_100",
-  "ident_x2_x_100"
-)
+# res_name <- ("ATL_vs_IDx2")
+# cur_scenarios <- c( # first 1 is the reference for NIA PIA
+#   "base_atlanta_complete",
+#   "ident_x2",
+#   "ident_x2_test_100",
+#   "ident_x2_prep_100",
+#   "ident_x2_test_prep_100",
+#   "ident_x2_x_100"
+# )
 
 # res_name <- ("ATL_flavors")
 # cur_scenarios <- c( # first 1 is the reference for NIA PIA
@@ -37,8 +41,10 @@ cur_scenarios <- c( # first 1 is the reference for NIA PIA
 # )
 
 
+# Read the data extracted in R/21-<...>.R
 df <- readRDS("out/scdf.rds")
 
+# Conversion between scenario name and final label
 scenarios_labels <- c(
   "no_ident_no_prep"          = "Neither Partner Services or PrEP",
   "no_ident"                  = "No Partner Services",
@@ -60,6 +66,7 @@ scenarios_labels <- c(
   "ident_x2_tx_100"           = "ATL ID x2 & Max Tx"
 )
 
+# Conversion between variable name and final label
 var_labels <- c(
  # Epi
  "ir100"         = "Incidence Rate",
@@ -80,7 +87,7 @@ var_labels <- c(
  "part_txreinit" = "Number of Partners who Restarted ART"
 )
 
-# Formatters
+# Formatters for the variables
 fmts <- replicate(length(var_labels), scales::label_number(1))
 names(fmts) <- names(var_labels)
 fmts[["ir100"]] <- scales::label_number(0.01)
@@ -90,27 +97,28 @@ fmts[["hiv_diag"]] <- scales::label_percent(0.1)
 fmts[["hiv_tx"]] <- scales::label_percent(0.1)
 fmts[["hiv_supp"]] <- scales::label_percent(0.1)
 
-
-sum_quants <- function(df) {
+# Snippet to turn the vector of variable value into 3 quantiles
+sum_quants <- function(df, ql = 0.025, qm = 0.5, qh = 0.975) {
   df %>%
     select(-sim) %>%
     group_by(scenario) %>%
     summarise(across(
       everything(),
       list(
-        l = ~ quantile(.x, 0.025, na.rm = TRUE),
-        m = ~ quantile(.x, 0.5, na.rm = TRUE),
-        h = ~ quantile(.x, 0.975, na.rm = TRUE)
+        l = ~ quantile(.x, ql, na.rm = TRUE),
+        m = ~ quantile(.x, qm, na.rm = TRUE),
+        h = ~ quantile(.x, qh, na.rm = TRUE)
       ),
       .names = "{.col}_/_{.fn}"
     ))
 }
 
+# Add numbers to the labels to force the order
 cur_labels <- scenarios_labels[cur_scenarios]
 cur_labels <- paste0(seq_along(cur_labels), "-", cur_labels)
 names(cur_labels) <- cur_scenarios
 
-
+# Keep only the scenarios of interest
 df <- filter(df, scenario %in% cur_scenarios)
 
 # outcome cumulated over intervention (15y)
@@ -145,9 +153,9 @@ df_at <- df %>%
 
 # Part Serv process outcome
 #
-# cum or mean?
+# cummulative or mean?
 # 1 year or full interv?
-
+# for now: sum over 1 year
 df_part <- df %>%
   filter(time >= max(time) - 52) %>%
   mutate(part_screened___ALL = part_spos___ALL + part_sneg___ALL) %>%
@@ -162,6 +170,7 @@ df_part <- df %>%
     part_txreinit = sum(part_txreinit___ALL, na.rm = TRUE)
   )
 
+# binding of the dfs and formatting
 df_res <- df_cum %>%
   left_join(df_at, by = c("scenario", "sim")) %>%
   left_join(df_part, by = c("scenario", "sim")) %>%
@@ -183,10 +192,13 @@ df_res <- df_cum %>%
   pivot_wider(names_from = name, values_from = clean_val) %>%
   arrange(scenario)
 
+# this lines print the df with the variable in the right order
 df_res[, c("scenario", var_labels)]
 
+# create the folder if it does not exist
 if (!fs::dir_exists("out/tables")) fs::dir_create("out/tables")
 
+# write the csv
 readr::write_csv(
   df_res[, c("scenario", var_labels)],
   paste0("out/tables/", res_name, ".csv")
