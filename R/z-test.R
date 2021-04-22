@@ -1,8 +1,43 @@
 library(dplyr)
 library(tidyr)
 
+res_name <- ("No_ident_vs_Max")
+cur_scenarios <- c( # first 1 is the reference for NIA PIA
+  "no_ident",
+  "ident_max_test",
+  "ident_max_prep",
+  "ident_max_tx",
+  "ident_max"
+)
+
+# res_name <- ("ATL_vs_up_serv")
+# cur_scenarios <- c( # first 1 is the reference for NIA PIA
+#   "base_atlanta_complete",
+#   "test_100",
+#   "prep_100",
+#   "test_prep_100",
+#   "tx_100"
+# )
+
+res_name <- ("ATL_vs_IDx2")
+cur_scenarios <- c( # first 1 is the reference for NIA PIA
+  "base_atlanta_complete",
+  "ident_x2",
+  "ident_x2_test_100",
+  "ident_x2_prep_100",
+  "ident_x2_test_prep_100",
+  "ident_x2_x_100"
+)
+
+# res_name <- ("ATL_flavors")
+# cur_scenarios <- c( # first 1 is the reference for NIA PIA
+#   "base_atlanta_complete",
+#   "base_atlanta_missing",
+#   "base_atlanta_complete_alt"
+# )
+
+
 df <- readRDS("out/scdf.rds")
-# c("no_ident", "ident_max")
 
 scenarios_labels <- c(
   "no_ident_no_prep"          = "Neither Partner Services or PrEP",
@@ -26,30 +61,35 @@ scenarios_labels <- c(
 )
 
 var_labels <- c(
- "nia"           = "nia",
- "pia"           = "pia",
- "ir100"         = "ir100",
- "prep_cov"      = "prep_cov",
- "hiv_diag"      = "hiv_diag",
- "hiv_tx"        = "hiv_tx",
- "hiv_supp"      = "hiv_supp",
- "part_ident"    = "part_ident",
- "part_screened" = "part_screened",
- "part_sneg"     = "part_sneg",
- "part_spos"     = "part_spos",
- "part_prep"     = "part_prep",
- "part_txinit"   = "part_txinit",
- "part_txreinit" = "part_txreinit"
+ # Epi
+ "ir100"         = "Incidence Rate",
+ "nia"           = "NIA",
+ "pia"           = "PIA",
+ # Process
+ "prep_cov"      = "PrEP Coverage",
+ "hiv_diag"      = "HIV+ Diagnosed",
+ "hiv_tx"        = "HIV+ Treated",
+ "hiv_supp"      = "HIV+ Virally Suppressed",
+ # Part Process
+ "part_ident"    = "Number of Identified Partners",
+ "part_screened" = "Number of Screened Partners",
+ "part_sneg"     = "Number of Screened Partners (neg)",
+ "part_spos"     = "Number of Screened Partners (pos)",
+ "part_prep"     = "Number of Partners who Started PrEP",
+ "part_txinit"   = "Number of Partners who Started ART",
+ "part_txreinit" = "Number of Partners who Restarted ART"
 )
 
+# Formatters
 fmts <- replicate(length(var_labels), scales::label_number(1))
 names(fmts) <- names(var_labels)
 fmts[["ir100"]] <- scales::label_number(0.01)
-fmts[["pia"]] <- scales::label_percent(1)
-fmts[["prep_cov"]] <- scales::label_percent(1)
-fmts[["hiv_diag"]] <- scales::label_percent(1)
-fmts[["hiv_tx"]] <- scales::label_percent(1)
-fmts[["hiv_supp"]] <- scales::label_percent(1)
+fmts[["pia"]] <- scales::label_percent(0.1)
+fmts[["prep_cov"]] <- scales::label_percent(0.1)
+fmts[["hiv_diag"]] <- scales::label_percent(0.1)
+fmts[["hiv_tx"]] <- scales::label_percent(0.1)
+fmts[["hiv_supp"]] <- scales::label_percent(0.1)
+
 
 sum_quants <- function(df) {
   df %>%
@@ -65,14 +105,6 @@ sum_quants <- function(df) {
       .names = "{.col}_/_{.fn}"
     ))
 }
-
-cur_scenarios <- c( # first 1 is the reference for NIA PIA
-  "no_ident",
-  "ident_max",
-  "ident_max_test",
-  "ident_max_prep",
-  "ident_max_tx"
-)
 
 cur_labels <- scenarios_labels[cur_scenarios]
 cur_labels <- paste0(seq_along(cur_labels), "-", cur_labels)
@@ -99,8 +131,6 @@ df_cum <- df_cum %>%
     pia = nia / base_cum_incid
   )
 
-df_cum %>% sum_quants()
-
 # Outcome at the end (mean over last year)
 df_at <- df %>%
   filter(time >= max(time) - 52) %>%
@@ -112,8 +142,6 @@ df_at <- df %>%
     hiv_tx   = mean(i_tx___ALL / i_dx___ALL, na.rm = TRUE),
     hiv_supp = mean(i_sup___ALL / i_dx___ALL, na.rm = TRUE)
   )
-
-df_at %>% sum_quants()
 
 # Part Serv process outcome
 #
@@ -147,4 +175,19 @@ df_res <- df_cum %>%
       ~ paste0(fmts[[..1]](..3), " (", fmts[[..1]](..2), ", ", fmts[[..1]](..4), ")")
     )
   ) %>%
-  select(-c(l, m, h))
+  select(-c(l, m, h)) %>%
+  mutate(
+    scenario = cur_labels[scenario],
+    name = var_labels[name]
+  ) %>%
+  pivot_wider(names_from = name, values_from = clean_val) %>%
+  arrange(scenario)
+
+df_res[, c("scenario", var_labels)]
+
+if (!fs::dir_exists("out/tables")) fs::dir_create("out/tables")
+
+readr::write_csv(
+  df_res[, c("scenario", var_labels)],
+  paste0("out/tables/", res_name, ".csv")
+)
