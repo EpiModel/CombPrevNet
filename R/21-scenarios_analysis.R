@@ -1,7 +1,7 @@
 library(data.table)
 
 # One or many job_names
-job_names <- "CPN_scenarios_all"
+job_names <- "CPN_sc_3"
 job_last_n <- NULL # if not NULL, get last N jobs. Otherwise, use job_names
 
 if (!is.null(job_last_n))
@@ -16,7 +16,9 @@ needed_cols <- c(
   "s_prep___ALL", "s_prep_elig___ALL",
   "i___ALL", "i_dx___ALL", "i_tx___ALL", "i_sup___ALL",
   "part_ident___ALL", "part_sneg___ALL", "part_spos___ALL",
-  "part_prep___ALL", "part_txinit___ALL", "part_txreinit___ALL"
+  "part_prep___ALL", "part_txinit___ALL", "part_txreinit___ALL",
+  "ident_dist0___ALL", "ident_dist1___ALL",
+  "ident_dist2___ALL", "ident_dist3p___ALL"
 )
 
 jobs <- list()
@@ -57,7 +59,7 @@ plot_time_quants <- function(df, y_label, interval = c(0.25, 0.75)) {
     ggplot(aes(x = time / 52, y = q2, ymin = q1, ymax = q3,
         col = scenario, fill = scenario)) +
     geom_vline(xintercept = 65, col = "gray") +
-    geom_vline(xintercept = 70, col = "gray") +
+    # geom_vline(xintercept = 70, col = "gray") +
     geom_ribbon(alpha = 0.3, size = 0) +
     geom_line() +
     xlab("Time (years)") +
@@ -68,7 +70,7 @@ plot_time_smooth <- function(df, y_label) {
   df %>%
     ggplot(aes(x = time / 52, y = y, col = scenario, fill = scenario)) +
     geom_vline(xintercept = 65, col = "gray") +
-    geom_vline(xintercept = 70, col = "gray") +
+    # geom_vline(xintercept = 70, col = "gray") +
     geom_smooth() +
     xlab("Time (years)") +
     ylab(y_label)
@@ -95,6 +97,8 @@ df <- df_b %>%
     scenario %in% c(
       "no_ident",
       "ident_max",
+      "base_atlanta_missing",
+      "base_atlanta_complete",
       "ident_max_test",
       "ident_max_prep",
       "ident_max_tx"

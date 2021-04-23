@@ -11,15 +11,19 @@ ls_trackers <- list(
   i_dx          = epi_i_dx,
   i_tx          = epi_i_tx,
   i_sup         = epi_i_sup,
-  i_sup_dur     = epi_i_sup_dur,
+  # i_sup_dur     = epi_i_sup_dur,
   part_ident    = epi_part_ident,
   part_sneg     = epi_part_sneg,
   part_spos     = epi_part_spos,
   part_prep     = epi_part_prep,
   part_txinit   = epi_part_txinit,
-  part_txreinit = epi_part_txreinit
+  part_txreinit = epi_part_txreinit,
+  ident_dist0   = epi_ident_dist(0, ge = FALSE),
+  ident_dist1   = epi_ident_dist(1, ge = FALSE),
+  ident_dist2   = epi_ident_dist(2, ge = FALSE),
+  ident_dist3p  = epi_ident_dist(3, ge = TRUE)
 )
-epi_trackers <- epi_tracker_by_race(ls_trackers, full = TRUE)
+epi_trackers <- epi_tracker_by_race(ls_trackers, full = TRUE, indiv = FALSE)
 
 
 # Params and inits

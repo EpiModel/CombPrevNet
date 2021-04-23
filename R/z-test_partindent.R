@@ -1,6 +1,11 @@
 lnt <- TRUE
 source("R/utils-params.R", local = TRUE)
 orig <- readRDS("out/est/restart.rds")
+orig$attr[[1]]$part.ident.counter <- rep(
+  NA,
+  length(orig$attr[[1]]$part.ident)
+)
+source("R/utils-scenarios.R", local = TRUE)
 
 window_size <- 52
 
@@ -12,10 +17,10 @@ test_params <- list(
   # Part ident parameters
   part.index.window = 0,
   part.index.degree = 1,
-  part.index.prob = 1,
-  part.ident.main.window = window_size,
-  part.ident.casl.window = window_size,
-  part.ident.ooff.window = window_size,
+  part.index.prob = 0.75,
+    part.ident.main.prob = 2 * param$part.ident.main.prob,
+    part.ident.casl.prob = 2 * param$part.ident.casl.prob,
+    part.ident.ooff.prob = 2 * param$part.ident.oof.prob,
   truncate.plist = 100,
   # see "R/z-indent_prob_calib.R"
   part.ident.main.prob = 1,
@@ -52,6 +57,12 @@ library(tidyverse)
 
 df <- as_tibble(sim) %>%
   slice_tail(n = nsteps)
+
+df %>%
+  mutate(elic = found_indexes / elig_indexes) %>%
+  pull(elig_indexes) %>%
+  unique()
+  mean(na.rm = T)
 
 df %>%
   select(

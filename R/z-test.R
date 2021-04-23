@@ -84,7 +84,11 @@ var_labels <- c(
  "part_spos"     = "Number of Screened Partners (pos)",
  "part_prep"     = "Number of Partners who Started PrEP",
  "part_txinit"   = "Number of Partners who Started ART",
- "part_txreinit" = "Number of Partners who Restarted ART"
+ "part_txreinit" = "Number of Partners who Restarted ART",
+ "ident_dist0"   = "Identified Distribution: 0",
+ "ident_dist1"   = "Identified Distribution: 1",
+ "ident_dist2"   = "Identified Distribution: 2",
+ "ident_dist3p"   = "Identified Distribution: 3+"
 )
 
 # Formatters for the variables
@@ -96,6 +100,10 @@ fmts[["prep_cov"]] <- scales::label_percent(0.1)
 fmts[["hiv_diag"]] <- scales::label_percent(0.1)
 fmts[["hiv_tx"]] <- scales::label_percent(0.1)
 fmts[["hiv_supp"]] <- scales::label_percent(0.1)
+fmts[["ident_dist0"]] <- scales::label_percent(1)
+fmts[["ident_dist1"]] <- scales::label_percent(0.001)
+fmts[["ident_dist2"]] <- scales::label_percent(0.001)
+fmts[["ident_dist3p"]] <- scales::label_percent(0.001)
 
 # Snippet to turn the vector of variable value into 3 quantiles
 sum_quants <- function(df, ql = 0.025, qm = 0.5, qh = 0.975) {
@@ -167,8 +175,20 @@ df_part <- df %>%
     part_spos     = sum(part_spos___ALL, na.rm = TRUE),
     part_prep     = sum(part_prep___ALL, na.rm = TRUE),
     part_txinit   = sum(part_txinit___ALL, na.rm = TRUE),
-    part_txreinit = sum(part_txreinit___ALL, na.rm = TRUE)
-  )
+    part_txreinit = sum(part_txreinit___ALL, na.rm = TRUE),
+    ident_dist0   = mean(ident_dist0___ALL, na.rm = TRUE),
+    ident_dist1   = mean(ident_dist1___ALL, na.rm = TRUE),
+    ident_dist2   = mean(ident_dist2___ALL, na.rm = TRUE),
+    ident_dist3p  = mean(ident_dist3p___ALL, na.rm = TRUE)
+  ) %>%
+  mutate(
+    ident_sum     = ident_dist0 + ident_dist1 + ident_dist2 + ident_dist3p,
+    ident_dist0   = ident_dist0 / ident_sum,
+    ident_dist1   = ident_dist1 / ident_sum,
+    ident_dist2   = ident_dist2 / ident_sum,
+    ident_dist3p  = ident_dist3p / ident_sum
+  ) %>%
+  select(-ident_sum)
 
 # binding of the dfs and formatting
 df_res <- df_cum %>%

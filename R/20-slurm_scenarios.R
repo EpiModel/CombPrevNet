@@ -6,7 +6,7 @@ test_simulation <- TRUE
 batch_per_set <- 10      # How many 28 replications to do per parameter
 steps_to_keep <- 20 * 52 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "CPN_scenarios_all"
+job_name <- "CPN_sc_5"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
@@ -26,6 +26,10 @@ lnt <- TRUE # if FALSE: set `require.lnt` to FALSE and adjust ` prep.start.prob`
 source("R/utils-params.R", local = TRUE)
 
 orig <- readRDS("out/est/restart.rds")
+orig$attr[[1]]$part.ident.counter <- rep(
+  NA,
+  length(orig$attr[[1]]$part.ident)
+)
 
 # run 20 rng years before scenarios
 scenario_start_step <- 70 * 52 + 1
@@ -87,7 +91,7 @@ if (test_simulation) {
   control$verbose <- TRUE
 
   run_netsim_fun(
-    param_proposals[[1]], sim_nums[[1]],
+    param_proposals[[180]], sim_nums[[180]],
     orig, param, init, control, info
   )
 }

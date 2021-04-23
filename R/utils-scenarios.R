@@ -104,15 +104,15 @@ sc_relatives <- list(
     part.ident.start = param$prep.start,
     # see "R/z-indent_prob_calib.R"
     part.ident.main.prob = 2 * param$part.ident.main.prob,
-    part.ident.casl.prob = 2 * param$part.ident.casl,
-    part.ident.ooff.prob = 2 * param$part.ident.oof
+    part.ident.casl.prob = 2 * param$part.ident.casl.prob,
+    part.ident.ooff.prob = 2 * param$part.ident.ooff.prob
   ),
   ident_x2_test_100  = list(
     part.ident.start = param$prep.start,
     # see "R/z-indent_prob_calib.R"
     part.ident.main.prob = 2 * param$part.ident.main.prob,
-    part.ident.casl.prob = 2 * param$part.ident.casl,
-    part.ident.ooff.prob = 2 * param$part.ident.oof,
+    part.ident.casl.prob = 2 * param$part.ident.casl.prob,
+    part.ident.ooff.prob = 2 * param$part.ident.ooff.prob,
     # Part Serv Params
     part.hiv.test.rate   = rep(1, 3)
   ),
@@ -120,8 +120,8 @@ sc_relatives <- list(
     part.ident.start = param$prep.start,
     # see "R/z-indent_prob_calib.R"
     part.ident.main.prob = 2 * param$part.ident.main.prob,
-    part.ident.casl.prob = 2 * param$part.ident.casl,
-    part.ident.ooff.prob = 2 * param$part.ident.oof,
+    part.ident.casl.prob = 2 * param$part.ident.casl.prob,
+    part.ident.ooff.prob = 2 * param$part.ident.ooff.prob,
     # Part Serv Params
     part.prep.start.prob = rep(1, 3)
   ),
@@ -129,8 +129,8 @@ sc_relatives <- list(
     part.ident.start = param$prep.start,
     # see "R/z-indent_prob_calib.R"
     part.ident.main.prob = 2 * param$part.ident.main.prob,
-    part.ident.casl.prob = 2 * param$part.ident.casl,
-    part.ident.ooff.prob = 2 * param$part.ident.oof,
+    part.ident.casl.prob = 2 * param$part.ident.casl.prob,
+    part.ident.ooff.prob = 2 * param$part.ident.ooff.prob,
     # Part Serv Params
     part.hiv.test.rate   = rep(1, 3),
     part.prep.start.prob = rep(1, 3)
@@ -139,8 +139,8 @@ sc_relatives <- list(
     part.ident.start = param$prep.start,
     # see "R/z-indent_prob_calib.R"
     part.ident.main.prob = 2 * param$part.ident.main.prob,
-    part.ident.casl.prob = 2 * param$part.ident.casl,
-    part.ident.ooff.prob = 2 * param$part.ident.oof,
+    part.ident.casl.prob = 2 * param$part.ident.casl.prob,
+    part.ident.ooff.prob = 2 * param$part.ident.ooff.prob,
     # Part Serv Params
     part.tx.init.prob    = rep(1, 3),
     part.tx.reinit.prob  = rep(1, 3)

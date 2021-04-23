@@ -4,6 +4,7 @@ epi_tracker_by_race <- function(ls_funs, races = 1:3,
                                 indiv = TRUE, full = TRUE) {
 
  ls_races <- if (indiv) as.list(races) else list()
+ races_names <- if (indiv) races_names else c()
 
   if (full) {
     ls_races <- c(ls_races, list(races))
@@ -185,14 +186,35 @@ epi_part_txreinit <- function(r_ind) {
   }
 }
 
+epi_ident_dist <- function(n_id, ge = FALSE) {
+  function(r_ind) {
+    function(dat, at) {
+      needed_attributes <- c("race", "part.ident.counter")
+      with(get_attr_list(dat, needed_attributes), {
+        if (n_id == 0) {
+          sum(
+            race %in% r_ind &
+            (is.na(part.ident.counter) | part.ident.counter == n_id),
+            na.rm = TRUE
+          )
+        } else if (ge) {
+          sum(race %in% r_ind & part.ident.counter >= n_id, na.rm = TRUE)
+        } else {
+          sum(race %in% r_ind & part.ident.counter == n_id, na.rm = TRUE)
+        }
+      })
+    }
+  }
+}
+
 epi_partner_count <- function(rel_type) {
   function(dat, at) {
     function(dat, at) {
       plist <- dat$temp$plist
       plist <- dat$temp$plist
-      plist <- plist[plist[,3] == rel_type, ]
       plist <- plist[plist[, 3] == rel_type, ]
-      mean(table(plist[, c(1,2)]))
+      plist <- plist[plist[, 3] == rel_type, ]
+      mean(table(plist[, c(1, 2)]))
       mean(table(plist[, c(1, 2)]))
     }
   }
