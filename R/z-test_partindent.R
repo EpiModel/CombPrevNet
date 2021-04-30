@@ -53,10 +53,10 @@ control <- control_msm(
 # debug(hivtest_msm)
 sim <- netsim(orig, param, init, control)
 
-# library(tidyverse)
+library(tidyverse)
 
-# df <- as_tibble(sim) %>%
-#   slice_tail(n = nsteps)
+df <- as_tibble(sim) %>%
+  slice_tail(n = nsteps)
 
 # df %>%
 #   mutate(elic = found_indexes / elig_indexes) %>%

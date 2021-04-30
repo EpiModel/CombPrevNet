@@ -1,6 +1,6 @@
 source("R/utils-slurm_prep_helpers.R") # requires `purrr`
 source("R/utils-slurm_wf.R")
-test_simulation <- TRUE
+test_simulation <- FALSE
 
 # Set slurm parameters ---------------------------------------------------------
 batch_per_set <- 10      # How many 28 replications to do per parameter
@@ -77,9 +77,10 @@ slurm_wf_tmpl_dir("inst/slurm_wf/", info$root_dir, force = T)
 slurm_wf_Map(
   info$root_dir,
   resources = slurm_ressources,
-  FUN = run_netsim_fun,
+  FUN = run_netsim_updaters_fun,
   sim_num = sim_nums,
-  param_proposal = param_proposals,
+  updaters = param_proposals,
+  scenario = names(param_proposals),
   MoreArgs = list(orig = orig, param = param, init = init, control = control,
                   info = info)
 )
@@ -90,9 +91,11 @@ if (test_simulation) {
   control$ncores <- 1
   control$verbose <- TRUE
 
-  test_sim <- run_netsim_fun(
-    param_proposals[[180]], sim_nums[[180]],
-    orig, param, init, control, info
+  test_sim <- run_netsim_updaters_fun(
+    updaters = param_proposals[[180]],
+    sum_num = sim_nums[[180]],
+    scenario = names(param_proposals)[180],
+    orig = orig, param = param, init = init, control = control, info = info
   )
 }
 
@@ -102,7 +105,6 @@ saveRDS(info, fs::path(paths$remote_job_dir, "job_info.rds"))
 # move slurm to out and cleanup
 fs::file_move(paths$remote_job_dir, fs::path(paths$local_out, paths$jobs_dir))
 fs::dir_delete(paths$jobs_dir)
-
 
 scp_send_script <- c(
   "#!/bin/sh",

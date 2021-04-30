@@ -68,29 +68,30 @@ scenarios_labels <- c(
 # Conversion between variable name and final label
 var_labels <- c(
  # Epi
- "ir100"         = "Incidence Rate",
- "nia"           = "NIA",
- "pia"           = "PIA",
+ "ir100"              = "Incidence Rate",
+ "nia"                = "NIA",
+ "pia"                = "PIA",
  # Process
- "prep_cov"      = "PrEP Coverage",
- "hiv_diag"      = "HIV+ Diagnosed",
- "hiv_tx"        = "HIV+ Treated",
- "hiv_supp"      = "HIV+ Virally Suppressed",
+ "prep_cov"           = "PrEP Coverage",
+ "hiv_diag"           = "HIV+ Diagnosed",
+ "hiv_tx"             = "HIV+ Treated",
+ "hiv_supp"           = "HIV+ Virally Suppressed",
+ "prep_start"         = "Total Number of individuals who Started PrEP",
  # Part Process
- # "elig_indexes"  = "Number of Eligible Indexes",
- # "found_indexes" = "Number of Indexes Found",
- # "elicitaion"    = "Index Elicitation",
- "part_ident"    = "Number of Identified Partners",
- "part_screened" = "Number of Screened Partners",
- "part_sneg"     = "Number of Screened Partners (neg)",
- "part_spos"     = "Number of Screened Partners (pos)",
- "part_prep"     = "Number of Partners who Started PrEP",
- "part_txinit"   = "Number of Partners who Started ART",
- "part_txreinit" = "Number of Partners who Restarted ART",
- "ident_dist0"   = "Identified Distribution: 0",
- "ident_dist1"   = "Identified Distribution: 1",
- "ident_dist2"   = "Identified Distribution: 2",
- "ident_dist3p"  = "Identified Distribution: 3+"
+ "elig_indexes"       = "Number of Eligible Indexes",
+ "found_indexes"      = "Number of Indexes Found",
+ "prop_found_indexes" = "Proportion of Indexes Identified",
+ "part_ident"         = "Number of Identified Partners",
+ "part_screened"      = "Number of Screened Partners",
+ "part_sneg"          = "Number of Screened Partners (neg)",
+ "part_spos"          = "Number of Screened Partners (pos)",
+ "part_prep"          = "Number of Partners who Started PrEP",
+ "part_txinit"        = "Number of Partners who Started ART",
+ "part_txreinit"      = "Number of Partners who Restarted ART",
+ "ident_dist0"        = "Identified Distribution: 0",
+ "ident_dist1"        = "Identified Distribution: 1",
+ "ident_dist2"        = "Identified Distribution: 2",
+ "ident_dist3p"       = "Identified Distribution: 3+"
 )
 
 # Formatters for the variables
@@ -106,7 +107,7 @@ fmts[["ident_dist0"]] <- scales::label_percent(1)
 fmts[["ident_dist1"]] <- scales::label_percent(0.001)
 fmts[["ident_dist2"]] <- scales::label_percent(0.001)
 fmts[["ident_dist3p"]] <- scales::label_percent(0.001)
-fmts[["elicitaion"]] <- scales::label_percent(0.1)
+fmts[["prop_found_indexes"]] <- scales::label_percent(0.1)
 
 # Snippet to turn the vector of variable value into 3 quantiles
 sum_quants <- function(df, ql = 0.025, qm = 0.5, qh = 0.975) {
@@ -172,6 +173,7 @@ df_part <- df %>%
   mutate(part_screened___ALL = part_spos___ALL + part_sneg___ALL) %>%
   group_by(scenario, sim) %>%
   summarise(
+    prep_start    = sum(prep_start___ALL, na.rm = TRUE),
     part_ident    = sum(part_ident___ALL, na.rm = TRUE),
     part_screened = sum(part_screened___ALL, na.rm = TRUE),
     part_sneg     = sum(part_sneg___ALL, na.rm = TRUE),
@@ -179,20 +181,20 @@ df_part <- df %>%
     part_prep     = sum(part_prep___ALL, na.rm = TRUE),
     part_txinit   = sum(part_txinit___ALL, na.rm = TRUE),
     part_txreinit = sum(part_txreinit___ALL, na.rm = TRUE),
-    # elig_indexes  = sum(elig_indexes, na.rm = TRUE),
-    # found_indexes = sum(found_indexes, na.rm = TRUE),
+    elig_indexes  = sum(elig_indexes, na.rm = TRUE),
+    found_indexes = sum(found_indexes, na.rm = TRUE),
     ident_dist0   = mean(ident_dist0___ALL, na.rm = TRUE),
     ident_dist1   = mean(ident_dist1___ALL, na.rm = TRUE),
     ident_dist2   = mean(ident_dist2___ALL, na.rm = TRUE),
     ident_dist3p  = mean(ident_dist3p___ALL, na.rm = TRUE),
   ) %>%
   mutate(
-    # elicitaion    = found_indexes / elig_indexes,
-    ident_sum     = ident_dist0 + ident_dist1 + ident_dist2 + ident_dist3p,
-    ident_dist0   = ident_dist0 / ident_sum,
-    ident_dist1   = ident_dist1 / ident_sum,
-    ident_dist2   = ident_dist2 / ident_sum,
-    ident_dist3p  = ident_dist3p / ident_sum
+    prop_found_indexes = found_indexes / elig_indexes,
+    ident_sum          = ident_dist0 + ident_dist1 + ident_dist2 + ident_dist3p,
+    ident_dist0        = ident_dist0 / ident_sum,
+    ident_dist1        = ident_dist1 / ident_sum,
+    ident_dist2        = ident_dist2 / ident_sum,
+    ident_dist3p       = ident_dist3p / ident_sum
   ) %>%
   select(-ident_sum)
 

@@ -1,7 +1,7 @@
 library(data.table)
 
 # One or many job_names
-job_names <- "CPN_sc_5"
+job_names <- "CPN_sc_6"
 job_last_n <- NULL # if not NULL, get last N jobs. Otherwise, use job_names
 
 if (!is.null(job_last_n))
@@ -15,11 +15,12 @@ needed_cols <- c(
   "incid", "ir100",
   "s_prep___ALL", "s_prep_elig___ALL",
   "i___ALL", "i_dx___ALL", "i_tx___ALL", "i_sup___ALL",
+  "elig_indexes", "found_indexes",
+  "prep_start___ALL",
   "part_ident___ALL", "part_sneg___ALL", "part_spos___ALL",
   "part_prep___ALL", "part_txinit___ALL", "part_txreinit___ALL",
   "ident_dist0___ALL", "ident_dist1___ALL",
   "ident_dist2___ALL", "ident_dist3p___ALL"
-  # , "elig_indexes", "found_indexes"
 )
 
 jobs <- list()
@@ -36,7 +37,8 @@ for (job in job_names) {
     sim <- readRDS(fle)
     dff <- as.data.table(sim)
     dff[, `:=`(batch = btch, scenario = names(infos$param_proposals)[btch])]
-    df_ls[[btch]] <- dff[, ..needed_cols]
+    keep_cols <- intersect(needed_cols, names(dff))
+    df_ls[[btch]] <- dff[, ..keep_cols]
   }
   jobs[[job]]$data <- rbindlist(df_ls, fill = TRUE)
 }
@@ -60,7 +62,7 @@ plot_time_quants <- function(df, y_label, interval = c(0.25, 0.75)) {
     ggplot(aes(x = time / 52, y = q2, ymin = q1, ymax = q3,
         col = scenario, fill = scenario)) +
     geom_vline(xintercept = 65, col = "gray") +
-    # geom_vline(xintercept = 70, col = "gray") +
+    geom_vline(xintercept = 70, col = "gray") +
     geom_ribbon(alpha = 0.3, size = 0) +
     geom_line() +
     xlab("Time (years)") +
@@ -71,7 +73,7 @@ plot_time_smooth <- function(df, y_label) {
   df %>%
     ggplot(aes(x = time / 52, y = y, col = scenario, fill = scenario)) +
     geom_vline(xintercept = 65, col = "gray") +
-    # geom_vline(xintercept = 70, col = "gray") +
+    geom_vline(xintercept = 70, col = "gray") +
     geom_smooth() +
     xlab("Time (years)") +
     ylab(y_label)

@@ -1,5 +1,5 @@
-# library(EpiModelHIV)
-pkgload::load_all("../EpiModelHIV-p/")
+library(EpiModelHIV)
+# pkgload::load_all("../EpiModelHIV-p/")
 
 # Epi Trackers
 source("R/utils-epi_trackers.R")
@@ -133,6 +133,7 @@ param <- param_msm(
   part.tx.init.prob = rep(0.387, 3),
   part.tx.reinit.prob = rep(0, 3),
 
+  param_updaters = list(),
   epi_trackers = epi_trackers
 )
 
