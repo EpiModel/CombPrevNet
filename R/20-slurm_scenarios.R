@@ -6,7 +6,7 @@ test_simulation <- TRUE
 batch_per_set <- 10      # How many 28 replications to do per parameter
 steps_to_keep <- 20 * 52 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "CPN_sc_5"
+job_name <- "CPN_sc_6"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
@@ -85,12 +85,12 @@ slurm_wf_Map(
 )
 
 if (test_simulation) {
-  control$nsteps <- control$start + 1 * 52
+  control$nsteps <- control$start + 15 * 52
   control$nsims <- 1
   control$ncores <- 1
   control$verbose <- TRUE
 
-  run_netsim_fun(
+  test_sim <- run_netsim_fun(
     param_proposals[[180]], sim_nums[[180]],
     orig, param, init, control, info
   )

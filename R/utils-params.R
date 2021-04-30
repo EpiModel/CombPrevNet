@@ -1,5 +1,5 @@
-library(EpiModelHIV)
-# pkgload::load_all("../EpiModelHIV-p/")
+# library(EpiModelHIV)
+pkgload::load_all("../EpiModelHIV-p/")
 
 # Epi Trackers
 source("R/utils-epi_trackers.R")
@@ -12,6 +12,7 @@ ls_trackers <- list(
   i_tx          = epi_i_tx,
   i_sup         = epi_i_sup,
   # i_sup_dur     = epi_i_sup_dur,
+  prep_start    = epi_prep_start,
   part_ident    = epi_part_ident,
   part_sneg     = epi_part_sneg,
   part_spos     = epi_part_spos,
@@ -71,7 +72,7 @@ param <- param_msm(
   prep.start.prob =  rep(0.71, 3), # 0.00896,
   prep.discont.rate = rep(0.02138792, 3), # 1 - (2^(-1/(224.4237/7)))
   ## prep.tst.int = 90/7,         # do I need that?
-  ## prep.risk.int = 182/7,       # do I need that?
+  prep.risk.int = 53, #26,
   ## prep.sti.screen.int = 182/7,
   ## prep.sti.prob.tx = 1,
   prep.risk.reassess.method = "year",
@@ -115,7 +116,7 @@ param <- param_msm(
   netresim.disl.rr = rep(1, 2),
 
   # Part ident parameters (defaut is ATL Complete)
-  part.ident.start = Inf,
+  part.ident.start = prep_start_time,
   part.index.window = 0, # ALWAYS KEEP AT 0
   part.index.degree = 1,
   part.index.prob = 0.666,

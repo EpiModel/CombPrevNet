@@ -219,3 +219,15 @@ epi_partner_count <- function(rel_type) {
     }
   }
 }
+
+epi_prep_start <- function(r_ind) {
+  function(dat, at) {
+    needed_attributes <- c("race", "prepStartTime")
+    with(get_attr_list(dat, needed_attributes), {
+      sum(
+        race %in% r_ind &
+        prepStartTime == at,
+        na.rm = TRUE)
+    })
+  }
+}

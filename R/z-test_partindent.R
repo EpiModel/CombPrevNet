@@ -53,27 +53,27 @@ control <- control_msm(
 # debug(hivtest_msm)
 sim <- netsim(orig, param, init, control)
 
-library(tidyverse)
+# library(tidyverse)
 
-df <- as_tibble(sim) %>%
-  slice_tail(n = nsteps)
+# df <- as_tibble(sim) %>%
+#   slice_tail(n = nsteps)
 
-df %>%
-  mutate(elic = found_indexes / elig_indexes) %>%
-  pull(elig_indexes) %>%
-  unique()
-  mean(na.rm = T)
+# df %>%
+#   mutate(elic = found_indexes / elig_indexes) %>%
+#   pull(elig_indexes) %>%
+#   unique()
+#   mean(na.rm = T)
 
-df %>%
-  select(
-    i = part_ident___ALL,
-    p = part_spos___ALL,
-    n = part_sneg___ALL,
-    r = part_prep___ALL,
-    t = part_txinit___ALL,
-    x = part_txreinit___ALL
-  ) %>%
-  print(n = nsteps)
+# df %>%
+#   select(
+#     i = part_ident___ALL,
+#     p = part_spos___ALL,
+#     n = part_sneg___ALL,
+#     r = part_prep___ALL,
+#     t = part_txinit___ALL,
+#     x = part_txreinit___ALL
+#   ) %>%
+#   print(n = nsteps)
 
-source("R/utils-ident_prop.R")
-ident_prob_calculator(target = 4, method = 2, pos = 1:3)
+# source("R/utils-ident_prop.R")
+# ident_prob_calculator(target = 4, method = 2, pos = 1:3)

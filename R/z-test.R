@@ -40,7 +40,6 @@ cur_scenarios <- c( # first 1 is the reference for NIA PIA
 #   "base_atlanta_complete_alt"
 # )
 
-
 # Read the data extracted in R/21-<...>.R
 df <- readRDS("out/scdf.rds")
 
@@ -78,6 +77,9 @@ var_labels <- c(
  "hiv_tx"        = "HIV+ Treated",
  "hiv_supp"      = "HIV+ Virally Suppressed",
  # Part Process
+ # "elig_indexes"  = "Number of Eligible Indexes",
+ # "found_indexes" = "Number of Indexes Found",
+ # "elicitaion"    = "Index Elicitation",
  "part_ident"    = "Number of Identified Partners",
  "part_screened" = "Number of Screened Partners",
  "part_sneg"     = "Number of Screened Partners (neg)",
@@ -88,7 +90,7 @@ var_labels <- c(
  "ident_dist0"   = "Identified Distribution: 0",
  "ident_dist1"   = "Identified Distribution: 1",
  "ident_dist2"   = "Identified Distribution: 2",
- "ident_dist3p"   = "Identified Distribution: 3+"
+ "ident_dist3p"  = "Identified Distribution: 3+"
 )
 
 # Formatters for the variables
@@ -104,6 +106,7 @@ fmts[["ident_dist0"]] <- scales::label_percent(1)
 fmts[["ident_dist1"]] <- scales::label_percent(0.001)
 fmts[["ident_dist2"]] <- scales::label_percent(0.001)
 fmts[["ident_dist3p"]] <- scales::label_percent(0.001)
+fmts[["elicitaion"]] <- scales::label_percent(0.1)
 
 # Snippet to turn the vector of variable value into 3 quantiles
 sum_quants <- function(df, ql = 0.025, qm = 0.5, qh = 0.975) {
@@ -176,12 +179,15 @@ df_part <- df %>%
     part_prep     = sum(part_prep___ALL, na.rm = TRUE),
     part_txinit   = sum(part_txinit___ALL, na.rm = TRUE),
     part_txreinit = sum(part_txreinit___ALL, na.rm = TRUE),
+    # elig_indexes  = sum(elig_indexes, na.rm = TRUE),
+    # found_indexes = sum(found_indexes, na.rm = TRUE),
     ident_dist0   = mean(ident_dist0___ALL, na.rm = TRUE),
     ident_dist1   = mean(ident_dist1___ALL, na.rm = TRUE),
     ident_dist2   = mean(ident_dist2___ALL, na.rm = TRUE),
-    ident_dist3p  = mean(ident_dist3p___ALL, na.rm = TRUE)
+    ident_dist3p  = mean(ident_dist3p___ALL, na.rm = TRUE),
   ) %>%
   mutate(
+    # elicitaion    = found_indexes / elig_indexes,
     ident_sum     = ident_dist0 + ident_dist1 + ident_dist2 + ident_dist3p,
     ident_dist0   = ident_dist0 / ident_sum,
     ident_dist1   = ident_dist1 / ident_sum,
@@ -223,3 +229,78 @@ readr::write_csv(
   df_res[, c("scenario", var_labels)],
   paste0("out/tables/", res_name, ".csv")
 )
+
+# library(tidyverse)
+# library(RcppRoll)
+
+# theme_set(theme_classic())
+
+# plot_time_smooth <- function(df, y_label) {
+#   df %>%
+#     ggplot(aes(x = time / 52, y = y, col = scenario, fill = scenario)) +
+#     geom_vline(xintercept = 65, col = "gray") +
+#     # geom_vline(xintercept = 70, col = "gray") +
+#     geom_smooth() +
+#     xlab("Time (years)") +
+#     ylab(y_label)
+# }
+
+# plot_time_roll <- function(df, y_label, roll = 13, interval = c(0.25, 0.75)) {
+#   df %>%
+#     # group_by(scenario, sim) %>%
+#     # arrange(time) %>%
+#     # mutate(y = roll_mean(y, n = roll, align = "right", fill = NA)) %>%
+#     group_by(scenario, time) %>%
+#     # summarise(m = mean(y, na.rm = T), s = sd(y, na.rm = T)) %>%
+#     # mutate(
+#     #   q1 = m - s,
+#     #   q2 = m,
+#     #   q3 = m + s
+#     # ) %>%
+#     summarise(
+#       q1 = quantile(y, interval[1], na.rm = TRUE),
+#       q2 = mean(y, na.rm = T), #quantile(y, 0.5, na.rm = TRUE),
+#       q3 = quantile(y, interval[2], na.rm = TRUE)
+#     ) %>%
+#     ggplot(aes(x = time / 52, y = q2, ymin = q1, ymax = q3,
+#         col = scenario, fill = scenario)) +
+#     geom_vline(xintercept = 65, col = "gray") +
+#     # geom_vline(xintercept = 70, col = "gray") +
+#     geom_ribbon(alpha = 0.3, size = 0) +
+#     geom_line() +
+#     xlab("Time (years)") +
+#     ylab(y_label)
+# }
+
+
+# df %>%
+#   mutate(y = ir100) %>%
+#   plot_time_roll("standardized incidence", roll = 100, c(.49, .51))
+
+# df %>%
+#   mutate(y = ir100) %>%
+#   plot_time_smooth("standardized incidence") +
+#   expand_limits(y = c(1.2, 1.7))
+
+# df %>%
+#   mutate(y = ir100) %>%
+#   ggplot(aes(x = time / 52, y = y, col = scenario)) +
+#   geom_smooth(
+#     method = "loess"
+#     # method = "gam", formula = y ~ s(x, bs = "cs")
+#   )
+
+# roll <- 52
+# df %>%
+#   mutate(y = ir100) %>%
+#     group_by(scenario, time) %>%
+#     summarise(
+#       y = mean(y)
+#     ) %>%
+#     group_by(scenario) %>%
+#     mutate(
+#       y = roll_mean(y, n = roll, align = "right", fill = NA)
+#     ) %>%
+#     ggplot(aes(x = time / 52, y = y, col = scenario)) +
+#     geom_vline(xintercept = 65, col = "gray") +
+#     geom_line()

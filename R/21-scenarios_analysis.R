@@ -1,7 +1,7 @@
 library(data.table)
 
 # One or many job_names
-job_names <- "CPN_sc_3"
+job_names <- "CPN_sc_5"
 job_last_n <- NULL # if not NULL, get last N jobs. Otherwise, use job_names
 
 if (!is.null(job_last_n))
@@ -19,6 +19,7 @@ needed_cols <- c(
   "part_prep___ALL", "part_txinit___ALL", "part_txreinit___ALL",
   "ident_dist0___ALL", "ident_dist1___ALL",
   "ident_dist2___ALL", "ident_dist3p___ALL"
+  # , "elig_indexes", "found_indexes"
 )
 
 jobs <- list()
@@ -79,14 +80,17 @@ plot_time_smooth <- function(df, y_label) {
 scenarios_labels <- c(
     "no_ident_no_prep"      = "Neither Partner Services or PrEP",
     "no_ident"              = "No Partner Services",
-    "base_atlanta_missing"  = "Partner Services (Atlanta Missing)",
     "base_atlanta_complete" = "Partner Services (Atlanta Complete)",
+    "base_atlanta_missing"  = "Partner Services (Atlanta Missing)",
     "ident_max_test"        = "Partner Services (Max Test)",
     "ident_max_prep"        = "Partner Services (Max Test + PrEP)",
     "ident_max_tx"          = "Partner Services (Max Test + Tx)",
     "ident_max"             = "Partner Services (All Max)"
   )
 
+sce <- paste0(seq_along(scenarios_labels), "-", scenarios_labels)
+names(sce) <- names(scenarios_labels)
+scenarios_labels <- sce
 
 df <- df_b %>%
   filter(scenario %in% names(scenarios_labels)) %>%
@@ -95,6 +99,7 @@ df <- df_b %>%
 df <- df_b %>%
   filter(
     scenario %in% c(
+      "no_ident_no_prep",
       "no_ident",
       "ident_max",
       "base_atlanta_missing",
