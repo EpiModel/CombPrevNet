@@ -1,5 +1,5 @@
-library(EpiModelHIV)
-# pkgload::load_all("../EpiModelHIV-p/")
+# library(EpiModelHIV)
+pkgload::load_all("../EpiModelHIV-p/")
 
 # Epi Trackers
 source("R/utils-epi_trackers.R")
@@ -74,7 +74,7 @@ param <- param_msm(
   prep.start.prob =  rep(0.71, 3), # 0.00896,
   prep.discont.rate = rep(0.02138792, 3), # 1 - (2^(-1/(224.4237/7)))
   ## prep.tst.int = 90/7,         # do I need that?
-  prep.risk.int = 53, #26,
+  prep.risk.int = 26,
   ## prep.sti.screen.int = 182/7,
   ## prep.sti.prob.tx = 1,
   prep.risk.reassess.method = "year",
