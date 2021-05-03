@@ -71,6 +71,22 @@ info$param_proposals <- param_proposals
 
 slurm_wf_tmpl_dir("inst/slurm_wf/", info$root_dir, force = T)
 
+if (test_simulation) {
+  control_test <- control
+  control_test$nsteps <- control$start + 1 * 52
+  control_test$nsims <- 1
+  control_test$ncores <- 1
+  control_test$verbose <- TRUE
+  n_sc <- 2 # scenario number
+
+  test_sim <- run_netsim_updaters_fun(
+    updaters = param_proposals[[n_sc]],
+    sim_num = sim_nums[[n_sc]],
+    scenario = names(param_proposals)[n_sc],
+    orig = orig, param = param, init = init, control = control_test, info = info
+  )
+}
+
 slurm_wf_Map(
   info$root_dir,
   resources = slurm_ressources,
@@ -80,18 +96,6 @@ slurm_wf_Map(
   MoreArgs = list(orig = orig, param = param, init = init, control = control,
                   info = info)
 )
-
-if (test_simulation) {
-  control$nsteps <- control$start + 1 * 52
-  control$nsims <- 1
-  control$ncores <- 1
-  control$verbose <- TRUE
-
-  run_netsim_fun(
-    param_proposals[[1]], sim_nums[[1]],
-    orig, param, init, control, info
-  )
-}
 
 # Create out dir and save params
 fs::dir_create(fs::path(paths$local_out, paths$jobs_dir))

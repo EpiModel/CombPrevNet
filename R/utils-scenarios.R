@@ -34,80 +34,9 @@ sc_atl_others <- list(
     list(
       at = 52 * 60 + 1,
       param = list( # Alternate method for ident prob
-        part.ident.main.prob = 0.09653631,
-        part.ident.casl.prob = 0.09653631,
-        part.ident.ooff.prob = 0.04826816
-      )
-    )
-  )
-)
-
-sc_ident_max <- list(
-  ident_max = list(
-    list(
-      at = 52 * 60 + 1,
-      param = list( # maximum possible effect (unachievable in practice)
-        # see "R/z-indent_prob_calib.R"
-        part.index.prob = 1,
-        part.ident.main.prob = 1,
-        part.ident.casl.prob = 1,
-        part.ident.ooff.prob = 1,
-        # Part Serv Params
-        part.hiv.test.rate   = rep(1, 3),
-        part.prep.start.prob = rep(1, 3),
-        part.tx.init.prob    = rep(1, 3),
-        part.tx.reinit.prob  = rep(1, 3)
-      )
-    )
-  ),
-  ident_max_test = list(
-    list(
-      at = 52 * 60 + 1,
-      param = list( # maximum test (prep effect via LNT)
-        # see "R/z-indent_prob_calib.R"
-        part.index.prob = 1,
-        part.ident.main.prob = 1,
-        part.ident.casl.prob = 1,
-        part.ident.ooff.prob = 1,
-        # Part Serv Params
-        part.hiv.test.rate   = rep(1, 3),
-        part.prep.start.prob = rep(0, 3),
-        part.tx.init.prob    = rep(0, 3),
-        part.tx.reinit.prob  = rep(0, 3)
-      )
-    )
-  ),
-  ident_max_prep = list(
-    list(
-      at = 52 * 60 + 1,
-      param = list( # maximum test + prep
-        # see "R/z-indent_prob_calib.R"
-        part.index.prob = 1,
-        part.ident.main.prob = 1,
-        part.ident.casl.prob = 1,
-        part.ident.ooff.prob = 1,
-        # Part Serv Params
-        part.hiv.test.rate   = rep(1, 3),
-        part.prep.start.prob = rep(1, 3),
-        part.tx.init.prob    = rep(0, 3),
-        part.tx.reinit.prob  = rep(0, 3)
-      )
-    )
-  ),
-  ident_max_tx = list(
-    list(
-      at = 52 * 60 + 1,
-      param = list( # maximum test + tx (re)init
-        # see "R/z-indent_prob_calib.R"
-        part.index.prob = 1,
-        part.ident.main.prob = 1,
-        part.ident.casl.prob = 1,
-        part.ident.ooff.prob = 1,
-        # Part Serv Params
-        part.hiv.test.rate   = rep(1, 3),
-        part.prep.start.prob = rep(0, 3),
-        part.tx.init.prob    = rep(1, 3),
-        part.tx.reinit.prob  = rep(1, 3)
+        part.ident.main.prob = 0.03607516,
+        part.ident.casl.prob = 0.03607516,
+        part.ident.ooff.prob = 0.01803758
       )
     )
   )
@@ -212,6 +141,77 @@ sc_relatives <- list(
         part.ident.casl.prob = 2 * param$part.ident.casl.prob,
         part.ident.ooff.prob = 2 * param$part.ident.ooff.prob,
         # Part Serv Params
+        part.tx.init.prob    = rep(1, 3),
+        part.tx.reinit.prob  = rep(1, 3)
+      )
+    )
+  )
+)
+
+sc_ident_max <- list(
+  ident_max = list(
+    list(
+      at = 52 * 70 + 1,
+      param = list( # maximum possible effect (unachievable in practice)
+        # see "R/z-indent_prob_calib.R"
+        part.index.prob = 1,
+        part.ident.main.prob = 1,
+        part.ident.casl.prob = 1,
+        part.ident.ooff.prob = 1,
+        # Part Serv Params
+        part.hiv.test.rate   = rep(1, 3),
+        part.prep.start.prob = rep(1, 3),
+        part.tx.init.prob    = rep(1, 3),
+        part.tx.reinit.prob  = rep(1, 3)
+      )
+    )
+  ),
+  ident_max_test = list(
+    list(
+      at = 52 * 70 + 1,
+      param = list( # maximum test (prep effect via LNT)
+        # see "R/z-indent_prob_calib.R"
+        part.index.prob = 1,
+        part.ident.main.prob = 1,
+        part.ident.casl.prob = 1,
+        part.ident.ooff.prob = 1,
+        # Part Serv Params
+        part.hiv.test.rate   = rep(1, 3),
+        part.prep.start.prob = rep(0, 3),
+        part.tx.init.prob    = rep(0, 3),
+        part.tx.reinit.prob  = rep(0, 3)
+      )
+    )
+  ),
+  ident_max_prep = list(
+    list(
+      at = 52 * 70 + 1,
+      param = list( # maximum test + prep
+        # see "R/z-indent_prob_calib.R"
+        part.index.prob = 1,
+        part.ident.main.prob = 1,
+        part.ident.casl.prob = 1,
+        part.ident.ooff.prob = 1,
+        # Part Serv Params
+        part.hiv.test.rate   = rep(1, 3),
+        part.prep.start.prob = rep(1, 3),
+        part.tx.init.prob    = rep(0, 3),
+        part.tx.reinit.prob  = rep(0, 3)
+      )
+    )
+  ),
+  ident_max_tx = list(
+    list(
+      at = 52 * 70 + 1,
+      param = list( # maximum test + tx (re)init
+        # see "R/z-indent_prob_calib.R"
+        part.index.prob = 1,
+        part.ident.main.prob = 1,
+        part.ident.casl.prob = 1,
+        part.ident.ooff.prob = 1,
+        # Part Serv Params
+        part.hiv.test.rate   = rep(1, 3),
+        part.prep.start.prob = rep(0, 3),
         part.tx.init.prob    = rep(1, 3),
         part.tx.reinit.prob  = rep(1, 3)
       )

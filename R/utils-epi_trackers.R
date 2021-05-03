@@ -207,17 +207,30 @@ epi_ident_dist <- function(n_id, ge = FALSE) {
   }
 }
 
-epi_partner_count <- function(rel_type) {
-  function(dat, at) {
-    function(dat, at) {
-      plist <- dat$temp$plist
-      plist <- dat$temp$plist
-      plist <- plist[plist[, 3] == rel_type, ]
-      plist <- plist[plist[, 3] == rel_type, ]
-      mean(table(plist[, c(1, 2)]))
-      mean(table(plist[, c(1, 2)]))
+epi_partner_count <- function(dat, at) {
+  if (at < get_param(dat, "part.ident.start")) return(NA)
+
+  needed_attributes <- c("diag.status", "diag.time", "uid")
+  with(get_attr_list(dat, needed_attributes), {
+    hivpos.at <- which(diag.status == 1 & diag.time == at)
+    hivpos.uid <- uid[hivpos.at]
+    plist.temp <- dat$temp$plist
+    p1_pos <- plist.temp[, "p1"] %in% hivpos.uid
+    p2_pos <- plist.temp[, "p2"] %in% hivpos.uid
+    plist <- plist.temp[p1_pos | p2_pos, , drop = FALSE]
+
+    if (nrow(plist) == 0) {
+      out <- NA
+    } else {
+      out <- 0
+      for (rel_type in seq_len(3)) {
+        p <- plist[plist[, 3] == rel_type, , drop = FALSE]
+        out <- out + nrow(p) * 1e3^(rel_type - 1)
+      }
     }
-  }
+
+    out
+  })
 }
 
 epi_prep_start <- function(r_ind) {
@@ -236,10 +249,19 @@ epi_prep_time_on <- function(r_ind) {
   function(dat, at) {
     needed_attributes <- c("race", "prepStat", "prepStartTime")
     with(get_attr_list(dat, needed_attributes), {
-      pop <- race %in% r_ind & status == 0 & prepStat == 1
+      pop <- race %in% r_ind & prepStat == 1
       prepStartTime <- prepStartTime[pop]
-      mean(at - prepStartTime, na.rm = NA)
+      mean(at - prepStartTime, na.rm = TRUE)
     })
   }
 }
 
+epi_prep_episodes <- function(r_ind) {
+  function(dat, at) {
+    needed_attributes <- c("race", "prepStat", "prep.start.counter")
+    with(get_attr_list(dat, needed_attributes), {
+      pop <- race %in% r_ind & prepStat == 1
+      mean(prep.start.counter[pop], na.rm = TRUE)
+    })
+  }
+}

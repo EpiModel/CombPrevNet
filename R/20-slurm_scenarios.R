@@ -1,12 +1,12 @@
 source("R/utils-slurm_prep_helpers.R") # requires `purrr`
 source("R/utils-slurm_wf.R")
-test_simulation <- FALSE
+test_simulation <- TRUE
 
 # Set slurm parameters ---------------------------------------------------------
 batch_per_set <- 10      # How many 28 replications to do per parameter
 steps_to_keep <- 20 * 52 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "CPN_sc_7"
+job_name <- "CPN_sc_9"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
@@ -26,10 +26,8 @@ lnt <- TRUE # if FALSE: set `require.lnt` to FALSE and adjust ` prep.start.prob`
 source("R/utils-params.R", local = TRUE)
 
 orig <- readRDS("out/est/restart.rds")
-orig$attr[[1]]$part.ident.counter <- rep(
-  NA,
-  length(orig$attr[[1]]$part.ident)
-)
+orig$attr[[1]]$part.ident.counter <- rep(NA, length(orig$attr[[1]]$part.ident))
+orig$attr[[1]]$prep.start.counter <- rep(NA, length(orig$attr[[1]]$part.ident))
 
 control <- control_msm(
   start = 60 * 52 + 1,
@@ -45,10 +43,13 @@ control <- control_msm(
 # Scenarios --------------------------------------------------------------------
 # requires <list variables>
 source("R/utils-scenarios.R")
-scenarios <- scenarios[c("base_atlanta_complete", "ident_max")]
-
 # To subset scenarios:
-# scenarios <- scenarios[c("no_ident_no_prep", "ident_default")]
+# scenarios <- scenarios[c(
+#   "base_atlanta_complete",
+#   "ident_max",
+#   "base_atlanta_complete_alt"
+# )]
+
 
 # Automatic --------------------------------------------------------------------
 #
@@ -72,6 +73,22 @@ info$param_proposals <- param_proposals
 
 slurm_wf_tmpl_dir("inst/slurm_wf/", info$root_dir, force = T)
 
+if (test_simulation) {
+  control_test <- control
+  control_test$nsteps <- control$start + 1 * 52
+  control_test$nsims <- 1
+  control_test$ncores <- 1
+  control_test$verbose <- TRUE
+  n_sc <- 2 # scenario number
+
+  test_sim <- run_netsim_updaters_fun(
+    updaters = param_proposals[[n_sc]],
+    sim_num = sim_nums[[n_sc]],
+    scenario = names(param_proposals)[n_sc],
+    orig = orig, param = param, init = init, control = control_test, info = info
+  )
+}
+
 slurm_wf_Map(
   info$root_dir,
   resources = slurm_ressources,
@@ -82,20 +99,6 @@ slurm_wf_Map(
   MoreArgs = list(orig = orig, param = param, init = init, control = control,
                   info = info)
 )
-
-if (test_simulation) {
-  control$nsteps <- control$start + 15 * 52
-  control$nsims <- 1
-  control$ncores <- 1
-  control$verbose <- TRUE
-
-  test_sim <- run_netsim_updaters_fun(
-    updaters = param_proposals[[180]],
-    sum_num = sim_nums[[180]],
-    scenario = names(param_proposals)[180],
-    orig = orig, param = param, init = init, control = control, info = info
-  )
-}
 
 # Create out dir and save params
 fs::dir_create(fs::path(paths$local_out, paths$jobs_dir))

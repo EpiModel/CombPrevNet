@@ -23,7 +23,8 @@ ls_trackers <- list(
   ident_dist0   = epi_ident_dist(0, ge = FALSE),
   ident_dist1   = epi_ident_dist(1, ge = FALSE),
   ident_dist2   = epi_ident_dist(2, ge = FALSE),
-  ident_dist3p  = epi_ident_dist(3, ge = TRUE)
+  ident_dist3p  = epi_ident_dist(3, ge = TRUE),
+  prep_episodes = epi_prep_episodes
 )
 epi_trackers <- epi_tracker_by_race(ls_trackers, full = TRUE, indiv = FALSE)
 
@@ -125,9 +126,9 @@ param <- param_msm(
   part.ident.casl.window = 52,
   part.ident.ooff.window = 52,
   # see "R/z-indent_prob_calib.R"
-  part.ident.main.prob = 0.13090909,
-  part.ident.casl.prob = 0.09000000,
-  part.ident.ooff.prob = 0.01484536,
+  part.ident.main.prob = 0.090000000,
+  part.ident.casl.prob = 0.057600000,
+  part.ident.ooff.prob = 0.009142857,
   # Part Serv Params
   part.hiv.test.rate = rep(0.394, 3),
   part.prep.start.prob = rep(0, 3),

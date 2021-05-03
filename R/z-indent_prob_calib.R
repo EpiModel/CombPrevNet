@@ -11,9 +11,10 @@ lnt <- TRUE
 source("R/utils-params.R")
 pull_env_vars()
 param$part.ident.start <- 5
+param$epi_trackers <- list("partner_count" = epi_partner_count)
 control <- control_msm(
   simno = 1,
-  nsteps = 52 * 60,
+  nsteps = 52 * 25,
   nsims = ncores,
   ncores = ncores,
   save.nwstats = TRUE,
@@ -30,17 +31,23 @@ library(dplyr)
 df <- as.data.frame(sim)
 
 df %>%
-  filter(time > max(time - 520)) %>%
-  select(starts_with("partner_count")) %>%
+  filter(time > 52) %>%
+  select(partner_count) %>%
+  mutate(
+    p1 = partner_count %/% 1e3^0 %% 1e3,
+    p2 = partner_count %/% 1e3^1 %% 1e3,
+    p3 = partner_count %/% 1e3^2 %% 1e3
+  ) %>%
   summarize(across(
-    everything(),
+    c(p1, p2, p3),
     list(
       m = ~ mean(.x, na.rm = T),
       s = ~ sd(.x, na.rm = T)
     )
   ))
 
-x <- c(1.1, 1.6, 9.7)
+
+x <- c(1.6, 2.5, 15.75)
 target_ident <- 0.432
 
 ## option 1 - we enforce part.indent.main.prob == part.indent.casl.prob == 2 * part.indent.oof.prob
