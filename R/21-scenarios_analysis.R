@@ -15,7 +15,7 @@ needed_cols <- c(
   "incid", "ir100",
   "s_prep___ALL", "s_prep_elig___ALL",
   "i___ALL", "i_dx___ALL", "i_tx___ALL", "i_sup___ALL",
-  "elig_indexes", "found_indexes",
+  "elig_indexes", "found_indexes", "prep.start.counter",
   "prep_start___ALL",
   "part_ident___ALL", "part_sneg___ALL", "part_spos___ALL",
   "part_prep___ALL", "part_txinit___ALL", "part_txreinit___ALL",

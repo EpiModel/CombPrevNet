@@ -231,3 +231,15 @@ epi_prep_start <- function(r_ind) {
     })
   }
 }
+
+epi_prep_time_on <- function(r_ind) {
+  function(dat, at) {
+    needed_attributes <- c("race", "prepStat", "prepStartTime")
+    with(get_attr_list(dat, needed_attributes), {
+      pop <- race %in% r_ind & status == 0 & prepStat == 1
+      prepStartTime <- prepStartTime[pop]
+      mean(at - prepStartTime, na.rm = NA)
+    })
+  }
+}
+
