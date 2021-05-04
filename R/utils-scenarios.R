@@ -34,9 +34,9 @@ sc_atl_others <- list(
     list(
       at = 52 * 60 + 1,
       param = list( # Alternate method for ident prob
-        part.ident.main.prob = 0.03607516,
-        part.ident.casl.prob = 0.03607516,
-        part.ident.ooff.prob = 0.01803758
+        part.ident.main.prob = 0.09191489,
+        part.ident.casl.prob = 0.09191489,
+        part.ident.ooff.prob = 0.04595745
       )
     )
   )

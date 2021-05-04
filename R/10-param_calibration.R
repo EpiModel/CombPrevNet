@@ -7,7 +7,7 @@ test_all_combination <- TRUE # Can grow super fast
 batch_per_set <- 10      # How many 28 replications to do per parameter
 steps_to_keep <- 52 * 2 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "CPN_new_EMH"
+job_name <- "CPN_sti_cal"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
@@ -38,8 +38,8 @@ control <- control_msm(
 # Parameters to test -----------------------------------------------------------
 
 param_proposals <- list(
-  uct.tprob = as.list(seq(0.2, 0.4, length.out = 5)), # 4 values to test
-  ugc.tprob = as.list(seq(0.2, 0.4, length.out = 5)) # 2 values to test
+  uct.tprob = as.list(seq(0.1, 0.2, length.out = 5)), # 4 values to test
+  ugc.tprob = as.list(seq(0.1, 0.2, length.out = 5)) # 2 values to test
 )
 
 # Use this line to run only the default values
@@ -94,6 +94,19 @@ info$unique_proposals <- unique_proposals
 
 slurm_wf_tmpl_dir("inst/slurm_wf/", info$root_dir, force = T)
 
+if (test_simulation) {
+  control_test <- control
+  control_test$nsteps <- 1 * 52
+  control_test$nsims <- 1
+  control_test$ncores <- 1
+  control_test$verbose <- TRUE
+
+  run_netsim_fun(
+    param_proposals[[1]], sim_nums[[1]],
+    orig, param, init, control_test, info
+  )
+}
+
 shared_res <- list(
   partition = partition,
   account = if (partition == "csde") "csde" else "csde-ckpt",
@@ -110,18 +123,6 @@ slurm_wf_Map(
   MoreArgs = list(orig = orig, param = param, init = init, control = control,
                   info = info)
 )
-
-if (test_simulation) {
-  control$nsteps <- 1 * 52
-  control$nsims <- 1
-  control$ncores <- 1
-  control$verbose <- TRUE
-
-  run_netsim_fun(
-    param_proposals[[1]], sim_nums[[1]],
-    orig, param, init, control, info
-  )
-}
 
 # Create out dir and save params
 fs::dir_create(fs::path(paths$local_out, paths$jobs_dir))

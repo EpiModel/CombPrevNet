@@ -2,7 +2,7 @@ library(data.table)
 
 # One or many job_names
 job_names <- c("CPN_new_EMH")
-job_last_n <- NULL # if not NULL, get last N jobs. Otherwise, use job_names
+job_last_n <- 1 # if not NULL, get last N jobs. Otherwise, use job_names
 keep_all_epi <- TRUE # set to false to keep only the "targets"
 
 if (!is.null(job_last_n))
@@ -79,8 +79,12 @@ df %>%
   summarise(across(
     c(ir100.gc, ir100.ct),
     list(
-      # q1 = ~ quantile(.x, prob = 0.25),
-      q2 = ~ quantile(.x, prob = 0.5)
-      # q3 = ~ quantile(.x, prob = 0.75)
+      q1 = ~ quantile(.x, prob = 0.25),
+      q2 = ~ quantile(.x, prob = 0.5),
+      q3 = ~ quantile(.x, prob = 0.75)
     )
-  ))
+  )) %>%
+  select(-param_batch) %>%
+  print(n = 200)
+
+proposals
