@@ -1,5 +1,5 @@
-library(EpiModelHIV)
-# pkgload::load_all("../EpiModelHIV-p/")
+# library(EpiModelHIV)
+pkgload::load_all("../EpiModelHIV-p/")
 
 # Epi Trackers
 source("R/utils-epi_trackers.R")
@@ -67,6 +67,9 @@ param <- param_msm(
   acts.aids.vl = 5.75,
   circ.prob = c(0.874, 0.874, 0.918),
   a.rate = 0.00052,
+  cond.eff = 0.95, # default
+  cond.fail = c(0.25, 0.25, 0.25), # default
+
   prep.start = prep_start_time,
   riskh.start = prep_start_time - 52,
   prep.adhr.dist = c(0.089, 0.127, 0.784),
@@ -107,8 +110,8 @@ param <- param_msm(
   gc.asympt.prob.tx = rep(0.1, 3), #c(0.10, 0.145, 0.19),
   ct.asympt.prob.tx = rep(0.1, 3), #c(0.05, 0.525, 0.10),
   # gaps appendix 9.3 - 9.4 (not explained this way but similar result)
-  sti.cond.eff = 0.95,
-  sti.cond.fail = c(0.39, 0.3, 0.21),
+  sti.cond.eff = 0.90, # default
+  sti.cond.fail = c(0.2, 0.2, 0.2), # default
   # gaps appendix 9.2
   hiv.rgc.rr = 2.78,
   hiv.ugc.rr = 1.73,
@@ -116,8 +119,6 @@ param <- param_msm(
   hiv.uct.rr = 1.73,
  # if both ct + gc -> log(RRgc) + 0.2 * log(RRct) | swap ct and gc if RRct > RRgc
   hiv.dual.rr = 0.2, # not mentionned in appendix
-  netresim.form.rr = rep(1, 3),
-  netresim.disl.rr = rep(1, 2),
 
   # Part ident parameters (defaut is ATL Complete)
   part.ident.start = prep_start_time,

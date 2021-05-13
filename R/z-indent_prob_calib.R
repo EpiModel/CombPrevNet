@@ -46,6 +46,7 @@ df %>%
   summarize(across(c(p1, p2, p3, elig_indexes), ~ sum(.x, na.rm = TRUE))) %>%
   mutate(across(c(p1, p2, p3), ~ .x / elig_indexes))
 
+x <- c(0.6, 0.9, 9.5)
 x <- c(0.7, 1, 6)
 target_ident <- 0.432
 

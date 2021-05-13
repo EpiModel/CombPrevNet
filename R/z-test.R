@@ -1,222 +1,196 @@
-library(tidyverse)
-library(RcppRoll)
-theme_set(theme_classic())
+library(dplyr)
+library(tidyr)
 
-# Read the data extracted in R/21-<...>.R
-df <- readRDS("out/scdf.rds")
+if (!file.exists("out/partdist.rds")) {
+  nsims <- ncores <- 3
+  lnt <- TRUE
+  source("R/utils-params.R")
+  orig <- readRDS("out/est/restart.rds")
+  orig$attr[[1]]$part.ident.counter <- rep(NA, length(orig$attr[[1]]$part.ident))
+  orig$attr[[1]]$prep.start.counter <- rep(NA, length(orig$attr[[1]]$part.ident))
 
-scenarios_labels <- c(
-    "no_ident_no_prep"      = "Neither Partner Services or PrEP",
-    "no_ident"              = "No Partner Services",
-    "base_atlanta_complete" = "Partner Services (Atlanta Complete)",
-    "base_atlanta_missing"  = "Partner Services (Atlanta Missing)",
-    "ident_max_test"        = "Partner Services (Max Test)",
-    "ident_max_prep"        = "Partner Services (Max Test + PrEP)",
-    "ident_max_tx"          = "Partner Services (Max Test + Tx)",
-    "ident_max"             = "Partner Services (All Max)"
+  param$epi_trackers <- list()
+  param$part.index.prob <- 1
+
+  control <- control_msm(
+    simno = 1,
+    start = 60 * 52 + 1,
+    nsteps = 100 * 52, # 60->65 rng; 65->70 calib2; 70->80 scenario
+    nsims = ncores,
+    ncores = ncores,
+    initialize.FUN = reinit_msm,
+    save.nwstats = FALSE,
+    # raw.output = TRUE,
+    raw.output = TRUE,
+    verbose = FALSE
   )
 
-sce <- paste0(seq_along(scenarios_labels), "-", scenarios_labels)
-names(sce) <- names(scenarios_labels)
-scenarios_labels <- sce
+  # Ensure this is in mod.partident
+  #
+  # after this line:
+  #
+  #  plist.temp <- plist.temp[p1_found | p2_found, , drop = FALSE]
 
-df_b <- df
-df <- df_b %>%
-  filter(scenario %in% names(scenarios_labels)) %>%
-  mutate(scenario = scenarios_labels[scenario])
+  ##################################################################################
+  ##  if (is.null(dat$sav_ident))
+  ##    dat$sav_ident <- list()
+  ##
+  ##  elt <- list(
+  ##    at = at,
+  ##    found_uids = found.uid,
+  ##    plist = plist.temp[, 1:3, drop = FALSE]
+  ##  )
+  ##
+  ##  dat$sav_ident <- append(dat$sav_ident, list(elt))
+  ##
+  ##
+  ##################################################################################
 
-df <- df_b %>%
-  filter(
-    scenario %in% c(
-      "no_ident_no_prep",
-      "no_ident",
-      "ident_max",
-      # "base_atlanta_missing",
-      "base_atlanta_complete",
-      "ident_max_test",
-      "ident_max_prep",
-      "ident_max_tx"
-    )
-  ) %>%
-  mutate(scenario = scenarios_labels[scenario])
+  ## Simulation
+  # debug(partident_msm)
+  sim <- netsim(orig, param, init, control)
 
+  pl <- list()
+  for (i in seq_along(sim))
+    pl <- c(pl, sim[[i]]$sav_ident)
 
-# One year double smoothing
-df %>%
-  group_by(scenario, time) %>%
-  mutate(ir100 = roll_mean(ir100, n = 52, align = "right", fill = NA)) %>%
-  summarise(
-    y = median(ir100, na.rm = TRUE),
-    yl = quantile(ir100, prob = 0.25, na.rm = TRUE),
-    yh = quantile(ir100, prob = 0.75, na.rm = TRUE)
-  ) %>%
-  mutate(across(
-      c(yl, y, yh),
-      ~ roll_mean(.x, n = 52, align = "right", fill = NA)
-  )) %>%
-  ggplot(aes(x = time / 52, y = y, ymin = yl, ymax = yh,
-             col = scenario, fill = scenario)) +
-  geom_vline(xintercept = 65 + 1/52, col = "gray") +
-  geom_vline(xintercept = 70 + 1/52, col = "gray") +
-  geom_line() +
-  geom_ribbon(alpha = 0.1, linetype = "blank")
+  bp <- vector(mode = "list", length = length(pl))
 
+  for (i in seq_along(pl)) {
+    fu <- pl[[i]][["found_uids"]]
+    p <- pl[[i]][["plist"]]
 
-# older analyses ===============================================================
+    p[, 1:2][! p[, 1:2] %in% fu ] <- NA
+    # If NA in `p1`, put `p2`. `p1` now only contains indexes
+    p[, "p1"] <- ifelse(is.na(p[, "p1"]), p[, "p2"], p[, "p1"])
+    # In case of a partnership where both are identified, `p1` is still NA.
+    # We also remove `p2` which is now useless
+    p <- p[!is.na(p[, "p1"]), -2, drop = FALSE]
 
-df_b <- df
+    nfu <- fu[!fu %in% p[,1]]
+    if (length(nfu) > 0) {
+      p <-  rbind(p, matrix(c(nfu, rep(NA, length(nfu))), ncol = 2))
+    }
+    bp[[i]] <- p
+  }
 
-plot_time_quants <- function(df, y_label, interval = c(0.25, 0.75)) {
-  df %>%
-    group_by(scenario, time) %>%
-    summarise(
-      q1 = quantile(y, interval[1], na.rm = TRUE),
-      q2 = quantile(y, 0.5, na.rm = TRUE),
-      q3 = quantile(y, interval[2], na.rm = TRUE)
-      ) %>%
-    ggplot(aes(x = time / 52, y = q2, ymin = q1, ymax = q3,
-        col = scenario, fill = scenario)) +
-    geom_vline(xintercept = 65, col = "gray") +
-    geom_vline(xintercept = 70, col = "gray") +
-    geom_ribbon(alpha = 0.3, size = 0) +
-    geom_line() +
-    xlab("Time (years)") +
-    ylab(y_label)
+  bp <- lapply(bp, as_tibble)
+  bp <- bind_rows(bp)
+
+  final <- bp %>%
+    group_by(p1, ptype) %>%
+    summarise(n = n()) %>%
+    mutate(ptype = paste0("ptype_", ptype)) %>%
+    pivot_wider(names_from = ptype, values_from = n, values_fill = 0) %>%
+    mutate(total = ptype_1 + ptype_2 + ptype_3)
+
+  saveRDS(final, "out/partdist.rds")
+} else {
+  final <- readRDS("out/partdist.rds")
 }
 
-plot_time_smooth <- function(df, y_label) {
-  df %>%
-    ggplot(aes(x = time / 52, y = y, col = scenario, fill = scenario)) +
-    geom_vline(xintercept = 65, col = "gray") +
-    geom_vline(xintercept = 70, col = "gray") +
-    geom_smooth() +
-    xlab("Time (years)") +
-    ylab(y_label)
-}
+ident_probsA <- c(0.09191489, 0.09191489, 0.04595745)
+ident_probsB <- c(0.2057143, 0.1440000, 0.0240000)
+cc <- c(0.24000000, 0.16000000, 0.01515789)
+pp <- ident_probsB #* 1.5
 
-scenarios_labels <- c(
-    "no_ident_no_prep"      = "Neither Partner Services or PrEP",
-    "no_ident"              = "No Partner Services",
-    "base_atlanta_complete" = "Partner Services (Atlanta Complete)",
-    "base_atlanta_missing"  = "Partner Services (Atlanta Missing)",
-    "ident_max_test"        = "Partner Services (Max Test)",
-    "ident_max_prep"        = "Partner Services (Max Test + PrEP)",
-    "ident_max_tx"          = "Partner Services (Max Test + Tx)",
-    "ident_max"             = "Partner Services (All Max)"
+pp <- c(0.4, 0.06, 0.04)
+final <- mutate(
+  final,
+  total_ident =
+    rbinom(length(p1), ptype_1, pp[1]) +
+    rbinom(length(p1), ptype_2, pp[2]) +
+    rbinom(length(p1), ptype_3, pp[3])
+)
+
+mean(final$total_ident)
+table(final$total_ident) %>%
+  prop.table() %>% round(4)
+
+
+# CDC data
+part <- c(
+  NA, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+  21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 35, 36, 40, 47, 49, 54, 60, 65, 75
+)
+
+n <- c(
+  1949, 14728, 10502, 2952, 1223, 566, 317, 177, 113, 74, 51, 36, 30, 25, 12,
+  15, 12, 6, 4, 7, 4, 5, 7, 4, 4, 4, 4, 1, 2, 3, 3, 3, 1, 2, 1, 2, 2, 1, 1, 1,
+  1, 1
+)
+
+
+serie <- c()
+for (i in seq_along(n))
+  serie <- c(serie, rep(part[i], n[i]))
+
+table(serie) %>% prop.table()  %>% round(4)
+
+found <- sum(part * n, na.rm = T)
+n_tot <- sum(n[-1])
+found / n_tot
+scales::label_percent()(n[-1] / n_tot)
+
+hist(serie)
+hist(rpois(sum(n[-1]), 0.9806))
+
+
+# EasyABC
+
+model <- function(pp) {
+  ff <- mutate(
+    final,
+    total_ident =
+      rbinom(length(p1), ptype_1, pp[1]) +
+      rbinom(length(p1), ptype_2, pp[2]) +
+      rbinom(length(p1), ptype_3, pp[3])
   )
 
-sce <- paste0(seq_along(scenarios_labels), "-", scenarios_labels)
-names(sce) <- names(scenarios_labels)
-scenarios_labels <- sce
+  x1 <- table(serie) %>% prop.table()
+  dx1 <- tibble(n = as.numeric(names(x1)), p = as.numeric(x1))
+  x2 <- table(ff$total_ident) %>% prop.table()
+  dx2 <- tibble(n = as.numeric(names(x2)), p = as.numeric(x2))
 
-df <- df_b %>%
-  filter(scenario %in% names(scenarios_labels)) %>%
-  mutate(scenario = scenarios_labels[scenario])
+  dx <- full_join(dx1, dx2, by = "n") %>%
+    replace_na(list(p.x = 0, p.y = 0))
 
-df <- df_b %>%
-  filter(
-    scenario %in% c(
-      "no_ident_no_prep",
-      "no_ident",
-      "ident_max",
-      "base_atlanta_missing",
-      "base_atlanta_complete",
-      "ident_max_test",
-      "ident_max_prep",
-      "ident_max_tx"
-    )
-  ) %>%
-  mutate(scenario = scenarios_labels[scenario])
+  miss_n <- setdiff(0:75, dx$n)
+  dx_miss <- tibble(n = miss_n, p.x = 0, p.y = 0)
+  dx <- bind_rows(dx, dx_miss) %>% arrange(n)
 
-# prep
+  suppressMessages(philentropy::KL(t(dx[, 2:3])))
+}
 
-df %>%
-  filter(scenario == scenarios_labels["no_ident"]) %>%
-  mutate(y = s_prep___ALL / s_prep_elig___ALL) %>%
-  plot_time_quants("prep coverage (among eligibles)", c(0.025, 0.975)) +
-  geom_hline(yintercept = 0.15, linetype = 2, alpha = .8) +
-  expand_limits(y = c(0, 0.25))
-
-ggsave(
-  paste0("out/plots/cdc_presentation_prep.jpeg"),
-  device = "jpeg", dpi = 600,
-  height = 5, width = 7,
-  units = "in"
+EasyABC::ABC_sequential(
+  method = "Lenormand",
+  model,
+  prior = list(c("unif", 0, 1), c("unif", 0, 1), c("unif", 0, 1)),
+  prior_test = "X1>0 & X2>0 & X3 > 0 & X1<1 & X2<1 & X3<1",
+  nb_simul = 20,
+  summary_stat_target = 0,
+  p_acc_min = 0.1
 )
 
-# prev
 
-df %>%
-  mutate(y = i___ALL / (s___ALL + i___ALL)) %>%
-  plot_time_smooth("hiv prevalence") +
-  expand_limits(y = c(0.2, 0.3))
-
-ggsave(
-  paste0("out/plots/cdc_presentation_prev.jpeg"),
-  device = "jpeg", dpi = 600,
-  height = 5, width = 7,
-  units = "in"
+EasyABC::ABC_sequential(
+  method = "Drovandi",
+  model,
+  prior = list(c("unif", 0, 1), c("unif", 0, 1), c("unif", 0, 1)),
+  prior_test = "X1>0 & X2>0 & X3 > 0 & X1<1 & X2<1 & X3<1",
+  nb_simul = 20,
+  summary_stat_target = 0,
+  tolerance_tab = 0.05,
+  c_drov = 0.7
 )
 
-df %>%
-  mutate(y = i_dx___ALL /  i___ALL) %>%
-  plot_time_smooth("proportion of infected who are diagnosed") +
-  expand_limits(y = c(0.8, 0.9))
-
-ggsave(
-  paste0("out/plots/cdc_presentation_idx.jpeg"),
-  device = "jpeg", dpi = 600,
-  height = 5, width = 7,
-  units = "in"
+EasyABC::ABC_sequential(
+  method = "Delmoral",
+  model,
+  prior = list(c("unif", 0, 1), c("unif", 0, 1), c("unif", 0, 1)),
+  prior_test = "X1>0 & X2>0 & X3 > 0 & X1<1 & X2<1 & X3<1",
+  nb_simul = 20,
+  summary_stat_target = 0,
+  tolerance_target = 0.05,
+  alpha = 0.5
 )
-
-df %>%
-  mutate(y = i_tx___ALL /  i___ALL) %>%
-  plot_time_smooth("proportion of infected who are treated") +
-  expand_limits(y = c(0.45, 0.5))
-
-ggsave(
-  paste0("out/plots/cdc_presentation_itx.jpeg"),
-  device = "jpeg", dpi = 600,
-  height = 5, width = 7,
-  units = "in"
-)
-
-df %>%
-  mutate(y = i_tx___ALL /  i_dx___ALL) %>%
-  plot_time_smooth("proportion of diagnosed who are treated") +
-  expand_limits(y = c(0.55, 0.6))
-
-ggsave(
-  paste0("out/plots/cdc_presentation_itxdx.jpeg"),
-  device = "jpeg", dpi = 600,
-  height = 5, width = 7,
-  units = "in"
-)
-
-df %>%
-  mutate(y = i_sup___ALL /  i_dx___ALL) %>%
-  plot_time_smooth("proportion of diagnosed who are suppressed") +
-  expand_limits(y = c(0.55, 0.6))
-
-ggsave(
-  paste0("out/plots/cdc_presentation_isupdx.jpeg"),
-  device = "jpeg", dpi = 600,
-  height = 5, width = 7,
-  units = "in"
-)
-
-df %>%
-  mutate(y = ir100) %>%
-  plot_time_smooth("standardized incidence") +
-  expand_limits(y = c(1.0, 1.7))
-
-ggsave(
-  paste0("out/plots/cdc_presentation_incid.jpeg"),
-  device = "jpeg", dpi = 600,
-  height = 5, width = 7,
-  units = "in"
-)
-
-rmarkdown::render("Rmd/CDC_presentation.Rmd", output_dir = "out/renders/",
-                  knit_root_dir = here::here())

@@ -54,6 +54,13 @@
       "Repository": "CRAN",
       "Hash": "4fdd17df6c1b897cb59bdd9cf6621a43"
     },
+    "EasyABC": {
+      "Package": "EasyABC",
+      "Version": "1.5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "d5936480794a48cc85c6ccb5351bf8d2"
+    },
     "EpiABC": {
       "Package": "EpiABC",
       "Version": "1.0",
@@ -71,12 +78,12 @@
       "Version": "2.0.4",
       "Source": "GitHub",
       "RemoteType": "github",
+      "RemoteHost": "api.github.com",
       "RemoteUsername": "statnet",
       "RemoteRepo": "EpiModel",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "1179a293299f5406baf041225af2ad6668fbfa64",
-      "RemoteHost": "api.github.com",
-      "Hash": "f6bde4966a326237ecf950bde4ffdab9"
+      "RemoteRef": "master",
+      "RemoteSha": "bfbfa49af17bf01b5a423f04655ae0697e771d09",
+      "Hash": "761cc78dbc1a3b1b5d56d40a639d0bcd"
     },
     "EpiModelHIV": {
       "Package": "EpiModelHIV",
@@ -101,6 +108,13 @@
       "RemoteRef": "HEAD",
       "RemoteSha": "87980b8cf37c67820d6323ac3ec165666d19688c",
       "Hash": "ce4183014f073fb201a0b993f4c4fe78"
+    },
+    "KernSmooth": {
+      "Package": "KernSmooth",
+      "Version": "2.23-18",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "9e703ad8bf0e99f3691f05da32dfe68b"
     },
     "MASS": {
       "Package": "MASS",
@@ -150,6 +164,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "1a885965adade4b8629c478a3b3c2cf7"
+    },
+    "RcppRoll": {
+      "Package": "RcppRoll",
+      "Version": "0.3.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "84a03997fbb5acfb3c9b43bad88fea1f"
     },
     "SparseM": {
       "Package": "SparseM",
@@ -480,13 +501,6 @@
       "Repository": "CRAN",
       "Hash": "221d0ad75dfa03ebf17b1a4cc5c31dfc"
     },
-    "here": {
-      "Package": "here",
-      "Version": "1.0.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "24b224366f9c2e7534d2344d10d59211"
-    },
     "highr": {
       "Package": "highr",
       "Version": "0.8",
@@ -722,6 +736,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "a399e4773075fc2375b71f45fca186c4"
+    },
+    "philentropy": {
+      "Package": "philentropy",
+      "Version": "0.4.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "10e6498f8ee4727f1f6e0525e599f944"
     },
     "pillar": {
       "Package": "pillar",
