@@ -19,5 +19,6 @@ targets <- c(
 )
 
 prep_targets <- c(
-  prep_prop = 0.15
+  prep_prop = 0.15,
+  prep_retention1y = 0.57
 )

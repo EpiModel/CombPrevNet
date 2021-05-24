@@ -1,74 +1,174 @@
-## The observed number of identified partners in Atlanta is 0.432 and
-## the observed number of partners in my simulations is
-## x <- c(1.1, 1.6, 9.7) (main, casl, oof)
-##
-## with a 52 week window and the `epi_partner_count` epi tracker
-##
-##
-nsims <- ncores <- 1
-lnt <- TRUE
-source("R/utils-params.R")
-orig <- readRDS("out/est/restart.rds")
-orig$attr[[1]]$part.ident.counter <- rep(NA, length(orig$attr[[1]]$part.ident))
-orig$attr[[1]]$prep.start.counter <- rep(NA, length(orig$attr[[1]]$part.ident))
-
-param$epi_trackers <- c(param$epi_trackers, "partner_count" = epi_partner_count)
-
-control <- control_msm(
-  simno = 1,
-  start = 60 * 52 + 1,
-  nsteps = 80 * 52, # 60->65 rng; 65->70 calib2; 70->80 scenario
-  nsims = ncores,
-  ncores = ncores,
-  initialize.FUN = reinit_msm,
-  save.nwstats = FALSE,
-  # raw.output = TRUE,
-  raw.output = FALSE,
-  verbose = FALSE
-)
-
-## Simulation
-# debug(partident_msm)
-sim <- netsim(orig, param, init, control)
-
 library(dplyr)
+library(tidyr)
 
-df <- as.data.frame(sim)
+if (!file.exists("out/partdist.rds")) {
+  nsims <- ncores <- 3
+  lnt <- TRUE
+  source("R/utils-params.R")
+  orig <- readRDS("out/est/restart.rds")
+  orig$attr[[1]]$part.ident.counter <- rep(NA, length(orig$attr[[1]]$part.ident))
+  orig$attr[[1]]$prep.start.counter <- rep(NA, length(orig$attr[[1]]$part.ident))
 
-df %>%
-  filter(time > 52 * 70) %>%
-  select(partner_count, elig_indexes) %>%
-  mutate(
-    p1 = partner_count %/% 1e3^0 %% 1e3,
-    p2 = partner_count %/% 1e3^1 %% 1e3,
-    p3 = partner_count %/% 1e3^2 %% 1e3
-  ) %>%
-  summarize(across(c(p1, p2, p3, elig_indexes), ~ sum(.x, na.rm = TRUE))) %>%
-  mutate(across(c(p1, p2, p3), ~ .x / elig_indexes))
+  param$epi_trackers <- list()
+  param$part.index.prob <- 1
 
-x <- c(0.6, 0.9, 9.5)
-x <- c(0.7, 1, 6)
+  control <- control_msm(
+    simno = 1,
+    start = 60 * 52 + 1,
+    nsteps = 100 * 52, # 60->65 rng; 65->70 calib2; 70->80 scenario
+    nsims = ncores,
+    ncores = ncores,
+    initialize.FUN = reinit_msm,
+    save.nwstats = FALSE,
+    # raw.output = TRUE,
+    raw.output = TRUE,
+    verbose = FALSE
+  )
+
+  # Ensure this is in mod.partident
+  #
+  # after this line:
+  #
+  #  plist.temp <- plist.temp[p1_found | p2_found, , drop = FALSE]
+
+  ##################################################################################
+  ##  if (is.null(dat$sav_ident))
+  ##    dat$sav_ident <- list()
+  ##
+  ##  elt <- list(
+  ##    at = at,
+  ##    found_uids = found.uid,
+  ##    plist = plist.temp[, 1:3, drop = FALSE]
+  ##  )
+  ##
+  ##  dat$sav_ident <- append(dat$sav_ident, list(elt))
+  ##
+  ##
+  ##################################################################################
+
+  ## Simulation
+  # debug(partident_msm)
+  sim <- netsim(orig, param, init, control)
+
+  pl <- list()
+  for (i in seq_along(sim))
+    pl <- c(pl, sim[[i]]$sav_ident)
+
+  bp <- vector(mode = "list", length = length(pl))
+
+  for (i in seq_along(pl)) {
+    fu <- pl[[i]][["found_uids"]]
+    p <- pl[[i]][["plist"]]
+
+    p[, 1:2][! p[, 1:2] %in% fu ] <- NA
+    # If NA in `p1`, put `p2`. `p1` now only contains indexes
+    p[, "p1"] <- ifelse(is.na(p[, "p1"]), p[, "p2"], p[, "p1"])
+    # In case of a partnership where both are identified, `p1` is still NA.
+    # We also remove `p2` which is now useless
+    p <- p[!is.na(p[, "p1"]), -2, drop = FALSE]
+
+    nfu <- fu[!fu %in% p[,1]]
+    if (length(nfu) > 0) {
+      p <-  rbind(p, matrix(c(nfu, rep(NA, length(nfu))), ncol = 2))
+    }
+    bp[[i]] <- p
+  }
+
+  bp <- lapply(bp, as_tibble)
+  bp <- bind_rows(bp)
+
+  final <- bp %>%
+    group_by(p1, ptype) %>%
+    summarise(n = n()) %>%
+    mutate(ptype = paste0("ptype_", ptype)) %>%
+    pivot_wider(names_from = ptype, values_from = n, values_fill = 0) %>%
+    mutate(total = ptype_1 + ptype_2 + ptype_3)
+
+  saveRDS(final, "out/partdist.rds")
+} else {
+  final <- readRDS("out/partdist.rds")
+}
+
+# Mean number of partnership per type
+x <- colMeans(final[, 2:4])
+# 0.94 1.4 9.5
 target_ident <- 0.432
 
-## option 1 - we enforce part.indent.main.prob == part.indent.casl.prob == 2 * part.indent.oof.prob
-p_temp <- target_ident / sum(x * c(1, 1, 1/2))
-p_temp
-# [1] 0.09191489
-p <- c(p_temp, p_temp, p_temp / 2)
-p
-# [1] 0.09191489 0.09191489 0.04595745
-p * x
-# [1] 0.06434043 0.09191489 0.27574468
-sum(p * x)
-# [1] 0.432
+# "221" "421" "all_eq"
+strategy <- "421"
 
-## option 2
-##
-## we force each partnership type to give the same "number" of partners
-p <- target_ident / 3 / x
-p
-# [1] 0.2057143 0.1440000 0.0240000
-p * x
-# [1] 0.144 0.144 0.144# validation
-sum(p * x)
-# [1] 0.432
+if (strategy == "221") {
+  ## option 1 - we enforce part.indent.main.prob == part.indent.casl.prob == 2 * part.indent.oof.prob
+  ratio <- c(2, 2, 1)
+  p_temp <- target_ident / sum(x * ratio)
+  p_temp
+  # [1] 0.02689713
+  p <- p_temp * ratio
+  p
+  # [1] 0.06090590 0.06090590 0.03045295
+  p * x
+  # [1] 0.05711067 0.08421622 0.29067311
+  sum(p * x)
+  # [1] 0.432
+} else if (strategy == "421") {
+  ## option 1 - we enforce part.indent.main.prob == 2 * part.indent.casl.prob == 4 * part.indent.oof.prob
+  ##
+  ratio <- c(4, 2, 1)
+  p_temp <- target_ident / sum(x * ratio)
+  p_temp
+  # [1] 0.02689713
+  p <- p_temp * ratio
+  p
+  # [1] 0.10758853 0.05379427 0.02689713
+  p * x
+  # [1] 0.10088436 0.07438277 0.25673287
+  sum(p * x)
+  # [1] 0.432
+} else if (strategy == "all_eq") {
+  ## option 2
+  ##
+  ## we force each partnership type to give the same "number" of partners
+  p <- target_ident / 3 / x
+  p
+  # [1] 0.2057143 0.1440000 0.0240000
+  p * x
+  # [1] 0.144 0.144 0.144# validation
+  sum(p * x)
+  # [1] 0.432
+}
+
+
+final <- mutate(
+  final,
+  total_ident =
+    rbinom(length(p1), ptype_1, p[1]) +
+    rbinom(length(p1), ptype_2, p[2]) +
+    rbinom(length(p1), ptype_3, p[3])
+)
+
+mean(final$total_ident)
+
+table(final$total_ident) %>%
+  prop.table() %>%
+  round(4)
+
+# CDC data - mean is 0.9, just use to get the shape of the distribution
+part <- c(
+  NA, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+  21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 35, 36, 40, 47, 49, 54, 60, 65, 75
+)
+
+n <- c(
+  1949, 14728, 10502, 2952, 1223, 566, 317, 177, 113, 74, 51, 36, 30, 25, 12,
+  15, 12, 6, 4, 7, 4, 5, 7, 4, 4, 4, 4, 1, 2, 3, 3, 3, 1, 2, 1, 2, 2, 1, 1, 1,
+  1, 1
+)
+
+serie <- c()
+for (i in seq_along(n))
+  serie <- c(serie, rep(part[i], n[i]))
+
+table(serie) %>%
+  prop.table() %>%
+  round(4)
+

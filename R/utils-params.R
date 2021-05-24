@@ -1,9 +1,10 @@
-# library(EpiModelHIV)
-pkgload::load_all("../EpiModelHIV-p/")
+library(EpiModelHIV)
+# pkgload::load_all("../EpiModelHIV-p/")
 
 # Epi Trackers
 source("R/utils-epi_trackers.R")
 ls_trackers <- list(
+  n             = epi_n,
   s             = epi_s,
   s_prep_elig   = epi_s_prep_elig,
   s_prep        = epi_s_prep,
@@ -14,6 +15,7 @@ ls_trackers <- list(
   # i_sup_dur     = epi_i_sup_dur,
   prep_start    = epi_prep_start,
   prep_time_on  = epi_prep_time_on,
+  prep_1y       = epi_prep_time_year,
   part_ident    = epi_part_ident,
   part_sneg     = epi_part_sneg,
   part_spos     = epi_part_spos,
@@ -77,7 +79,8 @@ param <- param_msm(
   prep.start.prob =  rep(0.71, 3), # 0.00896,
 
   # qexp(1 - 0.57, 52) -> 0.0115036 (57% retention at year 1, 52 steps)
-  prep.discont.rate = rep(0.02138792, 3), # 1 - (2^(-1/(224.4237/7)))
+  # prep.discont.rate = rep(0.02138792, 3), # 1 - (2^(-1/(224.4237/7)))
+  prep.discont.rate = rep(0.007, 3), # 1 - (2^(-1/(224.4237/7)))
   ## prep.tst.int = 90/7,         # do I need that?
   prep.risk.int = 26,
   ## prep.sti.screen.int = 182/7,
@@ -129,9 +132,9 @@ param <- param_msm(
   part.ident.casl.window = 52,
   part.ident.ooff.window = 52,
   # see "R/z-indent_prob_calib.R"
-  part.ident.main.prob = 0.2057143,
-  part.ident.casl.prob = 0.1440000,
-  part.ident.ooff.prob = 0.0240000,
+  part.ident.main.prob = 0.10758853,
+  part.ident.casl.prob = 0.05379427,
+  part.ident.ooff.prob = 0.02689713,
   # Part Serv Params
   part.hiv.test.rate = rep(0.394, 3),
   part.prep.start.prob = rep(0, 3),

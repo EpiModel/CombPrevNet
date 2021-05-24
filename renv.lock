@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.0.5",
+    "Version": "4.1.0",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -54,13 +54,6 @@
       "Repository": "CRAN",
       "Hash": "4fdd17df6c1b897cb59bdd9cf6621a43"
     },
-    "EasyABC": {
-      "Package": "EasyABC",
-      "Version": "1.5",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "d5936480794a48cc85c6ccb5351bf8d2"
-    },
     "EpiABC": {
       "Package": "EpiABC",
       "Version": "1.0",
@@ -78,12 +71,12 @@
       "Version": "2.0.4",
       "Source": "GitHub",
       "RemoteType": "github",
-      "RemoteHost": "api.github.com",
       "RemoteUsername": "statnet",
       "RemoteRepo": "EpiModel",
       "RemoteRef": "master",
-      "RemoteSha": "bfbfa49af17bf01b5a423f04655ae0697e771d09",
-      "Hash": "761cc78dbc1a3b1b5d56d40a639d0bcd"
+      "RemoteSha": "ccaafd53a277e3469fb8c5a43cf95c47c657a113",
+      "RemoteHost": "api.github.com",
+      "Hash": "e77cb665c1d287b7fd2ad888df86d76e"
     },
     "EpiModelHIV": {
       "Package": "EpiModelHIV",
@@ -93,9 +86,9 @@
       "RemoteUsername": "EpiModel",
       "RemoteRepo": "EpiModelHIV-p",
       "RemoteRef": "CombPrevNet",
-      "RemoteSha": "f0bdac91c3d7a0e05b9c2003ab715d1616ad9c96",
+      "RemoteSha": "5dd0c733dc340bf0cb60938c9b947a7297ec7a39",
       "RemoteHost": "api.github.com",
-      "Hash": "22255b90a4cc4a16ae5bca75d0f01b97"
+      "Hash": "f7d9e3b668e750093b9c06fb22dae585"
     },
     "EpiModelHPC": {
       "Package": "EpiModelHPC",
@@ -108,13 +101,6 @@
       "RemoteRef": "HEAD",
       "RemoteSha": "87980b8cf37c67820d6323ac3ec165666d19688c",
       "Hash": "ce4183014f073fb201a0b993f4c4fe78"
-    },
-    "KernSmooth": {
-      "Package": "KernSmooth",
-      "Version": "2.23-18",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "9e703ad8bf0e99f3691f05da32dfe68b"
     },
     "MASS": {
       "Package": "MASS",
@@ -736,13 +722,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "a399e4773075fc2375b71f45fca186c4"
-    },
-    "philentropy": {
-      "Package": "philentropy",
-      "Version": "0.4.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "10e6498f8ee4727f1f6e0525e599f944"
     },
     "pillar": {
       "Package": "pillar",

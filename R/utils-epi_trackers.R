@@ -26,6 +26,15 @@ epi_tracker_by_race <- function(ls_funs, races = 1:3,
 }
 
 # Trackers ---------------------------------------------------------------------
+epi_n <- function(r_ind) {
+  function(dat, at) {
+    needed_attributes <- c("active", "race")
+    with(get_attr_list(dat, needed_attributes), {
+      sum(race %in% r_ind & active == 1, na.rm = TRUE)
+    })
+  }
+}
+
 epi_s <- function(r_ind) {
   function(dat, at) {
     needed_attributes <- c("race", "status")
@@ -252,6 +261,18 @@ epi_prep_time_on <- function(r_ind) {
       pop <- race %in% r_ind & prepStat == 1
       prepStartTime <- prepStartTime[pop]
       mean(at - prepStartTime, na.rm = TRUE)
+    })
+  }
+}
+
+epi_prep_time_year <- function(r_ind) {
+  function(dat, at) {
+    needed_attributes <- c("race", "prepStat", "prepStartTime")
+    with(get_attr_list(dat, needed_attributes), {
+      pop <- race %in% r_ind & prepStat == 1
+      cond <- at - prepStartTime[pop] >= 52
+
+      sum(cond, na.rm = TRUE) / sum(pop, na.rm = TRUE)
     })
   }
 }

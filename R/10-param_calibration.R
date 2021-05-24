@@ -7,7 +7,7 @@ test_all_combination <- TRUE # Can grow super fast
 batch_per_set <- 10      # How many 28 replications to do per parameter
 steps_to_keep <- 52 * 2 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "CPN_sti_cal"
+job_name <- "CPN_prep_discont"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
@@ -38,8 +38,11 @@ control <- control_msm(
 # Parameters to test -----------------------------------------------------------
 
 param_proposals <- list(
-  uct.tprob = as.list(seq(0.1, 0.2, length.out = 5)), # 4 values to test
-  ugc.tprob = as.list(seq(0.1, 0.2, length.out = 5)) # 2 values to test
+  prep.discont.rate = seq_cross( # 4^3 values to test; See utils-slurm_prep_helpers.R
+    rep(0.008, 3),
+    rep(0.009, 3),
+    length.out = 10
+  )
 )
 
 # Use this line to run only the default values
@@ -52,20 +55,7 @@ if (test_all_combination) {
   param_proposals <- transpose_ragged(param_proposals)
 }
 
-relative_params <- list(
-  rgc.tprob = function(param) {
-    out <- NULL
-    if (!is.null(param$ugc.tprob))
-      out <- plogis(qlogis(param$ugc.tprob) + log(1.25))
-    out
-  },
-  rct.tprob = function(param) {
-    out <- NULL
-    if (!is.null(param$uct.tprob))
-      out <- plogis(qlogis(param$uct.tprob) + log(1.25))
-    out
-  }
-)
+relative_params <- list()
 
 # Automatic --------------------------------------------------------------------
 
