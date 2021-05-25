@@ -5,7 +5,7 @@ test_all_combination <- TRUE # Can grow super fast
 
 # Set slurm parameters ---------------------------------------------------------
 batch_per_set <- 10      # How many 28 replications to do per parameter
-steps_to_keep <- 52 * 2 # Steps to keep in the output df. If NULL, return sim obj
+steps_to_keep <- 52 * 5 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
 job_name <- "CPN_prep_discont"
 ssh_host <- "hyak_mox"
@@ -27,7 +27,7 @@ lnt <- TRUE # if FALSE: set `require.lnt` to FALSE and adjust ` prep.start.prob`
 source("R/utils-params.R", local = TRUE)
 
 control <- control_msm(
-  nsteps = 70 * 52,
+  nsteps = 80 * 52,
   nsims = 28,
   ncores = 28,
   save.nwstats = FALSE,
@@ -38,11 +38,7 @@ control <- control_msm(
 # Parameters to test -----------------------------------------------------------
 
 param_proposals <- list(
-  prep.discont.rate = seq_cross( # 4^3 values to test; See utils-slurm_prep_helpers.R
-    rep(0.008, 3),
-    rep(0.009, 3),
-    length.out = 10
-  )
+  prep.discont.rate = lapply( seq(0.008, 0.009, length.out = 10), rep, 3)
 )
 
 # Use this line to run only the default values
