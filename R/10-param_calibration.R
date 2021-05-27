@@ -38,7 +38,7 @@ control <- control_msm(
 # Parameters to test -----------------------------------------------------------
 
 param_proposals <- list(
-  prep.discont.rate = lapply( seq(0.0087, 0.0097, length.out = 10), rep, 3)
+  prep.discont.rate = lapply(seq(0.0078, 0.0080, length.out = 10), rep, 3)
 )
 
 # Use this line to run only the default values

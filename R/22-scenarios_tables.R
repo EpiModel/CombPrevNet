@@ -68,20 +68,29 @@ for (i in seq_along(tables)) {
   df_cum <- df %>%
     filter(time >= max(time) - 52 * 15) %>%
     group_by(scenario, batch, sim) %>%
-    summarise(cum_incid = sum(incid, na.rm = TRUE)) %>%
+    summarise(
+      cum_incid = sum(incid, na.rm = TRUE),
+      cum_indexes = sum(found_indexes, na.rm = TRUE)
+    ) %>%
     ungroup()
 
-  base_cum_incid <- df_cum %>%
+  df_base_cum <- df_cum %>%
     filter(scenario == cur_scenarios[1]) %>%
-    summarise(cum_incid = median(cum_incid)) %>%
-    pull(cum_incid)
+    summarise(
+      cum_incid = median(cum_incid),
+      cum_indexes = sum(found_indexes, na.rm = TRUE)
+    )
+
+    base_cum_incid <- df_base_cum$cum_incid
+    base_cum_indexes <- df_base_cum$cum_indexes
 
   df_cum <- df_cum %>%
     group_by(scenario, batch, sim) %>%
     summarise(
       nia =  (base_cum_incid - cum_incid),
-      pia = nia / base_cum_incid
-      ) %>%
+      pia = nia / base_cum_incid,
+      nnt = (cum_indexes - base_cum_indexes) / nia
+    ) %>%
     ungroup()
 
   # Outcome at the end (mean over last year)

@@ -110,6 +110,21 @@ epi_i_sup_dur <- function(r_ind) {
   }
 }
 
+epi_linked_time <- function(weeks) {
+  function(r_ind) {
+    function(dat, at) {
+      needed_attributes <- c("race", "tx.init.time", "diag.time")
+      with(get_attr_list(dat, needed_attributes), {
+        sum(
+          race %in% r_ind &
+          tx.init.time - diag.time <= weeks,
+          na.rm = TRUE
+        )
+      })
+    }
+  }
+}
+
 epi_tt_traj <- function(traj) {
   function(r_ind) {
     function(dat, at) {

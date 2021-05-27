@@ -19,7 +19,7 @@ df %>%
 
 param_proposals[c(14)]
 
-ggplot(df, aes(x = time, y = prep_time_on___ALL, col = as.character(param_batch))) +
+ggplot(df, aes(x = time, y = s_prep___ALL / s_prep_elig___ALL, col = as.character(param_batch))) +
   geom_smooth()
 
 df %>%

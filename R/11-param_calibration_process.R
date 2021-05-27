@@ -31,7 +31,8 @@ needed_trackers <- vapply(
 )
 
 needed_cols <- c(
- "sim", "time", "batch", "param_batch", "num",
+  "sim", "time", "batch", "param_batch", "num",
+  "incid", # "incid.B", "incid.H", "incid.W",
   "incid.gc", # "incid.gc.B", "incid.gc.H", "incid.gc.W",
   "incid.ct", # "incid.ct.B", "incid.ct.H", "incid.ct.W",
   needed_trackers

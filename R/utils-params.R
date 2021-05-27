@@ -13,6 +13,7 @@ ls_trackers <- list(
   i_tx          = epi_i_tx,
   i_sup         = epi_i_sup,
   # i_sup_dur     = epi_i_sup_dur,
+  linked1m      = epi_linked_time(4),
   prep_start    = epi_prep_start,
   prep_time_on  = epi_prep_time_on,
   prep_1y       = epi_prep_time_year,
