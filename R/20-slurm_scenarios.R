@@ -4,7 +4,7 @@ test_simulation <- TRUE
 
 # Set slurm parameters ---------------------------------------------------------
 batch_per_set <- 10      # How many 28 replications to do per parameter
-steps_to_keep <- 15 * 52 # Steps to keep in the output df. If NULL, return sim obj
+steps_to_keep <- 10 * 52 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
 job_name <- "CPN_sc_t2,3"
 ssh_host <- "hyak_mox"
@@ -26,8 +26,6 @@ lnt <- TRUE # if FALSE: set `require.lnt` to FALSE and adjust ` prep.start.prob`
 source("R/utils-params.R", local = TRUE)
 
 orig <- readRDS("out/est/restart.rds")
-# orig$attr[[1]]$part.ident.counter <- rep(NA, length(orig$attr[[1]]$part.ident))
-# orig$attr[[1]]$prep.start.counter <- rep(NA, length(orig$attr[[1]]$part.ident))
 
 control <- control_msm(
   start = 60 * 52 + 1,
@@ -44,7 +42,10 @@ control <- control_msm(
 # requires <list variables>
 source("R/utils-scenarios.R")
 
-scenarios <- c(sc_base, sc_t2, sc_t3)
+scenarios <- c(sc_base, sc_t2, sc_t3, sc_fig1)
+# scenarios <- c(sc_fig2)
+# scenarios <- c(sc_fig3)
+# scenarios <- c(sc_fig4)
 
 # Automatic --------------------------------------------------------------------
 #

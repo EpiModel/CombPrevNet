@@ -24,7 +24,7 @@ make_outcomes <- function(baseline_file, scenarios_files) {
   df_baseline <- readRDS(baseline_file)
 
   df_base_cum <- df_baseline %>%
-    filter(time >= max(time) - 52 * 15) %>%
+    filter(time >= max(time) - 52 * 10) %>%
     group_by(batch, sim) %>%
     summarise(
       cum_incid = sum(incid, na.rm = TRUE),
@@ -46,9 +46,9 @@ make_outcomes <- function(baseline_file, scenarios_files) {
       df_sc <- readRDS(fle)
       df_cur <- df_cur + 1
 
-      # outcome cumulated over intervention (15y)
+      # outcome cumulated over intervention (10y)
       df_cum <- df_sc %>%
-        filter(time >= max(time) - 52 * 15) %>%
+        filter(time >= max(time) - 52 * 10) %>%
         group_by(scenario, batch, sim) %>%
         summarise(
           cum_incid = sum(incid, na.rm = TRUE),
