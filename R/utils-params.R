@@ -77,11 +77,10 @@ param <- param_msm(
   riskh.start = prep_start_time - 52,
   prep.adhr.dist = c(0.089, 0.127, 0.784),
   prep.adhr.hr = c(0.69, 0.19, 0.01),
-  prep.start.prob =  rep(0.71, 3), # 0.00896,
+  prep.start.prob =  rep(0.305, 3), # 0.00896,
 
-  # qexp(1 - 0.57, 52) -> 0.0115036 (57% retention at year 1, 52 steps)
-  # prep.discont.rate = rep(0.02138792, 3), # 1 - (2^(-1/(224.4237/7)))
-  prep.discont.rate = rep(0.007, 3), # 1 - (2^(-1/(224.4237/7)))
+  # qexp(1 - 0.57, 52) -> 0.0115, 57% ret1y, not counting unelig
+  prep.discont.rate = rep(0.0079, 3), # calibrated
   ## prep.tst.int = 90/7,         # do I need that?
   prep.risk.int = 26,
   ## prep.sti.screen.int = 182/7,
@@ -93,30 +92,29 @@ param <- param_msm(
   ## Using values in prep-race: scripts/burnin/sim.burn.R
   ## If not mentionned -> default from prep disparities
   ## for H : mean(c(B, W))
-  #ok
-  rgc.tprob      = 0.2305246, # plogis(qlogis(0.19) + log(1.25)) #0.357,  # gaps appendix 9.4
-  ugc.tprob      = 0.1933333, # 0.248,  # gaps appendix 9.4
-  rct.tprob      = 0.208432, # plogis(qlogis(0.174) + log(1.25)) #0.3216, # gaps appendix 9.3
-  uct.tprob      = 0.174, #0.213,  # gaps appendix 9.3
-  rgc.sympt.prob = 0.1, #0.077, # gaps appendix 10.3
-  ugc.sympt.prob = 0.9333333, #0.824, # gaps appendix 10.3
-  rct.sympt.prob = 0.1, #0.1035,# gaps appendix 10.2
-  uct.sympt.prob = 0.95, #0.885, # gaps appendix 10.2
-  rgc.ntx.int    = 26, #35.11851, # gaps appendix 11.2
-  ugc.ntx.int    = 26, #35.11851, # gaps appendix 11.2
-  gc.tx.int      = 2, # gaps appendix 11.2 - mentionned, not explicit
-  rct.ntx.int    = 32, #44.24538, # gaps appendix 11.1
-  uct.ntx.int    = 32, #44.24538, # gaps appendix 11.1
-  ct.tx.int      = 2, # gaps appendix 11.1 - mentionned, not explicit
-
-  gc.sympt.prob.tx =  rep(0.9, 3), #c(0.86, 0.91, 0.96),
-  ct.sympt.prob.tx =  rep(0.9, 3), #c(0.72, 0.785, 0.85),
-  gc.asympt.prob.tx = rep(0.1, 3), #c(0.10, 0.145, 0.19),
-  ct.asympt.prob.tx = rep(0.1, 3), #c(0.05, 0.525, 0.10),
-  # gaps appendix 9.3 - 9.4 (not explained this way but similar result)
+  # Calibrate these
+  ugc.tprob      = 0.3375,
+  rgc.tprob      = 0.4331551, # plogis(qlogis(param$ugc.tprob) + log(1.5))
+  uct.tprob      = 0.21875,
+  rct.tprob      = 0.2957746, # plogis(qlogis(param$uct.tprob) + log(1.5))
+  #
+  rgc.sympt.prob = 0.16,
+  ugc.sympt.prob = 0.80,
+  rct.sympt.prob = 0.14,
+  uct.sympt.prob = 0.48,
+  rgc.ntx.int    = 25,
+  ugc.ntx.int    = 25,
+  gc.tx.int      = 1, # seen with infectiologist, reasonable assumption
+  rct.ntx.int    = 45,
+  uct.ntx.int    = 45,
+  ct.tx.int      = 1, # same. Time recommended to use condom
+  gc.sympt.prob.tx =  rep(0.9, 3),
+  ct.sympt.prob.tx =  rep(0.85, 3),
+  gc.asympt.prob.tx = rep(1, 3), # prob of starting tx if diagnosed but asympt
+  ct.asympt.prob.tx = rep(1, 3), # prob of starting tx if diagnosed but asympt
   sti.cond.eff = 0.90, # default
   sti.cond.fail = c(0.2, 0.2, 0.2), # default
-  # gaps appendix 9.2
+  # Calibrate these **NO**
   hiv.rgc.rr = 2.78,
   hiv.ugc.rr = 1.73,
   hiv.rct.rr = 2.78,

@@ -5,9 +5,9 @@ test_all_combination <- TRUE # Can grow super fast
 
 # Set slurm parameters ---------------------------------------------------------
 batch_per_set <- 10      # How many 28 replications to do per parameter
-steps_to_keep <- 52 * 5 # Steps to keep in the output df. If NULL, return sim obj
+steps_to_keep <- 52 * 20 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "CPN_prep_discont"
+job_name <- "CPN_prep_start"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
@@ -38,7 +38,7 @@ control <- control_msm(
 # Parameters to test -----------------------------------------------------------
 
 param_proposals <- list(
-  prep.discont.rate = lapply(seq(0.0078, 0.0080, length.out = 10), rep, 3)
+  prep.start.prob = lapply(seq(0.3, 0.325, length.out = 5), rep, 3)
 )
 
 # Use this line to run only the default values
