@@ -275,6 +275,7 @@ increments_names <- stringr::str_pad(increments, 4, "right", "0")
 
 absolutes <- c(10, 25, 50, 75, 100)
 absolutes_names <- stringr::str_pad(absolutes, 3, "left", "0")
+absolutes <- absolutes / 100
 
 windows <- c(26, 4)
 windows_names <- stringr::str_pad(windows, 2, "left", "0")
@@ -291,7 +292,7 @@ sc_t2 <- list()
 # Index initiation
 sc_t2 <- append_scenario_seq(
   sc_t2,
-  paste0("t2_index_init_", stringr::str_pad(c(7:10), 2, "left", 0)),
+  paste0("t2_index_init_", stringr::str_pad(c(7:10), 3, "left", 0)),
   list(
     part.index.prob = list(0.7, 0.8, 0.9, 1)
   )
@@ -383,7 +384,7 @@ sc_t3 <- append_scenario_seq(
 
 sc_t3 <- append_scenario_seq(
   sc_t3,
-  paste0("t3_cals_win_a", windows),
+  paste0("t3_cals_win_a", windows_names),
   list(
     part.ident.casl = as.list(windows)
   )
@@ -391,7 +392,7 @@ sc_t3 <- append_scenario_seq(
 
 sc_t3 <- append_scenario_seq(
   sc_t3,
-  paste0("t3_ooff_win_a", windows),
+  paste0("t3_ooff_win_a", windows_names),
   list(
     part.ident.ooff = as.list(windows)
   )

@@ -4,7 +4,7 @@ var_labels <- c(
   "ir100"              = "Incidence Rate",
   "nia"                = "NIA",
   "pia"                = "PIA",
-  "NNT"                = "NNT",
+  "nnt"                = "NNT",
   # Process
   "prep_cov"           = "PrEP Coverage",
   "hiv_diag"           = "HIV+ Diagnosed",
@@ -58,6 +58,7 @@ scenarios_labels <- c(
 fmts <- replicate(length(var_labels), scales::label_number(1))
 names(fmts) <- names(var_labels)
 fmts[["ir100"]] <- scales::label_number(0.01)
+fmts[["nnt"]] <- scales::label_number(0.01)
 fmts[["pia"]] <- scales::label_percent(0.1)
 fmts[["prep_cov"]] <- scales::label_percent(0.1)
 fmts[["hiv_diag"]] <- scales::label_percent(0.1)

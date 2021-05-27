@@ -1,47 +1,74 @@
 library(data.table)
 
 # One or many job_names
-job_names <- "CPN_sc_9"
+job_names <- "CPN_sc_t2,3"
 job_last_n <- NULL # if not NULL, get last N jobs. Otherwise, use job_names
 
 if (!is.null(job_last_n))
   job_names <- tail(readLines("out/remote_jobs/last_jobs"), job_last_n)
 
-# Read targets
-source("R/utils-targets.R")
 
-needed_cols <- c(
-  "sim", "time", "batch", "scenario",
-  "incid", "ir100",
-  "s_prep___ALL", "s_prep_elig___ALL",
-  "i___ALL", "i_dx___ALL", "i_tx___ALL", "i_sup___ALL",
-  "elig_indexes", "found_indexes", "prep.start.counter",
-  "prep_start___ALL", "prep_time_on___ALL", "prep_episodes___ALL",
-  "part_ident___ALL", "part_sneg___ALL", "part_spos___ALL",
-  "part_prep___ALL", "part_txinit___ALL", "part_txreinit___ALL",
-  "ident_dist0___ALL", "ident_dist1___ALL",
-  "ident_dist2___ALL", "ident_dist3p___ALL"
+needed_trackers <- c(
+  "n",
+  "i", "i_dx", "i_tx", "i_sup", "linked1m",
+  "s", "s_prep", "s_prep_elig",
+  "prep_start", "prep_time_on", "prep_1y", "prep_episodes",
+  "part_ident", "part_sneg", "part_spos",
+  "part_prep", "part_txinit", "part_txreinit",
+  "ident_dist0", "ident_dist1", "ident_dist2", "ident_dist3p"
 )
 
-jobs <- list()
+needed_pops <- c("ALL", "B", "H", "W")
+
+needed_trackers <- vapply(
+  needed_pops,
+  function(pop) paste0(needed_trackers, "___", pop),
+  needed_trackers
+)
+
+needed_cols <- c(
+  "sim", "time", "batch", "param_batch", "num",
+  "incid",
+  "found_indexes", "elig_indexes",
+  needed_trackers
+)
+
 for (job in job_names) {
-  jobs[[job]] <- list()
   infos <- readRDS(fs::path("out/remote_jobs/", job, "job_info.rds"))
-  jobs[[job]]$infos <- infos
   out_dir <- fs::path(infos$paths$local_job_dir, "out")
 
   sim_files <- fs::dir_ls(out_dir, regexp = "\\d*.rds")
-  df_ls <- vector(mode = "list", length = length(sim_files))
   for (fle in sim_files) {
     btch <- as.numeric(stringr::str_extract(fs::path_file(fle), "\\d+"))
+    scenario_name <- names(infos$param_proposals)[btch]
+
     sim <- readRDS(fle)
     dff <- as.data.table(sim)
-    dff[, `:=`(batch = btch, scenario = names(infos$param_proposals)[btch])]
+
+    dff[, `:=`(batch = btch, scenario = scenario_name)]
+
     keep_cols <- intersect(needed_cols, names(dff))
-    df_ls[[btch]] <- dff[, ..keep_cols]
+    dff <- dff[, ..keep_cols]
+
+    sim_dir <- fs::path("out/parts/scenarios", scenario_name)
+    if (!fs::dir_exists(sim_dir)) fs::dir_create(sim_dir, recurse = TRUE)
+
+    saveRDS(dff, fs::path(sim_dir, paste0(job, "-", btch, ".rds")))
   }
-  jobs[[job]]$data <- rbindlist(df_ls, fill = TRUE)
 }
 
-df <- map_dfr(jobs, ~ as_tibble(.x$data))
-saveRDS(df, "out/scdf.rds")
+scenario_dir <- "out/parts/scenarios"
+if (!fs::dir_exists(scenario_dir)) fs::dir_create(scenario_dir, recurse = TRUE)
+
+scenarios <- fs::dir_ls(scenario_dir)
+for (sc in scenarios) {
+  elts <- fs::path_split(sc)
+  scenario_name <- elts[[1]][length(elts[[1]])]
+
+  file_names <- fs::dir_ls(sc)
+  df_ls <- lapply(file_names, readRDS)
+
+  dfs <- rbindlist(df_ls, fill = TRUE)[, scenario := scenario_name]
+
+  saveRDS(dfs, fs::path("out/scenarios", paste0(scenario_name, ".rds")))
+}

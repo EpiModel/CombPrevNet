@@ -17,6 +17,12 @@ ls_trackers <- list(
   prep_start    = epi_prep_start,
   prep_time_on  = epi_prep_time_on,
   prep_1y       = epi_prep_time_year,
+
+  gc_i          = epi_gc_i,
+  ct_i          = epi_ct_i,
+  gc_s          = epi_gc_s,
+  ct_s          = epi_ct_s,
+
   part_ident    = epi_part_ident,
   part_sneg     = epi_part_sneg,
   part_spos     = epi_part_spos,

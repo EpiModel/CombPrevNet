@@ -4,11 +4,11 @@ test_simulation <- TRUE
 test_all_combination <- TRUE # Can grow super fast
 
 # Set slurm parameters ---------------------------------------------------------
-batch_per_set <- 10      # How many 28 replications to do per parameter
+batch_per_set <- 5      # How many 28 replications to do per parameter
 steps_to_keep <- 52 * 20 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "CPN_prep_start"
-ssh_host <- "hyak_mox"
+job_name <- "K_CPN_sti_start"
+ssh_host <- "hyak_klone"
 ssh_dir <- "gscratch/CombPrevNet/"
 
 # Options passed to slurm_wf
@@ -16,7 +16,7 @@ slurm_ressources <- list(
   partition = partition,
   job_name = job_name,
   account = if (partition == "csde") "csde" else "csde-ckpt",
-  n_cpus = 28,
+  n_cpus = 40,
   memory = 5 * 1e3, # in Mb and PER CPU
   walltime = 60
 )
@@ -38,7 +38,8 @@ control <- control_msm(
 # Parameters to test -----------------------------------------------------------
 
 param_proposals <- list(
-  prep.start.prob = lapply(seq(0.3, 0.325, length.out = 5), rep, 3)
+  uct.tprob = as.list(seq(0.20, 0.25, length.out = 5)),
+  ugc.tprob = as.list(seq(0.30, 0.35, length.out = 5))
 )
 
 # Use this line to run only the default values
@@ -51,7 +52,20 @@ if (test_all_combination) {
   param_proposals <- transpose_ragged(param_proposals)
 }
 
-relative_params <- list()
+relative_params <- list(
+  rgc.tprob = function(param) {
+    out <- NULL
+    if (!is.null(param$ugc.tprob))
+      out <- plogis(qlogis(param$ugc.tprob) + log(1.5))
+    out
+  },
+  rct.tprob = function(param) {
+    out <- NULL
+    if (!is.null(param$uct.tprob))
+      out <- plogis(qlogis(param$uct.tprob) + log(1.5))
+    out
+  }
+)
 
 # Automatic --------------------------------------------------------------------
 
