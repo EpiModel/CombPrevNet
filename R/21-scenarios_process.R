@@ -1,7 +1,7 @@
 library(data.table)
 
 # One or many job_names
-job_names <- "CPN_sc_t2,3"
+job_names <- "CPN_sc_t23"
 job_last_n <- NULL # if not NULL, get last N jobs. Otherwise, use job_names
 
 if (!is.null(job_last_n))

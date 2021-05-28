@@ -5,6 +5,7 @@ var_labels <- c(
   "nia"                = "NIA",
   "pia"                = "PIA",
   "nnt"                = "NNT",
+  "cum_incid"          = "Cumulative incidence",
   # Process
   "prep_cov"           = "PrEP Coverage",
   "hiv_diag"           = "HIV+ Diagnosed",

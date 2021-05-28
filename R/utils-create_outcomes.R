@@ -59,7 +59,7 @@ make_outcomes <- function(baseline_file, scenarios_files) {
           pia = nia / base_cum_incid,
           nnt = (cum_indexes - base_cum_indexes) / nia
         ) %>%
-        select(- c(cum_incid, cum_indexes)) %>%
+        select(- cum_indexes) %>%
         ungroup()
 
       # Outcome at the end (mean over last year)
@@ -77,7 +77,7 @@ make_outcomes <- function(baseline_file, scenarios_files) {
 
       # Part Serv process outcome
       df_part <- df_sc %>%
-        filter(time >= max(time) - 52) %>%
+        filter(time >= max(time) - 10 * 52) %>%
         mutate(part_screened___ALL = part_spos___ALL + part_sneg___ALL) %>%
         group_by(scenario, batch, sim) %>%
         summarise(

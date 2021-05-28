@@ -72,7 +72,7 @@ sc_t2 <- list()
 # Index initiation
 sc_t2 <- append_scenario_seq(
   sc_t2,
-  paste0("t2_index_init_", stringr::str_pad(c(7:10), 3, "left", 0)),
+  paste0("t2_index_init_a", stringr::str_pad(c(7:10)*10, 3, "left", 0)),
   list(
     part.index.prob = list(0.7, 0.8, 0.9, 1)
   )
@@ -164,9 +164,9 @@ sc_t3 <- append_scenario_seq(
 
 sc_t3 <- append_scenario_seq(
   sc_t3,
-  paste0("t3_cals_win_a", windows_names),
+  paste0("t3_casl_win_a", windows_names),
   list(
-    part.ident.casl = as.list(windows)
+    part.ident.casl.window = as.list(windows)
   )
 )
 
@@ -174,7 +174,7 @@ sc_t3 <- append_scenario_seq(
   sc_t3,
   paste0("t3_ooff_win_a", windows_names),
   list(
-    part.ident.ooff = as.list(windows)
+    part.ident.ooff.window = as.list(windows)
   )
 )
 
