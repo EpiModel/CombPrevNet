@@ -1,25 +1,19 @@
-source("R/utils-create_outcomes.R")
+lnt <- TRUE # if FALSE: set `require.lnt` to FALSE and adjust ` prep.start.prob`
+source("R/utils-params.R", local = TRUE)
 
-scenarios <- fs::dir_ls("out/scenarios")
+orig <- readRDS("out/est/restart.rds")
 
-# Maxs
-max_sc <- c(
-  scenarios[grepl("max", scenarios)],
-  scenarios[grepl("no_ident", scenarios)]
+control <- control_msm(
+  start = 60 * 52 + 1,
+  nsteps = 80 * 52, # 60->65 rng; 65->70 calib2; 70->80 scenario
+  nsims = 28,
+  ncores = 28,
+  save.nwstats = FALSE,
+  initialize.FUN = reinit_msm,
+  save.clin.hist = FALSE,
+  verbose = FALSE
 )
 
-df <- make_outcomes(base, c(base, max_sc))
-readr::write_csv( df, paste0("out/tables/max.csv"))
-
-# T2
-base <- scenarios[grepl("base_atlanta", scenarios)]
-t2_sc <- scenarios[grepl("t2_", scenarios)]
-
-df <- make_outcomes(base, c(base, t2_sc))
-readr::write_csv( df, paste0("out/tables/t2.csv"))
-
-# T3
-t3_sc <- scenarios[grepl("t3_", scenarios)]
-
-df <- make_outcomes(base, c(base, t3_sc))
-readr::write_csv( df, paste0("out/tables/t3.csv"))
+# Scenarios --------------------------------------------------------------------
+# requires <list variables>
+source("R/utils-scenarios.R")

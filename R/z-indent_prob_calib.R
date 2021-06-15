@@ -104,9 +104,9 @@ if (strategy == "221") {
   p_temp
   # [1] 0.02689713
   p <- p_temp * ratio
-  p
+  print(p)
   # [1] 0.06090590 0.06090590 0.03045295
-  p * x
+  print(p * x)
   # [1] 0.05711067 0.08421622 0.29067311
   sum(p * x)
   # [1] 0.432
@@ -118,9 +118,9 @@ if (strategy == "221") {
   p_temp
   # [1] 0.02689713
   p <- p_temp * ratio
-  p
+  print(p)
   # [1] 0.10758853 0.05379427 0.02689713
-  p * x
+  print(p * x)
   # [1] 0.10088436 0.07438277 0.25673287
   sum(p * x)
   # [1] 0.432
@@ -129,9 +129,9 @@ if (strategy == "221") {
   ##
   ## we force each partnership type to give the same "number" of partners
   p <- target_ident / 3 / x
-  p
+  print(p)
   # [1] 0.2057143 0.1440000 0.0240000
-  p * x
+  print(p * x)
   # [1] 0.144 0.144 0.144# validation
   sum(p * x)
   # [1] 0.432

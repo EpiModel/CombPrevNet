@@ -8,13 +8,12 @@ param_proposals <- jobs[[1]]$infos$param_proposals
 
 df <- df_b
 
-
 df %>%
-  filter(time > max(time) - 104) %>%
+  filter(time > max(time) - 52 * 10) %>%
   group_by(param_batch) %>%
   summarise(
-    ir100gc = mean(incid.gc),# / gc_s___ALL * 5200),
-    ir100ct = mean(incid.ct),# / ct_s___ALL * 5200)
+    ir100gc = mean(ir100.gc, na.rm = TRUE),
+    ir100ct = mean(ir100.ct, na.rm = TRUE),
   ) |> print(n = 200)
 
 df %>%
@@ -39,4 +38,12 @@ df %>%
   filter(param_batch <= 2) %>%
 ggplot( aes(x = time/52, y = i___ALL / num, col = as.character(param_batch))) +
   geom_smooth()
+
+
+df %>%
+  filter(time > max(time) - 104) %>%
+  group_by(param_batch) %>%
+  summarise(
+    found = mean(part_ident___ALL / found_indexes, na.rm = T)
+  ) |> print(n = 200)
 

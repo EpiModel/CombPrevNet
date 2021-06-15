@@ -18,13 +18,6 @@ control <- control_msm(
   raw_output = FALSE
 )
 
-# init <- init_msm(
-#   prev.ugc = 0.1,
-#   prev.rct = 0.1,
-#   prev.rgc = 0.1,
-#   prev.uct = 0.1
-# )
-
 # options(error = recover)
 # debug(stitrans_msm)
 sim <- netsim(orig, param, init, control)
@@ -35,14 +28,13 @@ library(tidyverse)
 df <- as_tibble(sim)
 
 df %>%
-  # mutate(y = s_prep___ALL / (s_prep_elig___ALL)) %>%
-   mutate(y = ir100.gc) %>%
+  filter(time > 52 * 65) %>%
+  mutate(y = s_prep___ALL / (s_prep_elig___ALL)) %>%
 ggplot(aes(x = time, y = y)) +
   geom_line()
 
 df %>%
-  filter(time > max(time) - 52 * 10) %>%
+  filter(between(time, 52 * 70, 52 * 71)) %>%
   summarise(
-    ir100gc = median(ir100.gc, na.rm = TRUE),
-    ir100ct = median(ir100.ct, na.rm = TRUE)
+    prep_cov = mean(s_prep___ALL / s_prep_elig___ALL, na.rm = TRUE)
   ) |> print(n = 200)

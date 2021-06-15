@@ -45,6 +45,7 @@ epistats <- readRDS("out/est/epistats.rds")
 
 full_tx_eff <- rep(1, 3)
 prep_start_time <- 52 * 65 + 1
+prep_start_prob <- rep(0.305, 3)
 
 param <- param_msm(
   netstats = netstats,
@@ -83,7 +84,7 @@ param <- param_msm(
   riskh.start = prep_start_time - 52,
   prep.adhr.dist = c(0.089, 0.127, 0.784),
   prep.adhr.hr = c(0.69, 0.19, 0.01),
-  prep.start.prob =  rep(0.305, 3), # 0.00896,
+  prep.start.prob = prep_start_prob,
 
   # qexp(1 - 0.57, 52) -> 0.0115, 57% ret1y, not counting unelig
   prep.discont.rate = rep(0.0079, 3), # calibrated
@@ -94,10 +95,10 @@ param <- param_msm(
   prep.risk.reassess.method = "year",
   prep.require.lnt = TRUE, # FALSE -> start with random PrEP initiation
 
-  rgc.tprob = 0.2267303, #plogis(qlogis(0.19) + log(1.25)) #0.357,  # gaps appendix 9.4
   ugc.tprob = 0.19,# 0.248,  # gaps appendix 9.4
-  rct.tprob = 0.2038369, #plogis(qlogis(0.17) + log(1.25)) #0.3216, # gaps appendix 9.3
+  rgc.tprob = 0.2267303, #plogis(qlogis(0.19) + log(1.25)) #0.357,  # gaps appendix 9.4
   uct.tprob = 0.17,#0.213,  # gaps appendix 9.3
+  rct.tprob = 0.2038369, #plogis(qlogis(0.17) + log(1.25)) #0.3216, # gaps appendix 9.3
   rgc.sympt.prob = 0.1,#0.077, # gaps appendix 10.3
   ugc.sympt.prob = 0.9333333,#0.824, # gaps appendix 10.3
   rct.sympt.prob = 0.1,#0.1035,# gaps appendix 10.2
@@ -123,39 +124,6 @@ param <- param_msm(
   hiv.uct.rr = 1.73,
  # if both ct + gc -> log(RRgc) + 0.2 * log(RRct) | swap ct and gc if RRct > RRgc
   hiv.dual.rr = 0.2, # not mentionned in appendix
-  ## STI PARAMS (default: from combprev2, make it gaps)
-  ## Using values in prep-race: scripts/burnin/sim.burn.R
-  ## If not mentionned -> default from prep disparities
-  ## for H : mean(c(B, W))
-  # Calibrate these
-  #ugc.tprob = 0.17, # 0.19
-  #rgc.tprob = plogis(qlogis(0.1) + log(1.5)),
-  #uct.tprob = 0.05, # 0.17
-  #rct.tprob = plogis(qlogis(0.1) + log(1.5)), # gaps appendix 9.3
-  ##
-  #rgc.sympt.prob = 0.16,
-  #ugc.sympt.prob = 0.80,
-  #rct.sympt.prob = 0.14,
-  #uct.sympt.prob = 0.48,
-  #rgc.ntx.int    = 25,
-  #ugc.ntx.int    = 25,
-  #gc.tx.int      = 1, # seen with infectiologist, reasonable assumption
-  #rct.ntx.int    = 45,
-  #uct.ntx.int    = 45,
-  #ct.tx.int      = 1, # same. Time recommended to use condom
-  #gc.sympt.prob.tx =  rep(0.9, 3),
-  #ct.sympt.prob.tx =  rep(0.85, 3),
-  #gc.asympt.prob.tx = rep(0.1, 3), # prob of starting tx if asympt (test + treat)
-  #ct.asympt.prob.tx = rep(0.1, 3),
-  #sti.cond.eff = 0.90, # default
-  #sti.cond.fail = c(0.2, 0.2, 0.2), # default
-  ## Calibrate these **NO**
-  #hiv.rgc.rr = 2.78,
-  #hiv.ugc.rr = 1.73,
-  #hiv.rct.rr = 2.78,
-  #hiv.uct.rr = 1.73,
- ## if both ct + gc -> log(RRgc) + 0.2 * log(RRct) | swap ct and gc if RRct > RRgc
-  #hiv.dual.rr = 0.2, # not mentionned in appendix
 
   # Part ident parameters (defaut is ATL Complete)
   part.ident.start = prep_start_time,
@@ -166,16 +134,31 @@ param <- param_msm(
   part.ident.casl.window = 52,
   part.ident.ooff.window = 52,
   # see "R/z-indent_prob_calib.R"
-  part.ident.main.prob = 0.10758853,
-  part.ident.casl.prob = 0.05379427,
-  part.ident.ooff.prob = 0.02689713,
+  part.ident.main.prob = 0.10758853, # calibrated
+  part.ident.casl.prob = 0.05379427, # part.ident.main.prob / 2
+  part.ident.ooff.prob = 0.02689713, # part.ident.main.prob / 4
   # Part Serv Params
   part.hiv.test.rate = rep(0.394, 3),
   part.prep.start.prob = rep(0, 3),
   part.tx.init.prob = rep(0.387, 3),
   part.tx.reinit.prob = rep(0, 3),
 
-  param_updaters = list(),
+  param_updaters = list(
+    # High PrEP intake for the first year
+    list(
+      at = prep_start_time,
+      param = list(
+        prep.start.prob = prep_start_prob * 2.5
+      )
+    ),
+    # go back to normal to get to 15%
+    list(
+      at = prep_start_time + 52,
+      param = list(
+        prep.start.prob =  prep_start_prob
+      )
+    )
+  ),
   epi_trackers = epi_trackers
 )
 
@@ -189,16 +172,6 @@ param <- update_params(
     ) + 1
   )
 )
-
-## must be set by the calling script
-if (lnt == FALSE) {
-  param <- update_params(
-    param, list(
-      prep.require.lnt = FALSE,
-      prep.start.prob = 0.00411
-    )
-  )
-}
 
 init <- init_msm(
   prev.ugc = 0.05,

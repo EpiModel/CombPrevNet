@@ -48,7 +48,7 @@ append_scenario_cross <- function(sc, name_prefix, sc_fixed, sc_cross) {
   sc
 }
 
-scenarios_update_time <- scenarios_update_time
+scenarios_update_time <- 52 * 70 + 1
 
 increments <- c(1.1, 1.25, 1.50)
 increments_names <- stringr::str_pad(increments, 4, "right", "0")

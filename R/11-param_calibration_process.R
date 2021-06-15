@@ -5,6 +5,7 @@ library(tidyr)
 library(EpiModel)
 
 # One or many job_names
+# job_names <- "CPN_ident"
 job_names <- "K_CPN_sti_start"
 job_last_n <- NULL # if not NULL, get last N jobs. Otherwise, use job_names
 
@@ -19,7 +20,8 @@ needed_trackers <- c(
   "i", "i_dx", "i_sup", "linked1m",
   "s", "s_prep", "s_prep_elig",
   "prep_time_on", "prep_1y",
-  "gc_s", "ct_s", "gc_i", "ct_i"
+  "gc_s", "ct_s", "gc_i", "ct_i",
+  "part_ident"
 )
 
 needed_pops <- c("ALL", "B", "H", "W")
@@ -35,6 +37,7 @@ needed_cols <- c(
   "incid", # "incid.B", "incid.H", "incid.W",
   "incid.gc", # "incid.gc.B", "incid.gc.H", "incid.gc.W",
   "incid.ct", # "incid.ct.B", "incid.ct.H", "incid.ct.W",
+  "ir100.gc", "ir100.ct", "found_indexes",
   needed_trackers
 )
 
