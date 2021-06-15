@@ -48,7 +48,7 @@ append_scenario_cross <- function(sc, name_prefix, sc_fixed, sc_cross) {
   sc
 }
 
-scenarios_update_time <- 52 * 70 + 1
+scenarios_update_time <- scenarios_update_time
 
 increments <- c(1.1, 1.25, 1.50)
 increments_names <- stringr::str_pad(increments, 4, "right", "0")
@@ -191,7 +191,7 @@ sc_t3 <- append_scenario_seq(
 sc_fig1 <- list(
   no_ident_no_prep = list(
     list(
-      at = scenarios_update_time,
+      at = param$riskh.start - 1,
       param = list(
         part.ident.start = Inf,
         prep.start = Inf,
@@ -201,7 +201,7 @@ sc_fig1 <- list(
   ),
   no_ident = list(
     list(
-      at = scenarios_update_time,
+      at = param$riskh.start - 1,
       param = list(
         part.ident.start = Inf
       )
@@ -209,7 +209,7 @@ sc_fig1 <- list(
   ),
   ident_max_all = list(
     list(
-      at = 52 * 70 + 1,
+      at = scenarios_update_time,
       param = list( # maximum possible effect (unachievable in practice)
         # see "R/z-indent_prob_calib.R"
         part.index.prob = 1,
@@ -226,7 +226,7 @@ sc_fig1 <- list(
   ),
   ident_max_test = list(
     list(
-      at = 52 * 70 + 1,
+      at = scenarios_update_time,
       param = list( # maximum test (prep effect via LNT)
         # see "R/z-indent_prob_calib.R"
         part.index.prob = 1,
@@ -243,7 +243,7 @@ sc_fig1 <- list(
   ),
   ident_max_prep = list(
     list(
-      at = 52 * 70 + 1,
+      at = scenarios_update_time,
       param = list( # maximum test + prep
         # see "R/z-indent_prob_calib.R"
         part.index.prob = 1,
@@ -260,7 +260,7 @@ sc_fig1 <- list(
   ),
   ident_max_tx_init = list(
     list(
-      at = 52 * 70 + 1,
+      at = scenarios_update_time,
       param = list( # maximum test + tx (re)init
         # see "R/z-indent_prob_calib.R"
         part.index.prob = 1,
@@ -271,13 +271,13 @@ sc_fig1 <- list(
         part.hiv.test.rate   = rep(1, 3),
         part.prep.start.prob = rep(0, 3),
         part.tx.init.prob    = rep(1, 3),
-        part.tx.reinit.prob  = rep(1, 3)
+        part.tx.reinit.prob  = rep(0, 3)
       )
     )
   ),
   ident_max_tx_reinit = list(
     list(
-      at = 52 * 70 + 1,
+      at = scenarios_update_time,
       param = list( # maximum test + tx (re)init
         # see "R/z-indent_prob_calib.R"
         part.index.prob = 1,
@@ -294,7 +294,7 @@ sc_fig1 <- list(
   ),
   ident_max_tx_both = list(
     list(
-      at = 52 * 70 + 1,
+      at = scenarios_update_time,
       param = list( # maximum test + tx (re)init
         # see "R/z-indent_prob_calib.R"
         part.index.prob = 1,

@@ -18,7 +18,14 @@ control <- control_msm(
   raw_output = FALSE
 )
 
-options(error = recover)
+# init <- init_msm(
+#   prev.ugc = 0.1,
+#   prev.rct = 0.1,
+#   prev.rgc = 0.1,
+#   prev.uct = 0.1
+# )
+
+# options(error = recover)
 # debug(stitrans_msm)
 sim <- netsim(orig, param, init, control)
 # saveRDS(sim, "out/restart_test.rds")
@@ -29,6 +36,13 @@ df <- as_tibble(sim)
 
 df %>%
   # mutate(y = s_prep___ALL / (s_prep_elig___ALL)) %>%
-   mutate(y = ir100.ct) %>%
+   mutate(y = ir100.gc) %>%
 ggplot(aes(x = time, y = y)) +
   geom_line()
+
+df %>%
+  filter(time > max(time) - 52 * 10) %>%
+  summarise(
+    ir100gc = median(ir100.gc, na.rm = TRUE),
+    ir100ct = median(ir100.ct, na.rm = TRUE)
+  ) |> print(n = 200)

@@ -8,6 +8,15 @@ param_proposals <- jobs[[1]]$infos$param_proposals
 
 df <- df_b
 
+
+df %>%
+  filter(time > max(time) - 104) %>%
+  group_by(param_batch) %>%
+  summarise(
+    ir100gc = mean(incid.gc),# / gc_s___ALL * 5200),
+    ir100ct = mean(incid.ct),# / ct_s___ALL * 5200)
+  ) |> print(n = 200)
+
 df %>%
   filter(time > max(time) - 104) %>%
   group_by(param_batch) %>%

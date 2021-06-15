@@ -2,17 +2,18 @@
 
 LAST_JOB=$(tail -n 1 "out/remote_jobs/last_jobs")
 
-echo "Current job is: $LAST_JOB"
-
 cmd_get() {
-    . "out/remote_jobs/$LAST_JOB/get_from_ssh.sh"
+    get_job_name "$@"
+    . "out/remote_jobs/$JOB/get_from_ssh.sh"
 }
 
 cmd_send() {
-    . "out/remote_jobs/$LAST_JOB/send_to_ssh.sh"
+    get_job_name "$@"
+
+    . "out/remote_jobs/$JOB/send_to_ssh.sh"
     echo "run this command to start the jobs (copied to clipboard)"
-    echo "remote_jobs/$LAST_JOB/slurm/master_slurm.sh"
-    echo "remote_jobs/$LAST_JOB/slurm/master_slurm.sh" | wl-copy
+    echo "remote_jobs/$JOB/slurm/master_slurm.sh"
+    echo "remote_jobs/$JOB/slurm/master_slurm.sh" | wl-copy
 }
 
 cmd_list() {
@@ -21,6 +22,16 @@ cmd_list() {
 
 cmd_usage() {
     echo "use `send` or `get` to send or get the last job to/from the server"
+}
+
+get_job_name() {
+    JOB=$1
+    if [ -z "$JOB" ]
+    then
+      JOB=$LAST_JOB
+    fi
+
+    echo "Current job is: $JOB"
 }
 
 case "$1" in

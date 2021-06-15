@@ -86,9 +86,9 @@
       "RemoteUsername": "EpiModel",
       "RemoteRepo": "EpiModelHIV-p",
       "RemoteRef": "CombPrevNet",
-      "RemoteSha": "6a110f60953bffd0e474f42d4841e070a5e55ec4",
+      "RemoteSha": "9e77843e76e3f033f19eefdf30439a12013137f9",
       "RemoteHost": "api.github.com",
-      "Hash": "f15c4effdfbe0c2dd203568fc3895101"
+      "Hash": "d0c887d3c60f718736c01ec86c4d435d"
     },
     "EpiModelHPC": {
       "Package": "EpiModelHPC",
