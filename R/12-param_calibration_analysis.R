@@ -17,7 +17,7 @@ df %>%
   ) |> print(n = 200)
 
 df %>%
-  filter(time > max(time) - 104) %>%
+  filter(time > max(time) - 52 * 10) %>%
   group_by(param_batch) %>%
   summarise(
     coverage = median(s_prep___ALL / s_prep_elig___ALL),
@@ -36,14 +36,18 @@ ggplot(aes(x = time/52, y = s_prep___ALL / s_prep_elig___ALL, col = as.character
 
 df %>%
   filter(param_batch <= 2) %>%
-ggplot( aes(x = time/52, y = i___ALL / num, col = as.character(param_batch))) +
+  ggplot(aes(
+    x = time/52, y = s_prep___ALL / s_prep_elig___ALL,
+    col = as.character(param_batch)
+  )) +
   geom_smooth()
 
 
 df %>%
-  filter(time > max(time) - 104) %>%
+  filter(time > max(time) - 52 * 10) %>%
   group_by(param_batch) %>%
   summarise(
     found = mean(part_ident___ALL / found_indexes, na.rm = T)
   ) |> print(n = 200)
 
+param_proposals[7]

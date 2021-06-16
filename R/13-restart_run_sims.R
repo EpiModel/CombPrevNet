@@ -27,7 +27,7 @@ lnt <- TRUE # if FALSE: set `require.lnt` to FALSE and adjust ` prep.start.prob`
 source("R/utils-params.R", local = TRUE)
 
 control <- control_msm(
-  nsteps = 60 * 52,
+  nsteps = 80 * 52, # 60
   nsims = 28,
   ncores = 28,
   save.nwstats = FALSE,

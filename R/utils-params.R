@@ -45,7 +45,7 @@ epistats <- readRDS("out/est/epistats.rds")
 
 full_tx_eff <- rep(1, 3)
 prep_start_time <- 52 * 65 + 1
-prep_start_prob <- rep(0.305, 3)
+prep_start_prob <- rep(0.3, 3)
 
 param <- param_msm(
   netstats = netstats,
@@ -134,9 +134,9 @@ param <- param_msm(
   part.ident.casl.window = 52,
   part.ident.ooff.window = 52,
   # see "R/z-indent_prob_calib.R"
-  part.ident.main.prob = 0.10758853, # calibrated
-  part.ident.casl.prob = 0.05379427, # part.ident.main.prob / 2
-  part.ident.ooff.prob = 0.02689713, # part.ident.main.prob / 4
+  part.ident.main.prob = 0.2433333, # calibrated
+  part.ident.casl.prob = 0.1216667, # part.ident.main.prob / 2
+  part.ident.ooff.prob = 0.06083333, # part.ident.main.prob / 4
   # Part Serv Params
   part.hiv.test.rate = rep(0.394, 3),
   part.prep.start.prob = rep(0, 3),
@@ -148,7 +148,7 @@ param <- param_msm(
     list(
       at = prep_start_time,
       param = list(
-        prep.start.prob = prep_start_prob * 2.5
+        prep.start.prob = prep_start_prob * 2
       )
     ),
     # go back to normal to get to 15%
