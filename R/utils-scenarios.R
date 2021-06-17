@@ -50,8 +50,8 @@ append_scenario_cross <- function(sc, name_prefix, sc_fixed, sc_cross) {
 
 scenarios_update_time <- 52 * 70 + 1
 
-increments <- c(1.1, 1.25, 1.50)
-increments_names <- stringr::str_pad(increments, 4, "right", "0")
+increments <- c(1.1, 1.50, 2.0)
+increments_names <- scales::number_format(0.01)(increments)
 
 absolutes <- c(10, 25, 50, 75, 100)
 absolutes_names <- stringr::str_pad(absolutes, 3, "left", "0")
@@ -60,7 +60,7 @@ absolutes <- absolutes / 100
 windows <- c(26, 4)
 windows_names <- stringr::str_pad(windows, 2, "left", "0")
 
-degrees <- c(1, 2, 3, 5, 10)
+degrees <- c(2, 3, 5, 10)
 degrees_names <- stringr::str_pad(degrees, 2, "left", "0")
 
 # Base Scenario ----------------------------------------------------------------
@@ -78,7 +78,7 @@ sc_t2 <- append_scenario_seq(
   )
 )
 
-# Identification
+# Partner Identification
 sc_t2 <- append_scenario_seq(
   sc_t2,
   paste0("t2_part_ident_i", increments_names),
@@ -148,6 +148,210 @@ sc_t2 <- append_scenario_seq(
   paste0("t2_tx_reinit_a", absolutes_names),
   list(
     part.tx.reinit.prob = lapply(absolutes, rep, 3)
+  )
+)
+
+# Table 2b ---------------------------------------------------------------------
+sc_t2b <- list()
+
+lei <- length(increments)
+lea <- length(absolutes)
+
+# Testing
+sc_t2b <- append_scenario_seq(
+  sc_t2b,
+  paste0("t2_hiv_test_i", increments_names),
+  list(
+    part.index.prob = as.list(rep(0.9, lei)),
+    part.ident.main.prob = as.list(param$part.ident.main.prob * rep(2, lei)),
+    part.ident.casl.prob = as.list(param$part.ident.casl.prob * rep(2, lei)),
+    part.ident.ooff.prob = as.list(param$part.ident.ooff.prob * rep(2, lei)),
+
+    part.hiv.test.rate = lapply(param$part.hiv.test.rate * increments, rep, 3)
+  )
+)
+
+sc_t2b <- append_scenario_seq(
+  sc_t2b,
+  paste0("t2_hiv_test_a", absolutes_names),
+  list(
+    part.index.prob = as.list(rep(0.9, lea)),
+    part.ident.main.prob = as.list(param$part.ident.main.prob * rep(2, lea)),
+    part.ident.casl.prob = as.list(param$part.ident.casl.prob * rep(2, lea)),
+    part.ident.ooff.prob = as.list(param$part.ident.ooff.prob * rep(2, lea)),
+
+    part.hiv.test.rate = lapply(absolutes, rep, 3)
+  )
+)
+
+# PrEP linkage
+sc_t2b <- append_scenario_seq(
+  sc_t2b,
+  paste0("t2_prep_start_i", absolutes_names),
+  list(
+    part.index.prob = as.list(rep(0.9, lea)),
+    part.ident.main.prob = as.list(param$part.ident.main.prob * rep(2, lea)),
+    part.ident.casl.prob = as.list(param$part.ident.casl.prob * rep(2, lea)),
+    part.ident.ooff.prob = as.list(param$part.ident.ooff.prob * rep(2, lea)),
+
+    part.prep.start.prob = lapply(absolutes, rep, 3)
+  )
+)
+
+# Tx Init
+sc_t2b <- append_scenario_seq(
+  sc_t2b,
+  paste0("t2_tx_init_i", increments_names),
+  list(
+    part.index.prob = as.list(rep(0.9, lei)),
+    part.ident.main.prob = as.list(param$part.ident.main.prob * rep(2, lei)),
+    part.ident.casl.prob = as.list(param$part.ident.casl.prob * rep(2, lei)),
+    part.ident.ooff.prob = as.list(param$part.ident.ooff.prob * rep(2, lei)),
+
+    part.tx.init.prob = lapply(param$part.tx.init.prob * increments, rep, 3)
+  )
+)
+
+sc_t2b <- append_scenario_seq(
+  sc_t2b,
+  paste0("t2_tx_init_a", absolutes_names),
+  list(
+    part.index.prob = as.list(rep(0.9, lea)),
+    part.ident.main.prob = as.list(param$part.ident.main.prob * rep(2, lea)),
+    part.ident.casl.prob = as.list(param$part.ident.casl.prob * rep(2, lea)),
+    part.ident.ooff.prob = as.list(param$part.ident.ooff.prob * rep(2, lea)),
+
+    part.tx.init.prob = lapply(absolutes, rep, 3)
+  )
+)
+
+# Tx Reinit
+sc_t2b <- append_scenario_seq(
+  sc_t2b,
+  paste0("t2_tx_reinit_a", absolutes_names),
+  list(
+    part.index.prob = as.list(rep(0.9, lea)),
+    part.ident.main.prob = as.list(param$part.ident.main.prob * rep(2, lea)),
+    part.ident.casl.prob = as.list(param$part.ident.casl.prob * rep(2, lea)),
+    part.ident.ooff.prob = as.list(param$part.ident.ooff.prob * rep(2, lea)),
+
+    part.tx.reinit.prob = lapply(absolutes, rep, 3)
+  )
+)
+
+# Table 2c ---------------------------------------------------------------------
+sc_t2c <- list(
+  t2c_no_ident = list(
+    list(
+      at = param$riskh.start - 1,
+      param = list(
+        part.ident.start = Inf
+      )
+    )
+  ),
+  t2c_max_ident = list(
+    list(
+      at = scenarios_update_time,
+      param = list( # maximum possible effect (unachievable in practice)
+        # see "R/z-indent_prob_calib.R"
+        part.index.prob = 1,
+        part.ident.main.prob = 1,
+        part.ident.casl.prob = 1,
+        part.ident.ooff.prob = 1
+      )
+    )
+  ),
+  t2c_max_ident_max_test = list(
+    list(
+      at = scenarios_update_time,
+      param = list( # maximum test (prep effect via LNT)
+        # see "R/z-indent_prob_calib.R"
+        part.index.prob = 1,
+        part.ident.main.prob = 1,
+        part.ident.casl.prob = 1,
+        part.ident.ooff.prob = 1,
+        # Part Serv Params
+        part.hiv.test.rate   = rep(1, 3)
+      )
+    )
+  ),
+  t2c_max_ident_max_prep = list(
+    list(
+      at = scenarios_update_time,
+      param = list( # maximum possible effect (unachievable in practice)
+        # see "R/z-indent_prob_calib.R"
+        part.index.prob = 1,
+        part.ident.main.prob = 1,
+        part.ident.casl.prob = 1,
+        part.ident.ooff.prob = 1,
+        # Part Serv Params
+        part.hiv.test.rate   = rep(1, 3),
+        part.prep.start.prob = rep(1, 3)
+      )
+    )
+  ),
+  t2c_max_ident_max_tx_init = list(
+    list(
+      at = scenarios_update_time,
+      param = list( # maximum possible effect (unachievable in practice)
+        # see "R/z-indent_prob_calib.R"
+        part.index.prob = 1,
+        part.ident.main.prob = 1,
+        part.ident.casl.prob = 1,
+        part.ident.ooff.prob = 1,
+        # Part Serv Params
+        part.hiv.test.rate   = rep(1, 3),
+        part.tx.init.prob    = rep(1, 3)
+      )
+    )
+  ),
+  t2c_max_ident_max_tx_reinit = list(
+    list(
+      at = scenarios_update_time,
+      param = list( # maximum possible effect (unachievable in practice)
+        # see "R/z-indent_prob_calib.R"
+        part.index.prob = 1,
+        part.ident.main.prob = 1,
+        part.ident.casl.prob = 1,
+        part.ident.ooff.prob = 1,
+        # Part Serv Params
+        part.hiv.test.rate   = rep(1, 3),
+        part.tx.reinit.prob  = rep(1, 3)
+      )
+    )
+  ),
+  t2c_max_ident_max_tx_both = list(
+    list(
+      at = scenarios_update_time,
+      param = list( # maximum possible effect (unachievable in practice)
+        # see "R/z-indent_prob_calib.R"
+        part.index.prob = 1,
+        part.ident.main.prob = 1,
+        part.ident.casl.prob = 1,
+        part.ident.ooff.prob = 1,
+        # Part Serv Params
+        part.hiv.test.rate   = rep(1, 3),
+        part.tx.init.prob    = rep(1, 3),
+        part.tx.reinit.prob  = rep(1, 3)
+      )
+    )
+  ),
+  t2c_max_all = list(
+    list(
+      at = scenarios_update_time,
+      param = list( # maximum possible effect (unachievable in practice)
+        # see "R/z-indent_prob_calib.R"
+        part.index.prob = 1,
+        part.ident.main.prob = 1,
+        part.ident.casl.prob = 1,
+        part.ident.ooff.prob = 1,
+        # Part Serv Params
+        part.hiv.test.rate   = rep(1, 3),
+        part.prep.start.prob = rep(1, 3),
+        part.tx.init.prob    = rep(1, 3),
+        part.tx.reinit.prob  = rep(1, 3)
+      )
+    )
   )
 )
 
