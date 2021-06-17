@@ -79,7 +79,7 @@ df <- df_b %>%
 
 
 # Best == batch44 sim19
-sim <- readRDS(fs::path("out/remote_jobs/", job, "out/sim44.rds"))
+sim <- readRDS(fs::path("out/remote_jobs/", job, "out/sim116.rds"))
 orig <- EpiModel::get_sims(sim, 19)
 saveRDS(orig, "out/est/restart.rds")
 

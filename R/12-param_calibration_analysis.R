@@ -6,6 +6,7 @@ df_b <- map_dfr(jobs, ~ as_tibble(.x$data))
 
 param_proposals <- jobs[[1]]$infos$param_proposals
 
+df <- mutate(df_b, param_batch = 1)
 df <- df_b
 
 df %>%
@@ -42,12 +43,32 @@ df %>%
   )) +
   geom_smooth()
 
+df %>%
+  filter(
+    time > 52 * 10,
+    time %% 10 == 0
+  ) %>%
+  ggplot(aes(
+    x = time/52, y = ir100.gc,
+    col = as.character(param_batch)
+  )) +
+  geom_smooth()
+
 
 df %>%
-  filter(time > max(time) - 52 * 10) %>%
+  filter(
+    time > max(time) - 52 * 6,
+  ) %>%
   group_by(param_batch) %>%
-  summarise(
-    found = mean(part_ident___ALL / found_indexes, na.rm = T)
-  ) |> print(n = 200)
+  summarise(found = mean(found_partners / found_indexes, na.rm = T)) |>
+  print(n = 200)
 
-param_proposals[7]
+param_proposals[5]
+
+df %>%
+  filter(
+    time > max(time) - 52 * 2,
+  ) %>%
+  group_by(param_batch) %>%
+  summarise(psp = sum(prepStartPart, na.rm = T)) |>
+  print(n = 200)

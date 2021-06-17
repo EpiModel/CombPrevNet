@@ -4,7 +4,7 @@ test_simulation <- TRUE
 test_all_combination <- FALSE # Can grow super fast
 
 # Set slurm parameters ---------------------------------------------------------
-batch_per_set <- 100      # How many 28 replications to do per parameter
+batch_per_set <- 700      # How many 28 replications to do per parameter
 steps_to_keep <- NULL # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
 job_name <- "CPN_restart"
@@ -25,9 +25,10 @@ slurm_ressources <- list(
 #
 lnt <- TRUE # if FALSE: set `require.lnt` to FALSE and adjust ` prep.start.prob`
 source("R/utils-params.R", local = TRUE)
+param$epi_trackers <- restart_trackers
 
 control <- control_msm(
-  nsteps = 80 * 52, # 60
+  nsteps = 60 * 52,
   nsims = 28,
   ncores = 28,
   save.nwstats = FALSE,

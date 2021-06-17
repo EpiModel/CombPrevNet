@@ -29,7 +29,9 @@ needed_trackers <- vapply(
 needed_cols <- c(
   "sim", "time", "batch", "param_batch", "num",
   "incid",
+  "prepStartPart",
   "found_indexes", "elig_indexes",
+  "found_partners", "elig_partners",
   needed_trackers
 )
 

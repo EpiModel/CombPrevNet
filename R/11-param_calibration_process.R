@@ -6,7 +6,7 @@ library(EpiModel)
 
 # One or many job_names
 # job_names <- "CPN_ident"
-job_names <- "CPN_ident"
+job_names <- "CPN_restart"
 job_last_n <- NULL # if not NULL, get last N jobs. Otherwise, use job_names
 
 if (!is.null(job_last_n))
@@ -34,10 +34,10 @@ needed_trackers <- vapply(
 
 needed_cols <- c(
   "sim", "time", "batch", "param_batch", "num",
-  "incid", # "incid.B", "incid.H", "incid.W",
-  "incid.gc", # "incid.gc.B", "incid.gc.H", "incid.gc.W",
-  "incid.ct", # "incid.ct.B", "incid.ct.H", "incid.ct.W",
-  "ir100.gc", "ir100.ct", "found_indexes",
+  "incid", "ir100.gc", "ir100.ct",
+  "prepStartPart",
+  "found_indexes", "elig_indexes",
+  "found_partners", "elig_partners",
   needed_trackers
 )
 
@@ -54,6 +54,7 @@ for (job in job_names) {
     btch <- as.numeric(stringr::str_extract(fs::path_file(fle), "\\d+"))
     sim <- readRDS(fle)
     dff <- as.data.table(sim)
+        dff <- dff[time > max(time) - 52 * 20] ###########################################################
     dff[, `:=`(batch = btch, param_batch = infos$unique_proposals[btch])]
     keep_cols <- intersect(needed_cols, names(dff))
     df_ls[[btch]] <- dff[, ..keep_cols]

@@ -86,11 +86,13 @@ make_outcomes <- function(baseline_file, scenarios_files) {
           part_screened = sum(part_screened___ALL, na.rm = TRUE),
           part_sneg     = sum(part_sneg___ALL, na.rm = TRUE),
           part_spos     = sum(part_spos___ALL, na.rm = TRUE),
-          part_prep     = sum(part_prep___ALL, na.rm = TRUE),
+          part_prep     = sum(prepStartPart, na.rm = TRUE),
           part_txinit   = sum(part_txinit___ALL, na.rm = TRUE),
           part_txreinit = sum(part_txreinit___ALL, na.rm = TRUE),
           elig_indexes  = sum(elig_indexes, na.rm = TRUE),
           found_indexes = sum(found_indexes, na.rm = TRUE),
+          elig_partners  = sum(elig_partners, na.rm = TRUE),
+          found_partners = sum(found_partners, na.rm = TRUE),
           ident_dist0   = mean(ident_dist0___ALL, na.rm = TRUE),
           ident_dist1   = mean(ident_dist1___ALL, na.rm = TRUE),
           ident_dist2   = mean(ident_dist2___ALL, na.rm = TRUE),
@@ -101,6 +103,8 @@ make_outcomes <- function(baseline_file, scenarios_files) {
         ) %>%
         mutate(
           prop_found_indexes = found_indexes / elig_indexes,
+          prop_found_partners = found_partners / elig_partners,
+          partners_found_per_indexes = found_partners / found_indexes,
           ident_sum    = ident_dist0 + ident_dist1 + ident_dist2 + ident_dist3p,
           ident_dist0  = ident_dist0 / ident_sum,
           ident_dist1  = ident_dist1 / ident_sum,

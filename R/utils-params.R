@@ -37,6 +37,21 @@ ls_trackers <- list(
 )
 epi_trackers <- epi_tracker_by_race(ls_trackers, full = TRUE, indiv = FALSE)
 
+# Trackers to be used for the restart selection
+ls_restart_trackers <- list(
+  n             = epi_n,
+  i             = epi_i,
+  i_dx          = epi_i_dx,
+  i_sup         = epi_i_sup,
+  linked1m      = epi_linked_time(4)
+)
+
+restart_trackers <- epi_tracker_by_race(
+  ls_restart_trackers,
+  full = FALSE,
+  indiv = TRUE
+)
+
 
 # Params and inits
 orig <- readRDS("out/est/netest.rds")
@@ -45,7 +60,7 @@ epistats <- readRDS("out/est/epistats.rds")
 
 full_tx_eff <- rep(1, 3)
 prep_start_time <- 52 * 65 + 1
-prep_start_prob <- rep(0.3, 3)
+prep_start_prob <- rep(0.302, 3)
 
 param <- param_msm(
   netstats = netstats,
@@ -134,9 +149,12 @@ param <- param_msm(
   part.ident.casl.window = 52,
   part.ident.ooff.window = 52,
   # see "R/z-indent_prob_calib.R"
-  part.ident.main.prob = 0.2433333, # calibrated
-  part.ident.casl.prob = 0.1216667, # part.ident.main.prob / 2
-  part.ident.ooff.prob = 0.06083333, # part.ident.main.prob / 4
+  # part.ident.main.prob = 0.1, # calibrated
+  # part.ident.casl.prob = 0.05, # part.ident.main.prob / 2
+  # part.ident.ooff.prob = 0.025, # part.ident.main.prob / 4
+  part.ident.main.prob = 0.165,  # calibrated
+  part.ident.casl.prob = 0.165 / 2,  # part.ident.main.prob / 2
+  part.ident.ooff.prob = 0.165 / 4, # part.ident.main.prob / 4
   # Part Serv Params
   part.hiv.test.rate = rep(0.394, 3),
   part.prep.start.prob = rep(0, 3),

@@ -16,6 +16,10 @@ var_labels <- c(
   "elig_indexes"       = "Number of Eligible Indexes",
   "found_indexes"      = "Number of Indexes Found",
   "prop_found_indexes" = "Proportion of Indexes Identified",
+  "elig_partners"       = "Number of Eligible Partners",
+  "found_partners"      = "Number of Partners Found",
+  "prop_found_partners" = "Proportion of Partners Identified",
+  "partners_found_per_indexes" = "Number of Partners Idendified Per Index",
   "part_ident"         = "Number of Identified Partners",
   "part_screened"      = "Number of Screened Partners",
   "part_sneg"          = "Number of Screened Partners (neg)",
@@ -70,7 +74,8 @@ fmts[["ident_dist1"]] <- scales::label_percent(0.001)
 fmts[["ident_dist2"]] <- scales::label_percent(0.001)
 fmts[["ident_dist3p"]] <- scales::label_percent(0.001)
 fmts[["prop_found_indexes"]] <- scales::label_percent(0.1)
-
+fmts[["prop_found_partners"]] <- scales::label_percent(0.1)
+fmts[["partners_found_per_indexes"]] <- scales::label_number(0.001)
 
 make_ordered_labels <- function(nms, named_labels) {
   ordered_labels <- named_labels[nms]
