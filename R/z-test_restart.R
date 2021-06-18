@@ -29,6 +29,21 @@ library(tidyverse)
 
 df <- as_tibble(sim)
 
+df %>%
+  filter(time > 52 * 70) %>%
+  group_by(sim) %>%
+  summarise(
+    # elig_indexes  = sum(elig_indexes, na.rm = TRUE),
+    found_indexes = sum(found_indexes, na.rm = TRUE),
+    # elig_partners = sum(elig_partners, na.rm = TRUE),
+    found_partners = sum(found_partners, na.rm = TRUE),
+    found_partners2 = sum(part_ident___ALL, na.rm = TRUE),
+    y = found_partners2 / found_indexes
+  )
+
+
+  %>% pull(y) %>% summary()
+
 names(df)
 
 
