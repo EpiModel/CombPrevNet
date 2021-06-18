@@ -149,9 +149,6 @@ param <- param_msm(
   part.ident.casl.window = 52,
   part.ident.ooff.window = 52,
   # see "R/z-indent_prob_calib.R"
-  # part.ident.main.prob = 0.1, # calibrated
-  # part.ident.casl.prob = 0.05, # part.ident.main.prob / 2
-  # part.ident.ooff.prob = 0.025, # part.ident.main.prob / 4
   part.ident.main.prob = 0.165,  # calibrated
   part.ident.casl.prob = 0.165 / 2,  # part.ident.main.prob / 2
   part.ident.ooff.prob = 0.165 / 4, # part.ident.main.prob / 4

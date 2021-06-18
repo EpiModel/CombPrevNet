@@ -16,9 +16,9 @@ control <- control_msm(
   raw_output = FALSE
 )
 
-param$part.ident.main.prob <- 0.165
-param$part.ident.casl.prob <- param$part.ident.main.prob / 2
-param$part.ident.ooff.prob <- param$part.ident.main.prob / 4
+# param$part.ident.main.prob <- 0.165
+# param$part.ident.casl.prob <- param$part.ident.main.prob / 2
+# param$part.ident.ooff.prob <- param$part.ident.main.prob / 4
 
 
 # debug(hivtest_msm)

@@ -119,7 +119,7 @@ sc_t2 <- append_scenario_seq(
 # PrEP linkage
 sc_t2 <- append_scenario_seq(
   sc_t2,
-  paste0("t2_prep_start_i", absolutes_names),
+  paste0("t2_prep_start_a", absolutes_names),
   list(
     part.prep.start.prob = lapply(absolutes, rep, 3)
   )
@@ -160,7 +160,7 @@ lea <- length(absolutes)
 # Testing
 sc_t2b <- append_scenario_seq(
   sc_t2b,
-  paste0("t2_hiv_test_i", increments_names),
+  paste0("t2b_hiv_test_i", increments_names),
   list(
     part.index.prob = as.list(rep(0.9, lei)),
     part.ident.main.prob = as.list(param$part.ident.main.prob * rep(2, lei)),
@@ -173,7 +173,7 @@ sc_t2b <- append_scenario_seq(
 
 sc_t2b <- append_scenario_seq(
   sc_t2b,
-  paste0("t2_hiv_test_a", absolutes_names),
+  paste0("t2b_hiv_test_a", absolutes_names),
   list(
     part.index.prob = as.list(rep(0.9, lea)),
     part.ident.main.prob = as.list(param$part.ident.main.prob * rep(2, lea)),
@@ -187,7 +187,7 @@ sc_t2b <- append_scenario_seq(
 # PrEP linkage
 sc_t2b <- append_scenario_seq(
   sc_t2b,
-  paste0("t2_prep_start_i", absolutes_names),
+  paste0("t2b_prep_start_a", absolutes_names),
   list(
     part.index.prob = as.list(rep(0.9, lea)),
     part.ident.main.prob = as.list(param$part.ident.main.prob * rep(2, lea)),
@@ -201,7 +201,7 @@ sc_t2b <- append_scenario_seq(
 # Tx Init
 sc_t2b <- append_scenario_seq(
   sc_t2b,
-  paste0("t2_tx_init_i", increments_names),
+  paste0("t2b_tx_init_i", increments_names),
   list(
     part.index.prob = as.list(rep(0.9, lei)),
     part.ident.main.prob = as.list(param$part.ident.main.prob * rep(2, lei)),
@@ -214,7 +214,7 @@ sc_t2b <- append_scenario_seq(
 
 sc_t2b <- append_scenario_seq(
   sc_t2b,
-  paste0("t2_tx_init_a", absolutes_names),
+  paste0("t2b_tx_init_a", absolutes_names),
   list(
     part.index.prob = as.list(rep(0.9, lea)),
     part.ident.main.prob = as.list(param$part.ident.main.prob * rep(2, lea)),
@@ -228,7 +228,7 @@ sc_t2b <- append_scenario_seq(
 # Tx Reinit
 sc_t2b <- append_scenario_seq(
   sc_t2b,
-  paste0("t2_tx_reinit_a", absolutes_names),
+  paste0("t2b_tx_reinit_a", absolutes_names),
   list(
     part.index.prob = as.list(rep(0.9, lea)),
     part.ident.main.prob = as.list(param$part.ident.main.prob * rep(2, lea)),
@@ -245,7 +245,8 @@ sc_t2c <- list(
     list(
       at = param$riskh.start - 1,
       param = list(
-        part.ident.start = Inf
+        # part.ident.start = Inf
+        part.index.prob = 0
       )
     )
   ),

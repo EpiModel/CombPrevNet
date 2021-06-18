@@ -57,8 +57,8 @@ saveRDS(df_b, "out/restart_chooser.rds")
 df <- df_b %>%
   group_by(batch, sim) %>%
   summarise(
-    # ir100.gc = median(ir100.gc, na.rm = TRUE),
-    # ir100.ct = median(ir100.ct, na.rm = TRUE),
+    ir100.gc = median(ir100.gc, na.rm = TRUE),
+    ir100.ct = median(ir100.ct, na.rm = TRUE),
     i.prev.dx___B = median(i_dx___B / n___B, na.rm = TRUE),
     cc.dx___B = median(i_dx___B / i___B, na.rm = TRUE),
     cc.linked1m___B = median(linked1m___B / i___B, na.rm = TRUE),
@@ -87,9 +87,9 @@ df <- df_b %>%
     cc.vsupp___W = cc.vsupp___W - 0.72
   )
 
-df_mat <- as.matrix(df[, 3:ncol(df)])
+df_mat <- as.matrix(df[, 5:ncol(df)])
 min_ind <- which.min(rowSums(df_mat^2))
-as.list(df[min_ind, ])
+as.list(df[min_ind, ]) # check STI values (not in calculation) gc:12.9, ct:15.1
 df[min_ind, 1:2]
 
 # Best == batch460 sim18

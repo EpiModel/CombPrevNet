@@ -1,19 +1,23 @@
-lnt <- TRUE # if FALSE: set `require.lnt` to FALSE and adjust ` prep.start.prob`
-source("R/utils-params.R", local = TRUE)
+library(tidyverse)
+df <- readRDS("out/scenarios/base_atlanta_complete.rds")
+df <- readRDS("out/scenarios/t2c_no_ident.rds")
 
-orig <- readRDS("out/est/restart.rds")
+df %>%
+  filter(time > 52 * 70) %>%
+  group_by(sim, batch) %>%
+  summarise(
+    # elig_indexes  = sum(elig_indexes, na.rm = TRUE),
+    found_indexes = sum(found_indexes, na.rm = TRUE),
+    # elig_partners = sum(elig_partners, na.rm = TRUE),
+    # found_partners = sum(found_partners, na.rm = TRUE),
+    found_partners2 = sum(part_ident___ALL, na.rm = TRUE),
+    y = found_partners2 / found_indexes
+  ) %>% pull(y) %>% summary()
 
-control <- control_msm(
-  start = 60 * 52 + 1,
-  nsteps = 80 * 52, # 60->65 rng; 65->70 calib2; 70->80 scenario
-  nsims = 28,
-  ncores = 28,
-  save.nwstats = FALSE,
-  initialize.FUN = reinit_msm,
-  save.clin.hist = FALSE,
-  verbose = FALSE
-)
+df %>%
+  filter(sim == 1, batch == 59) %>%
+  pull(found_partners)
 
-# Scenarios --------------------------------------------------------------------
-# requires <list variables>
-source("R/utils-scenarios.R")
+df %>%
+  filter(sim == 1, batch == 59) %>%
+  pull(part_ident___ALL)

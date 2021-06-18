@@ -82,7 +82,7 @@ make_outcomes <- function(baseline_file, scenarios_files) {
         group_by(scenario, batch, sim) %>%
         summarise(
           prep_start    = sum(prep_start___ALL, na.rm = TRUE),
-          part_ident    = sum(part_ident___ALL, na.rm = TRUE),
+          # part_ident    = sum(part_ident___ALL, na.rm = TRUE),
           part_screened = sum(part_screened___ALL, na.rm = TRUE),
           part_sneg     = sum(part_sneg___ALL, na.rm = TRUE),
           part_spos     = sum(part_spos___ALL, na.rm = TRUE),
@@ -91,7 +91,7 @@ make_outcomes <- function(baseline_file, scenarios_files) {
           part_txreinit = sum(part_txreinit___ALL, na.rm = TRUE),
           elig_indexes  = sum(elig_indexes, na.rm = TRUE),
           found_indexes = sum(found_indexes, na.rm = TRUE),
-          elig_partners  = sum(elig_partners, na.rm = TRUE),
+          elig_partners = sum(elig_partners, na.rm = TRUE),
           found_partners = sum(found_partners, na.rm = TRUE),
           ident_dist0   = mean(ident_dist0___ALL, na.rm = TRUE),
           ident_dist1   = mean(ident_dist1___ALL, na.rm = TRUE),
