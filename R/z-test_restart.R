@@ -1,3 +1,4 @@
+# This pulls in the default `param` object and the trackers
 source("R/utils-params.R", local = TRUE)
 # pkgload::load_all("../EpiModelHIV-p")
 orig <- readRDS("out/est/restart.rds")
@@ -16,58 +17,23 @@ control <- control_msm(
   raw_output = FALSE
 )
 
-# param$part.ident.main.prob <- 0.165
-# param$part.ident.casl.prob <- param$part.ident.main.prob / 2
-# param$part.ident.ooff.prob <- param$part.ident.main.prob / 4
-
-
-# debug(hivtest_msm)
-sim <- netsim(orig, param, init, control)
-sim_sav <- sim
-
-library(tidyverse)
-
-df <- as_tibble(sim)
-
-df %>%
-  filter(time > 52 * 70) %>%
-  group_by(sim) %>%
-  summarise(
-    # elig_indexes  = sum(elig_indexes, na.rm = TRUE),
-    found_indexes = sum(found_indexes, na.rm = TRUE),
-    # elig_partners = sum(elig_partners, na.rm = TRUE),
-    found_partners = sum(found_partners, na.rm = TRUE),
-    found_partners2 = sum(part_ident___ALL, na.rm = TRUE),
-    y = found_partners2 / found_indexes
+param$param_updaters <- c(
+  param$param_updaters, # you need to keep the default updaters
+  # the new updater(s), that will change the scenario at timestep == at
+  list(
+    at = 70 * 52 + 1,
+    param = list(
+      part.index.prob = 1,
+      part.ident.main.prob = 1,
+      part.ident.casl.prob = 1,
+      part.ident.ooff.prob = 1,
+      # Part Serv Params
+      part.hiv.test.rate   = rep(1, 3),
+      part.prep.start.prob = rep(0, 3),
+      part.tx.init.prob    = rep(0, 3),
+      part.tx.reinit.prob  = rep(0, 3)
+    )
   )
+)
 
-
-  %>% pull(y) %>% summary()
-
-names(df)
-
-
-df %>%
-  filter(
-    time > max(time) - 52 * 10,
-  ) %>%
-  summarise(
-    found = sum(found_partners, na.rm = T) / sum(found_indexes, na.rm = T)
-  ) %>% print()
-
-df %>%
-  filter(time > max(time) - 52 * 10) %>%
-  summarise(
-    coverage = median(s_prep___ALL / s_prep_elig___ALL),
-    time_on = median(prep_time_on___ALL),
-    retention_1y = median(prep_1y___ALL)
-  ) %>% print()
-
-
-df %>%
-  filter(time > max(time) - 52 * 1) %>%
-  summarise(
-    coverage = median(s_prep___ALL / s_prep_elig___ALL),
-    time_on = median(prep_time_on___ALL),
-    retention_1y = median(prep_1y___ALL)
-  ) %>% print()
+sim <- netsim(orig, param, init, control)
