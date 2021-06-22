@@ -57,7 +57,7 @@ absolutes <- c(10, 25, 50, 75, 100)
 absolutes_names <- stringr::str_pad(absolutes, 3, "left", "0")
 absolutes <- absolutes / 100
 
-windows <- c(26, 4)
+windows <- c(4, 26)
 windows_names <- stringr::str_pad(windows, 2, "left", "0")
 
 degrees <- c(2, 3, 5, 10)
@@ -394,7 +394,7 @@ sc_t3 <- append_scenario_seq(
 
 # Figure 1 ---------------------------------------------------------------------
 sc_fig1 <- list(
-  no_ident_no_prep = list(
+  fig1_no_ident_no_prep = list(
     list(
       at = param$riskh.start - 1,
       param = list(
@@ -404,7 +404,7 @@ sc_fig1 <- list(
       )
     )
   ),
-  no_ident = list(
+  fig1_no_ident = list(
     list(
       at = param$riskh.start - 1,
       param = list(
@@ -412,24 +412,8 @@ sc_fig1 <- list(
       )
     )
   ),
-  ident_max_all = list(
-    list(
-      at = scenarios_update_time,
-      param = list( # maximum possible effect (unachievable in practice)
-        # see "R/z-indent_prob_calib.R"
-        part.index.prob = 1,
-        part.ident.main.prob = 1,
-        part.ident.casl.prob = 1,
-        part.ident.ooff.prob = 1,
-        # Part Serv Params
-        part.hiv.test.rate   = rep(1, 3),
-        part.prep.start.prob = rep(1, 3),
-        part.tx.init.prob    = rep(1, 3),
-        part.tx.reinit.prob  = rep(1, 3)
-      )
-    )
-  ),
-  ident_max_test = list(
+  fig1_base = list(),
+  fig1_ident_max_test = list(
     list(
       at = scenarios_update_time,
       param = list( # maximum test (prep effect via LNT)
@@ -446,7 +430,7 @@ sc_fig1 <- list(
       )
     )
   ),
-  ident_max_prep = list(
+  fig1_ident_max_prep = list(
     list(
       at = scenarios_update_time,
       param = list( # maximum test + prep
@@ -463,7 +447,7 @@ sc_fig1 <- list(
       )
     )
   ),
-  ident_max_tx_init = list(
+  fig1_ident_max_tx_init = list(
     list(
       at = scenarios_update_time,
       param = list( # maximum test + tx (re)init
@@ -480,7 +464,7 @@ sc_fig1 <- list(
       )
     )
   ),
-  ident_max_tx_reinit = list(
+  fig1_ident_max_tx_reinit = list(
     list(
       at = scenarios_update_time,
       param = list( # maximum test + tx (re)init
@@ -497,7 +481,7 @@ sc_fig1 <- list(
       )
     )
   ),
-  ident_max_tx_both = list(
+  fig1_ident_max_tx_both = list(
     list(
       at = scenarios_update_time,
       param = list( # maximum test + tx (re)init
@@ -509,6 +493,23 @@ sc_fig1 <- list(
         # Part Serv Params
         part.hiv.test.rate   = rep(1, 3),
         part.prep.start.prob = rep(0, 3),
+        part.tx.init.prob    = rep(1, 3),
+        part.tx.reinit.prob  = rep(1, 3)
+      )
+    )
+  ),
+  fig1_ident_max_all = list(
+    list(
+      at = scenarios_update_time,
+      param = list( # maximum possible effect (unachievable in practice)
+        # see "R/z-indent_prob_calib.R"
+        part.index.prob = 1,
+        part.ident.main.prob = 1,
+        part.ident.casl.prob = 1,
+        part.ident.ooff.prob = 1,
+        # Part Serv Params
+        part.hiv.test.rate   = rep(1, 3),
+        part.prep.start.prob = rep(1, 3),
         part.tx.init.prob    = rep(1, 3),
         part.tx.reinit.prob  = rep(1, 3)
       )

@@ -19,7 +19,8 @@ sum_quants <- function(df, ql = 0.025, qm = 0.5, qh = 0.975) {
   ungroup()
 }
 
-make_outcomes <- function(baseline_file, scenarios_files) {
+make_outcomes <- function(baseline_file, scenarios_files,
+                          scenarios_order = NULL) {
   # Calculate baseline elements
   df_baseline <- readRDS(baseline_file)
 
@@ -69,6 +70,7 @@ make_outcomes <- function(baseline_file, scenarios_files) {
         summarise(
           ir100 = mean(incid / s___ALL * 5200, na.rm = TRUE),
           prep_cov = mean(s_prep___ALL / s_prep_elig___ALL, na.rm = TRUE),
+          hiv_prev = mean(i___ALL / (i___ALL + s___ALL), na.rm = TRUE),
           hiv_diag = mean(i_dx___ALL / i___ALL, na.rm = TRUE),
           hiv_tx   = mean(i_tx___ALL / i_dx___ALL, na.rm = TRUE),
           hiv_supp = mean(i_sup___ALL / i_dx___ALL, na.rm = TRUE)
@@ -142,5 +144,60 @@ make_outcomes <- function(baseline_file, scenarios_files) {
       # this lines print the df with the variable in the right order
       df_ls[[df_cur]] <- df_res[, c("scenario", var_labels)]
     }
+
+    df_out <- bind_rows(df_ls)
+
+    if (!is.null(scenarios_order))
+      df_out <- left_join(df_out, data.frame(scenario = scenarios_order))
+
+    df_out
+}
+
+
+make_cum_dfs <- function(baseline_file, scenarios_files) {
+  df_baseline <- readRDS(baseline_file)
+
+  df_base_cum <- df_baseline %>%
+    filter(time >= max(time) - 52 * 10) %>%
+    group_by(batch, sim) %>%
+    summarise(
+      cum_incid = sum(incid, na.rm = TRUE),
+      cum_indexes = sum(found_indexes, na.rm = TRUE)
+      ) %>%
+    ungroup() %>%
+    summarise(
+      cum_incid = median(cum_incid),
+      cum_indexes = median(cum_indexes, na.rm = TRUE)
+    )
+
+    base_cum_incid <- df_base_cum$cum_incid
+    base_cum_indexes <- df_base_cum$cum_indexes
+
+    # Scenarios
+    df_ls <- vector(mode = "list", length(scenarios_files))
+    df_cur <- 0
+    for (fle in scenarios_files) {
+      df_sc <- readRDS(fle)
+      df_cur <- df_cur + 1
+
+      # outcome cumulated over intervention (10y)
+      df_cum <- df_sc %>%
+        filter(time >= max(time) - 52 * 10) %>%
+        group_by(scenario, batch, sim) %>%
+        summarise(
+          cum_incid = sum(incid, na.rm = TRUE),
+          cum_indexes = sum(found_indexes, na.rm = TRUE)
+        ) %>%
+        mutate(
+          nia =  (base_cum_incid - cum_incid),
+          pia = nia / base_cum_incid,
+          nnt = (cum_indexes - base_cum_indexes) / nia
+        ) %>%
+        select(- cum_indexes) %>%
+        ungroup()
+
+      df_ls[[df_cur]] <- df_cum
+    }
+
     bind_rows(df_ls)
 }

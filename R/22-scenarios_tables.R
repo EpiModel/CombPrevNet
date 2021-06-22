@@ -1,37 +1,32 @@
+lnt <- TRUE # if FALSE: set `require.lnt` to FALSE and adjust ` prep.start.prob`
+source("R/utils-params.R", local = TRUE)
+source("R/utils-scenarios.R")
 source("R/utils-create_outcomes.R")
 
-scenarios <- fs::dir_ls("out/scenarios")
-base <- scenarios[grepl("base_atlanta", scenarios)]
-
-# # Maxs
-# max_sc <- c(
-#   scenarios[grepl("max", scenarios)],
-#   scenarios[grepl("no_ident", scenarios)]
-# )
-
-# df <- make_outcomes(base, c(base, max_sc))
-# readr::write_csv( df, paste0("out/tables/max.csv"))
-
 # T2
-t2_sc <- scenarios[grepl("t2_", scenarios)]
+scenarios <- names(c(sc_base, sc_t2))
+scenarios_files <- paste0("out/scenarios/", scenarios, ".rds")
 
-df <- make_outcomes(base, c(base, t2_sc))
+df <- make_outcomes(scenarios_files[1], scenarios_files, scenarios)
 readr::write_csv(df, paste0("out/tables/t2.csv"))
 
 # T2b
-t2b_sc <- scenarios[grepl("t2b_", scenarios)]
+scenarios <- names(c(sc_base, sc_t2b))
+scenarios_files <- paste0("out/scenarios/", scenarios, ".rds")
 
-df <- make_outcomes(base, c(base, t2b_sc))
+df <- make_outcomes(scenarios_files[1], scenarios_files, scenarios)
 readr::write_csv(df, paste0("out/tables/t2b.csv"))
 
 # T2c
-t2c_sc <- scenarios[grepl("t2c_", scenarios)]
+scenarios <- names(c(sc_base, sc_t2c))
+scenarios_files <- paste0("out/scenarios/", scenarios, ".rds")
 
-df <- make_outcomes(base, c(base, t2c_sc))
+df <- make_outcomes(scenarios_files[1], scenarios_files, scenarios)
 readr::write_csv(df, paste0("out/tables/t2c.csv"))
 
 # T3
-t3_sc <- scenarios[grepl("t3_", scenarios)]
+scenarios <- names(c(sc_base, sc_t3))
+scenarios_files <- paste0("out/scenarios/", scenarios, ".rds")
 
-df <- make_outcomes(base, c(base, t3_sc))
+df <- make_outcomes(scenarios_files[1], scenarios_files, scenarios)
 readr::write_csv(df, paste0("out/tables/t3.csv"))

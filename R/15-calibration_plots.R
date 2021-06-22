@@ -1,7 +1,52 @@
 library(tidyverse)
 
-files_folder <- "out/CPN_restart_select/out" # where are the calibration files
+files_folder <- "out/remote_jobs/CPN_restart/out" # where are the calibration files
 reprocess <- TRUE # set to TRUE to redo the file processing
+
+process_1batch <- function(file_name, out_dir) {
+  sim <- readRDS(file_name)
+  dff <- as_tibble(sim)
+
+  dff <- dff %>%
+    mutate(
+      ir100.gc = median(ir100.gc, na.rm = TRUE),
+      ir100.ct = median(ir100.ct, na.rm = TRUE),
+      i.prev.dx.B = median(i_dx___B / n___B, na.rm = TRUE),
+      cc.dx.B = median(i_dx___B / i___B, na.rm = TRUE),
+      cc.linked1m.B = median(linked1m___B / i___B, na.rm = TRUE),
+      cc.vsupp.B = median(i_sup___B / i_dx___B, na.rm = TRUE),
+      i.prev.dx.H = median(i_dx___H / n___H, na.rm = TRUE),
+      cc.dx.H = median(i_dx___H / i___H, na.rm = TRUE),
+      cc.linked1m.H = median(linked1m___H / i___H, na.rm = TRUE),
+      cc.vsupp.H = median(i_sup___H / i_dx___H, na.rm = TRUE),
+      i.prev.dx.W = median(i_dx___W / n___W, na.rm = TRUE),
+      cc.dx.W = median(i_dx___W / i___W, na.rm = TRUE),
+      cc.linked1m.W = median(linked1m___W / i___W, na.rm = TRUE),
+      cc.vsupp.W = median(i_sup___W / i_dx___W, na.rm = TRUE)
+    ) %>%
+    select(
+      time,
+      i.prev.dx.B, i.prev.dx.H, i.prev.dx.W,
+      cc.dx.B, cc.dx.H, cc.dx.W,
+      cc.linked1m.B, cc.linked1m.H, cc.linked1m.W,
+      cc.vsupp.B, cc.vsupp.H, cc.vsupp.W,
+      ir100.gc, ir100.ct
+    )
+
+    saveRDS(dff, fs::path(out_dir, fs::path_file(file_name)), compress = FALSE)
+}
+
+if (reprocess) {
+  filenames <- fs::dir_ls(files_folder)
+
+  n <- 1
+  dir_part <- "out/part_dfs"
+
+  if (!fs::dir_exists(dir_part))
+    fs::dir_create(dir_part)
+
+  purrr::walk(filenames, process_1batch, out_dir = dir_part)
+}
 
 # prepare targets
 source("R/utils-targets.R")
@@ -35,7 +80,6 @@ races <- c(
 )
 
 df_targets$pop <- races[df_targets$pop]
-
 # Process files ----------------------------------------------------------------
 if (reprocess) {
   get_targets <- function(df_part, tgt, target_names) {

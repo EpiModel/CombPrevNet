@@ -6,6 +6,7 @@ var_labels <- c(
   "pia"                = "PIA",
   "nnt"                = "NNT",
   "cum_incid"          = "Cumulative incidence",
+  "hiv_prev"           = "HIV Prevalence",
   # Process
   "prep_cov"           = "PrEP Coverage",
   "hiv_diag"           = "HIV+ Diagnosed",
@@ -19,7 +20,7 @@ var_labels <- c(
   "elig_partners"       = "Number of Eligible Partners",
   "found_partners"      = "Number of Identified Partners",
   "prop_found_partners" = "Proportion of Partners Identified",
-  "partners_found_per_indexes" = "Number of Partners Idendified Per Index",
+  "partners_found_per_indexes" = "Number of Partners Identified Per Index",
   # "part_ident"         = "Number of Identified Partners",
   "part_screened"      = "Number of Screened Partners",
   "part_sneg"          = "Number of Screened Partners (neg)",
@@ -58,7 +59,6 @@ scenarios_labels <- c(
   "ident_x2_tx_100"           = "ATL ID x2 & Max Tx"
 )
 
-
 # Formatters for the variables
 fmts <- replicate(length(var_labels), scales::label_number(1))
 names(fmts) <- names(var_labels)
@@ -66,6 +66,7 @@ fmts[["ir100"]] <- scales::label_number(0.01)
 fmts[["nnt"]] <- scales::label_number(0.01)
 fmts[["pia"]] <- scales::label_percent(0.1)
 fmts[["prep_cov"]] <- scales::label_percent(0.1)
+fmts[["hiv_prev"]] <- scales::label_percent(0.1)
 fmts[["hiv_diag"]] <- scales::label_percent(0.1)
 fmts[["hiv_tx"]] <- scales::label_percent(0.1)
 fmts[["hiv_supp"]] <- scales::label_percent(0.1)
