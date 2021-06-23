@@ -1,29 +1,31 @@
 library(tidyverse)
 
 files_folder <- "out/remote_jobs/CPN_restart/out" # where are the calibration files
-reprocess <- TRUE # set to TRUE to redo the file processing
+reprocess <- FALSE # set to TRUE to redo the file processing
 
 process_1batch <- function(file_name, out_dir) {
   sim <- readRDS(file_name)
   dff <- as_tibble(sim)
 
   dff <- dff %>%
+    group_by(sim, time) %>%
     mutate(
       ir100.gc = median(ir100.gc, na.rm = TRUE),
       ir100.ct = median(ir100.ct, na.rm = TRUE),
       i.prev.dx.B = median(i_dx___B / n___B, na.rm = TRUE),
-      cc.dx.B = median(i_dx___B / i___B, na.rm = TRUE),
-      cc.linked1m.B = median(linked1m___B / i___B, na.rm = TRUE),
-      cc.vsupp.B = median(i_sup___B / i_dx___B, na.rm = TRUE),
       i.prev.dx.H = median(i_dx___H / n___H, na.rm = TRUE),
-      cc.dx.H = median(i_dx___H / i___H, na.rm = TRUE),
-      cc.linked1m.H = median(linked1m___H / i___H, na.rm = TRUE),
-      cc.vsupp.H = median(i_sup___H / i_dx___H, na.rm = TRUE),
       i.prev.dx.W = median(i_dx___W / n___W, na.rm = TRUE),
+      cc.dx.B = median(i_dx___B / i___B, na.rm = TRUE),
+      cc.dx.H = median(i_dx___H / i___H, na.rm = TRUE),
       cc.dx.W = median(i_dx___W / i___W, na.rm = TRUE),
-      cc.linked1m.W = median(linked1m___W / i___W, na.rm = TRUE),
+      cc.linked1m.B = median(linked1m___B / i_dx___B, na.rm = TRUE),
+      cc.linked1m.H = median(linked1m___H / i_dx___H, na.rm = TRUE),
+      cc.linked1m.W = median(linked1m___W / i_dx___W, na.rm = TRUE),
+      cc.vsupp.B = median(i_sup___B / i_dx___B, na.rm = TRUE),
+      cc.vsupp.H = median(i_sup___H / i_dx___H, na.rm = TRUE),
       cc.vsupp.W = median(i_sup___W / i_dx___W, na.rm = TRUE)
     ) %>%
+    ungroup() %>%
     select(
       time,
       i.prev.dx.B, i.prev.dx.H, i.prev.dx.W,
@@ -36,146 +38,81 @@ process_1batch <- function(file_name, out_dir) {
     saveRDS(dff, fs::path(out_dir, fs::path_file(file_name)), compress = FALSE)
 }
 
+dir_part <- "out/part_dfs"
 if (reprocess) {
+  future::plan(future::multicore, workers = 4)
+
   filenames <- fs::dir_ls(files_folder)
 
   n <- 1
-  dir_part <- "out/part_dfs"
 
   if (!fs::dir_exists(dir_part))
     fs::dir_create(dir_part)
 
-  purrr::walk(filenames, process_1batch, out_dir = dir_part)
+  furrr::future_walk(filenames, process_1batch, out_dir = dir_part)
 }
 
-# prepare targets
+# Prepare for plots
 source("R/utils-targets.R")
-target_names <- names(targets)
-
-for (l in c("H", "B", "W")) {
-  names(targets) <- str_replace(
-    names(targets),
-    paste0(".", l), paste0("___", l)
-  )
-}
-
-tgts <- str_split(names(targets), "___")
-tgts <- transpose(tgts)
-tgts <- map(tgts, as.character)
-
 df_targets <- tibble(
-  target = tgts[[1]],
-  pop = tgts[[2]],
+  name = names(targets),
   value = targets
 )
 
-df_targets <- df_targets %>%
-  mutate(pop = if_else(pop == "NULL", "a", pop))
-
-races <- c(
-  "B" = "Black",
-  "H" = "Hispanic",
-  "W" = "White/Other",
-  "a" = "All"
+# prepare targets
+target_groups <- list(
+  i.prev.dx = c("i.prev.dx.B", "i.prev.dx.H", "i.prev.dx.W"),
+  cc.dx = c("cc.dx.B", "cc.dx.H", "cc.dx.W"),
+  cc.linked1m = c("cc.linked1m.B", "cc.linked1m.H", "cc.linked1m.W"),
+  cc.vsupp = c("cc.vsupp.B", "cc.vsupp.H", "cc.vsupp.W"),
+  sti = c("ir100.gc", "ir100.ct")
 )
 
-df_targets$pop <- races[df_targets$pop]
-# Process files ----------------------------------------------------------------
-if (reprocess) {
-  get_targets <- function(df_part, tgt, target_names) {
-    df_tmp <- df_part %>%
-      select(c(time, all_of(target_names))) %>%
-      filter(time %% 4 == T) %>%
-      select(c(time, starts_with(tgt)))
-
-    if (ncol(df_tmp) > 3) {
-      df_tmp <- df_tmp %>%
-        pivot_longer(-time) %>%
-        separate(name, into = c("name", "pop"), sep = -1) %>%
-        filter(pop != "x")
-    } else {
-      df_tmp <- mutate(df_tmp, pop = "a")
-      names(df_tmp)[names(df_tmp) == tgt] <- "value"
-    }
-
-    df_tmp <- df_tmp %>%
-      mutate(name = tgt) %>%
-      select(time, name, pop, value)
-
-    df_tmp
-  }
-
-  filenames <- fs::dir_ls(files_folder)
-
-  n <- 1
-  tgt_names <- unique(df_targets$target)
-  names(tgt_names) <- tgt_names
-  dir_part <- "out/part_dfs"
-
-  if (!fs::dir_exists(dir_part))
-    fs::dir_create(dir_part)
+get_target_plot_df <- function(target_group) {
+  filenames <- fs::dir_ls(dir_part)
+  df_ls <- vector(mode = "list", length(filenames))
+  num_df <- 0
 
   for (fle in filenames) {
-    df_part <- as_tibble(readRDS(fle))
-
-    l_dfs <- lapply(tgt_names, get_targets,
-      df_part = df_part, target_names = target_names)
-
-    for (tgt in tgt_names) {
-      saveRDS(l_dfs[[tgt]], fs::path(dir_part, paste0(tgt, "_", n, ".rds")),
-        compress = FALSE)
-    }
-
-    n <- n + 1
+    num_df <- num_df + 1
+    df_ls[[num_df]]  <- readRDS(fle) %>%
+      select(time, all_of(target_group))
   }
-
-  # Make df files ----------------------------------------------------------------
-  for (tgt in tgt_names) {
-    filenames <- fs::dir_ls(dir_part, regexp = tgt)
-    tgt_file <- paste0("out/df_calplot_", tgt, ".rds")
-
-    if (!file.exists(tgt_file)) {
-      df_calib <- bind_rows(lapply(filenames, readRDS))
-      df_calib <- df_calib %>%
-        group_by(time, pop) %>%
-        summarise(
-          q1 = quantile(value, prob = 0.25, na.rm = TRUE),
-          q2 = quantile(value, prob = 0.5, na.rm = TRUE),
-          q3 = quantile(value, prob = 0.75, na.rm = TRUE)
-        )
-        gc()
-        df_calib$pop <- races[df_calib$pop]
-        saveRDS(df_calib, tgt_file)
-    }
-    print(paste0("Finised: ", tgt))
-  }
-
+  bind_rows(df_ls)
 }
 
-# Plots ------------------------------------------------------------------------
-if (!fs::dir_exists("out/plots"))
-  fs::dir_create("out/plots")
 
-# Prev.dx
+# i.prev.dx
 tgt <- "i.prev.dx"
+dff <- get_target_plot_df(target_groups[[tgt]])
 df_tgts <- df_targets %>%
-  filter(target == tgt)
+  filter(name %in% target_groups[[tgt]])
 
-df_calib <- readRDS(paste0("out/df_calplot_", tgt, ".rds"))
+df_calib <- dff %>%
+  pivot_longer(-time) %>%
+  group_by(time, name) %>%
+  summarise(across(
+    value,
+    list(
+      q1 = ~ quantile(.x, prob = 0.25, na.rm = TRUE),
+      q2 = ~ quantile(.x, prob = 0.5, na.rm = TRUE),
+      q3 = ~ quantile(.x, prob = 0.75, na.rm = TRUE)
+    )
+  ))
 
-ggplot(
-  df_calib,
-  aes(x = time / 52, y = q2, ymin = q1, ymax = q3, color = pop, fill = pop)
-) +
+ggplot(df_calib, aes(
+    x = time / 52, y = value_q2, ymin = value_q1, ymax = value_q3,
+    col = name, fill = name
+  )) +
   geom_hline(
-    data = df_tgts, aes(yintercept = value, color = pop),
+    data = df_tgts, aes(yintercept = value, color = name),
     linetype = 2, alpha = .8
   ) +
   geom_ribbon(alpha = 0.5, size = 0) +
   geom_line(size = 0.5) +
   geom_text(
     data = df_tgts,
-    aes(y = value + 0.01, color = pop, label = value, x = 62),
+    aes(y = value + 0.01, color = name, label = value, x = 62),
     inherit.aes = FALSE, size = 3
   ) +
   theme_classic() +
@@ -202,26 +139,41 @@ ggsave(
   units = "in"
 )
 
-# Diags
+
+# cc.dx
+rm(dff)
+rm(df_calib)
+gc()
 tgt <- "cc.dx"
+dff <- get_target_plot_df(target_groups[[tgt]])
 df_tgts <- df_targets %>%
-  filter(target == tgt)
+  filter(name %in% target_groups[[tgt]])
 
-df_calib <- readRDS(paste0("out/df_calplot_", tgt, ".rds"))
+df_calib <- dff %>%
+  pivot_longer(-time) %>%
+  group_by(time, name) %>%
+  summarise(across(
+    value,
+    list(
+      q1 = ~ quantile(.x, prob = 0.25, na.rm = TRUE),
+      q2 = ~ quantile(.x, prob = 0.5, na.rm = TRUE),
+      q3 = ~ quantile(.x, prob = 0.75, na.rm = TRUE)
+    )
+  ))
 
-ggplot(
-  df_calib,
-  aes(x = time / 52, y = q2, ymin = q1, ymax = q3, color = pop, fill = pop)
-) +
+ggplot(df_calib, aes(
+    x = time / 52, y = value_q2, ymin = value_q1, ymax = value_q3,
+    col = name, fill = name
+  )) +
   geom_hline(
-    data = df_tgts, aes(yintercept = value, color = pop),
+    data = df_tgts, aes(yintercept = value, color = name),
     linetype = 2, alpha = .8
   ) +
   geom_ribbon(alpha = 0.5, size = 0) +
   geom_line(size = 0.5) +
   geom_text(
     data = df_tgts,
-    aes(y = value + 0.04, color = pop, label = value, x = 61),
+    aes(y = value + 0.04, color = name, label = value, x = 61),
     inherit.aes = FALSE, size = 2
   ) +
   theme_classic() +
@@ -248,26 +200,41 @@ ggsave(
   units = "in"
 )
 
-# Linked1m
+
+# cc.linked1m
+rm(dff)
+rm(df_calib)
+gc()
 tgt <- "cc.linked1m"
+dff <- get_target_plot_df(target_groups[[tgt]])
 df_tgts <- df_targets %>%
-  filter(target == tgt)
+  filter(name %in% target_groups[[tgt]])
 
-df_calib <- readRDS(paste0("out/df_calplot_", tgt, ".rds"))
+df_calib <- dff %>%
+  pivot_longer(-time) %>%
+  group_by(time, name) %>%
+  summarise(across(
+    value,
+    list(
+      q1 = ~ quantile(.x, prob = 0.25, na.rm = TRUE),
+      q2 = ~ quantile(.x, prob = 0.5, na.rm = TRUE),
+      q3 = ~ quantile(.x, prob = 0.75, na.rm = TRUE)
+    )
+  ))
 
-ggplot(
-  df_calib,
-  aes(x = time / 52, y = q2, ymin = q1, ymax = q3, color = pop, fill = pop)
-) +
+ggplot(df_calib, aes(
+    x = time / 52, y = value_q2, ymin = value_q1, ymax = value_q3,
+    col = name, fill = name
+  )) +
   geom_hline(
-    data = df_tgts, aes(yintercept = value, color = pop),
+    data = df_tgts, aes(yintercept = value, color = name),
     linetype = 2, alpha = .8
   ) +
   geom_ribbon(alpha = 0.5, size = 0) +
   geom_line(size = 0.5) +
   geom_text(
     data = df_tgts,
-    aes(y = value + 0.01, color = pop, label = value, x = 62),
+    aes(y = value + 0.01, color = name, label = value, x = 62),
     inherit.aes = FALSE, size = 3
   ) +
   theme_classic() +
@@ -295,25 +262,40 @@ ggsave(
 )
 
 # cc.vsupp
+rm(dff)
+rm(df_calib)
+gc()
 tgt <- "cc.vsupp"
+dff <- get_target_plot_df(target_groups[[tgt]])
 df_tgts <- df_targets %>%
-  filter(target == tgt)
+  filter(name %in% target_groups[[tgt]])
 
-df_calib <- readRDS(paste0("out/df_calplot_", tgt, ".rds"))
+df_calib <- dff %>%
+  pivot_longer(-time) %>%
+  group_by(time, name) %>%
+  summarise(across(
+    value,
+    list(
+      q1 = ~ quantile(.x, prob = 0.25, na.rm = TRUE),
+      q2 = ~ quantile(.x, prob = 0.5, na.rm = TRUE),
+      q3 = ~ quantile(.x, prob = 0.75, na.rm = TRUE)
+    )
+  ))
 
-ggplot(
-  df_calib,
-  aes(x = time / 52, y = q2, ymin = q1, ymax = q3, color = pop, fill = pop)
-) +
+
+ggplot(df_calib, aes(
+    x = time / 52, y = value_q2, ymin = value_q1, ymax = value_q3,
+    col = name, fill = name
+  )) +
   geom_hline(
-    data = df_tgts, aes(yintercept = value, color = pop),
+    data = df_tgts, aes(yintercept = value, color = name),
     linetype = 2, alpha = .8
   ) +
   geom_ribbon(alpha = 0.5, size = 0) +
   geom_line(size = 0.5) +
   geom_text(
     data = df_tgts,
-    aes(y = value + 0.01, color = pop, label = value, x = 62),
+    aes(y = value + 0.01, color = name, label = value, x = 62),
     inherit.aes = FALSE, size = 3
   ) +
   theme_classic() +
@@ -340,30 +322,44 @@ ggsave(
   units = "in"
 )
 
-# ir100.gc
-tgt <- "ir100.gc"
+# STIs
+rm(dff)
+rm(df_calib)
+gc()
+tgt <- "sti"
+dff <- get_target_plot_df(target_groups[[tgt]])
 df_tgts <- df_targets %>%
-  filter(target == tgt)
+  filter(name %in% target_groups[[tgt]])
 
-df_calib <- readRDS(paste0("out/df_calplot_", tgt, ".rds"))
+df_calib <- dff %>%
+  pivot_longer(-time) %>%
+  group_by(time, name) %>%
+  summarise(across(
+    value,
+    list(
+      q1 = ~ quantile(.x, prob = 0.25, na.rm = TRUE),
+      q2 = ~ quantile(.x, prob = 0.5, na.rm = TRUE),
+      q3 = ~ quantile(.x, prob = 0.75, na.rm = TRUE)
+    )
+  ))
 
-ggplot(
-  df_calib,
-  aes(x = time / 52, y = q2, ymin = q1, ymax = q3, color = pop, fill = pop)
-) +
+ggplot(df_calib, aes(
+    x = time / 52, y = value_q2, ymin = value_q1, ymax = value_q3,
+    col = name, fill = name
+  )) +
   geom_hline(
-    data = df_tgts, aes(yintercept = value, color = pop),
+    data = df_tgts, aes(yintercept = value, color = name),
     linetype = 2, alpha = .8
   ) +
   geom_ribbon(alpha = 0.5, size = 0) +
   geom_line(size = 0.5) +
   geom_text(
     data = df_tgts,
-    aes(y = value + 2, color = pop, label = value, x = 62),
+    aes(y = value + 0.01, color = name, label = value, x = 62),
     inherit.aes = FALSE, size = 3
   ) +
   theme_classic() +
-  scale_y_continuous(lim = c(0, 40), breaks = seq(0, 40, 5)) +
+  # scale_y_continuous(lim = c(0.4, 1), breaks = seq(0.4, 1, 0.1)) +
   theme(
     legend.position = "right",
     axis.text.x = element_text(margin = margin(5, 0, 10, 0, "pt")),
@@ -375,7 +371,7 @@ ggplot(
     col = guide_legend(title = "Race"),
     fill = guide_legend(title = "Race")
   ) +
-  ylab("GC Incidence Per 100 PYAR") +
+  ylab("STI Standardized Incidence") +
   xlab("Time (years)") +
   ggtitle(" ")
 
@@ -386,48 +382,3 @@ ggsave(
   units = "in"
 )
 
-# ir100.ct
-tgt <- "ir100.ct"
-df_tgts <- df_targets %>%
-  filter(target == tgt)
-
-df_calib <- readRDS(paste0("out/df_calplot_", tgt, ".rds"))
-
-ggplot(
-  df_calib,
-  aes(x = time / 52, y = q2, ymin = q1, ymax = q3, color = pop, fill = pop)
-) +
-  geom_hline(
-    data = df_tgts, aes(yintercept = value, color = pop),
-    linetype = 2, alpha = .8
-  ) +
-  geom_ribbon(alpha = 0.5, size = 0) +
-  geom_line(size = 0.5) +
-  geom_text(
-    data = df_tgts,
-    aes(y = value + 2, color = pop, label = value, x = 62),
-    inherit.aes = FALSE, size = 3
-  ) +
-  theme_classic() +
-  scale_y_continuous(lim = c(0, 40), breaks = seq(0, 40, 5)) +
-  theme(
-    legend.position = "right",
-    axis.text.x = element_text(margin = margin(5, 0, 10, 0, "pt")),
-    axis.text.y = element_text(margin = margin(0, 5, 0, 10, "pt")),
-    text = element_text(size = 10),
-    aspect.ratio = 1/2
-  ) +
-  guides(
-    col = guide_legend(title = "Race"),
-    fill = guide_legend(title = "Race")
-  ) +
-  ylab("CT Incidence Per 100 PYAR") +
-  xlab("Time (years)") +
-  ggtitle(" ")
-
-ggsave(
-  paste0("out/plots/additional_calib_", tgt, ".jpeg"),
-  device = "jpeg", dpi = 600,
-  height = 5, width = 7,
-  units = "in"
-)
