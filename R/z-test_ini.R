@@ -6,7 +6,7 @@ nsteps <- 52 * 60
 control <- control_msm(
   nsteps =  nsteps, # one year for prep riskhist then nsteps
   nsims = 4,
-  ncores = 4,
+  ncores = 32,
   save.nwstats = FALSE,
   # initialize.FUN = reinit_msm,
   save.clin.hist = FALSE,
@@ -14,7 +14,8 @@ control <- control_msm(
   raw_output = FALSE
 )
 
-param$tx.halt.partial.prob <- c(0.006, 0.005, 0.0029)
+param$tx.halt.partial.prob <- c(0.0057, 0.0047, 0.0028)
+param$epi_trackers <- restart_trackers
 
 sim <- netsim(orig, param, init, control)
 
@@ -50,15 +51,10 @@ df_t <- df_b %>%
       ir100.gc, ir100.ct
     )
 
+df_t %>%
+  filter(time > max(time) - 52) %>%
+  summarise(across(-time, ~ median(.x, na.rm = TRUE))) %>%
+  as.list()
 
-df %>%
-  filter(time > 52 * 65) %>%
-  mutate(y = s_prep___ALL / (s_prep_elig___ALL)) %>%
-ggplot(aes(x = time, y = y)) +
-  geom_line()
 
-df %>%
-  filter(between(time, 52 * 70, 52 * 71)) %>%
-  summarise(
-    prep_cov = mean(s_prep___ALL / s_prep_elig___ALL, na.rm = TRUE)
-  ) |> print(n = 200)
+
