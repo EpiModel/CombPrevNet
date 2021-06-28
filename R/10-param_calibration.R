@@ -4,11 +4,11 @@ test_simulation <- TRUE
 test_all_combination <- TRUE # Can grow super fast
 
 # Set slurm parameters ---------------------------------------------------------
-batch_per_set <- 5      # How many 28 replications to do per parameter
+batch_per_set <- 3      # How many 28 replications to do per parameter
 steps_to_keep <- 52 * 20 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "K_CPN_prep"
-ssh_host <- "hyak_klone"
+job_name <- "CPN_prev"
+ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
 # Options passed to slurm_wf
@@ -16,7 +16,7 @@ slurm_ressources <- list(
   partition = partition,
   job_name = job_name,
   account = if (partition == "csde") "csde" else "csde-ckpt",
-  n_cpus = 40,
+  n_cpus = 28,
   memory = 5 * 1e3, # in Mb and PER CPU
   walltime = 60
 )
@@ -25,9 +25,10 @@ slurm_ressources <- list(
 #
 lnt <- TRUE # if FALSE: set `require.lnt` to FALSE and adjust ` prep.start.prob`
 source("R/utils-params.R", local = TRUE)
+param$epi_trackers <- restart_trackers
 
 control <- control_msm(
-  nsteps = 85 * 52,
+  nsteps = 60 * 52,
   nsims = 28,
   ncores = 28,
   save.nwstats = FALSE,
@@ -38,7 +39,7 @@ control <- control_msm(
 # Parameters to test -----------------------------------------------------------
 
 param_proposals <- list(
-  prep.start.prob = as.list(seq(0.290, 0.310, length.out = 11))
+  trans.scale = seq_cross(c(2.68, 0.33, 0.28), c(2.72, 0.37, 0.32), 5, TRUE)
 )
 
 # Use this line to run only the default values

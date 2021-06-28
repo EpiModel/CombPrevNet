@@ -6,7 +6,7 @@ library(EpiModel)
 
 # One or many job_names
 # job_names <- "CPN_ident"
-job_names <- "CPN_restart"
+job_names <- "CPN_restart_tmp"
 job_last_n <- NULL # if not NULL, get last N jobs. Otherwise, use job_names
 
 if (!is.null(job_last_n))

@@ -1,7 +1,7 @@
 library(tidyverse)
 
-files_folder <- "out/remote_jobs/CPN_restart/out" # where are the calibration files
-reprocess <- FALSE # set to TRUE to redo the file processing
+files_folder <- "out/remote_jobs/CPN_restart_tmp/out" # where are the calibration files
+reprocess <- TRUE # set to TRUE to redo the file processing
 
 process_1batch <- function(file_name, out_dir) {
   sim <- readRDS(file_name)
