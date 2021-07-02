@@ -1,12 +1,11 @@
-lnt <- TRUE
 source("R/utils-params.R", local = TRUE)
 
-nsteps <- 52 * 60
+nsteps <- 52 * 10
 
 control <- control_msm(
   nsteps =  nsteps, # one year for prep riskhist then nsteps
-  nsims = 4,
-  ncores = 32,
+  nsims = 1,
+  ncores = 1,
   save.nwstats = FALSE,
   # initialize.FUN = reinit_msm,
   save.clin.hist = FALSE,
@@ -18,6 +17,7 @@ param$tx.halt.partial.prob <- c(0.0057, 0.0047, 0.0028)
 param$epi_trackers <- restart_trackers
 
 sim <- netsim(orig, param, init, control)
+savesim(sim, save.min = FALSE, save.max = TRUE, compress = TRUE, time.stamp = FALSE)
 
 library(tidyverse)
 

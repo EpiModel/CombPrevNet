@@ -60,6 +60,35 @@ run_netsim_fun <- function(param_proposal, sim_num,
   }
 }
 
+run_netsim_fun_savesim <- function(param_proposal, sim_num,
+                                   orig, param, init, control, info) {
+  library(EpiModelHIV)
+
+  # Helper function
+  update_list <- function(x, new_x) {
+    for (n in names(new_x)) {
+      if (is.list(new_x[[n]])) {
+        x[[n]] <- update_list(x[[n]], new_x[[n]])
+      } else if (is.function(new_x[[n]]) && ! is.function(x[[n]])) {
+        x[[n]] <- new_x[[n]](x[[n]])
+      } else {
+        x[[n]] <- new_x[[n]]
+      }
+    }
+    return(x)
+  }
+
+  control$simno <- sim_num
+  param <- update_list(param, param_proposal)
+  sim <- netsim(orig, param, init, control)
+  EpiModelHPC::savesim(
+    sim,
+    save.min = TRUE,
+    save.max = FALSE,
+    compress = FALSE
+  )
+}
+
 run_netsim_updaters_fun <- function(updaters, sim_num, scenario,
                            orig, param, init, control, info) {
   library(EpiModelHIV)
