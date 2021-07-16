@@ -149,9 +149,9 @@ param <- param_msm(
   part.ident.casl.window = 52,
   part.ident.ooff.window = 52,
   # see "R/z-indent_prob_calib.R"
-  part.ident.main.prob = 0.165,  # calibrated
-  part.ident.casl.prob = 0.165 / 2,  # part.ident.main.prob / 2
-  part.ident.ooff.prob = 0.165 / 4, # part.ident.main.prob / 4
+  part.ident.main.prob = 0.157,  # calibrated
+  part.ident.casl.prob = plogis(qlogis(0.157) - log(2)),
+  part.ident.ooff.prob = plogis(qlogis(0.157) - log(4)),
   # Part Serv Params
   part.hiv.test.rate = rep(0.394, 3),
   part.prep.start.prob = rep(0, 3),

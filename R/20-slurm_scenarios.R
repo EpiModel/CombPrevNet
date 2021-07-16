@@ -3,10 +3,10 @@ source("R/utils-slurm_wf.R")
 test_simulation <- TRUE
 
 # Set slurm parameters ---------------------------------------------------------
-batch_per_set <- 36      # How many 28 replications to do per parameter
+batch_per_set <- 20      # How many 28 replications to do per parameter
 steps_to_keep <- 20 * 52 # Steps to keep in the output df. If NULL, return sim obj
-partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "CPN_sc_fig1"
+partition <- "csde"     # On hyak, either ckpt or csde
+job_name <- "CPN_sc_test_ident"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
@@ -17,7 +17,7 @@ slurm_ressources <- list(
   account = if (partition == "csde") "csde" else "csde-ckpt",
   n_cpus = 28,
   memory = 5 * 1e3, # in Mb and PER CPU
-  walltime = 15
+  walltime = 20
 )
 
 # Set orig, param, init, control -----------------------------------------------
@@ -42,9 +42,10 @@ control <- control_msm(
 # requires <list variables>
 source("R/utils-scenarios.R")
 
+scenarios <- c(sc_base, sc_t3a[1], sc_t3b[1]) # 20 batch_per_set
 # scenarios <- c(sc_base, sc_t2, sc_t2b, sc_t2c) # 20 batch_per_set
 # scenarios <- c(sc_t3) # 20 batch_per_set
-scenarios <- c(sc_fig1) # 36 batch_per_set
+# scenarios <- c(sc_fig1) # 36 batch_per_set
 # scenarios <- c(sc_fig2) # 10 batch_per_set
 # scenarios <- c(sc_fig3)
 # scenarios <- c(sc_fig4)

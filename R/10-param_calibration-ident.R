@@ -7,7 +7,7 @@ test_all_combination <- TRUE # Can grow super fast
 batch_per_set <- 20      # How many 28 replications to do per parameter
 steps_to_keep <- 52 * 5 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "CPN_ident"
+job_name <- "k_CPN_ident"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
@@ -26,10 +26,13 @@ slurm_ressources <- list(
 lnt <- TRUE # if FALSE: set `require.lnt` to FALSE and adjust ` prep.start.prob`
 source("R/utils-params.R", local = TRUE)
 
+orig <- readRDS("out/est/restart.rds")
 control <- control_msm(
+  start = 60 * 52 + 1,
   nsteps = 80 * 52,
   nsims = 28,
   ncores = 28,
+  initialize.FUN = reinit_msm,
   save.nwstats = FALSE,
   save.clin.hist = FALSE,
   verbose = FALSE
@@ -38,7 +41,7 @@ control <- control_msm(
 # Parameters to test -----------------------------------------------------------
 
 param_proposals <- list(
-  part.ident.main.prob = as.list(seq(0.08, 0.1, length.out = 5))
+  part.ident.main.prob = as.list(seq(0.16, 0.17, length.out = 5))
 )
 
 # Use this line to run only the default values
@@ -53,10 +56,10 @@ if (test_all_combination) {
 
 relative_params <- list(
   part.ident.casl.prob = function(param) {
-    param$part.ident.main.prob / 2
+    plogis(qlogis(param$part.ident.main.prob) - log(2))
   },
   part.ident.oof.prob = function(param) {
-    param$part.ident.main.prob / 4
+    plogis(qlogis(param$part.ident.main.prob) - log(4))
   }
 )
 
@@ -89,7 +92,7 @@ slurm_wf_tmpl_dir("inst/slurm_wf/", info$root_dir, force = T)
 
 if (test_simulation) {
   control_test <- control
-  control_test$nsteps <- 1 * 52
+  control_test$nsteps <- control_test$start + 1 * 52
   control_test$nsims <- 1
   control_test$ncores <- 1
   control_test$verbose <- TRUE

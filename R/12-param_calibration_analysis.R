@@ -6,7 +6,7 @@ df_b <- map_dfr(jobs, ~ as_tibble(.x$data))
 
 param_proposals <- jobs[[1]]$infos$param_proposals
 
-df <- mutate(df_b, param_batch = 1)
+# df <- mutate(df_b, param_batch = 1)
 df <- df_b
 
 df <- df_b %>%
@@ -103,7 +103,10 @@ df %>%
     time > max(time) - 52 * 6,
   ) %>%
   group_by(param_batch) %>%
-  summarise(found = mean(found_partners / found_indexes, na.rm = T)) |>
+  summarise(
+    elic = mean(found_partners / found_indexes, na.rm = T),
+    found = mean(found_partners / elig_partners, na.rm = T)
+  ) %>%
   print(n = 200)
 
 param_proposals[5]
