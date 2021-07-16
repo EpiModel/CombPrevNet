@@ -1,25 +1,10 @@
+lnt <- TRUE # if FALSE: set `require.lnt` to FALSE and adjust ` prep.start.prob`
+source("R/utils-params.R", local = TRUE)
+source("R/utils-scenarios.R")
 source("R/utils-create_outcomes.R")
 
-scenarios <- fs::dir_ls("out/scenarios")
+scenarios_files <- fs::dir_ls("out/scenarios")
+scenarios <- fs::path_file(scenarios_files)
 
-# Maxs
-max_sc <- c(
-  scenarios[grepl("max", scenarios)],
-  scenarios[grepl("no_ident", scenarios)]
-)
-
-df <- make_outcomes(base, c(base, max_sc))
-readr::write_csv( df, paste0("out/tables/max.csv"))
-
-# T2
-base <- scenarios[grepl("base_atlanta", scenarios)]
-t2_sc <- scenarios[grepl("t2_", scenarios)]
-
-df <- make_outcomes(base, c(base, t2_sc))
-readr::write_csv( df, paste0("out/tables/t2.csv"))
-
-# T3
-t3_sc <- scenarios[grepl("t3_", scenarios)]
-
-df <- make_outcomes(base, c(base, t3_sc))
-readr::write_csv( df, paste0("out/tables/t3.csv"))
+df <- make_outcomes(scenarios_files[1], scenarios_files, scenarios)
+readr::write_csv(df, paste0("out/tables/t_test.csv"))

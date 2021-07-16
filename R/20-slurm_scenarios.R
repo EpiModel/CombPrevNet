@@ -6,7 +6,7 @@ test_simulation <- TRUE
 batch_per_set <- 20      # How many 28 replications to do per parameter
 steps_to_keep <- 20 * 52 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "csde"     # On hyak, either ckpt or csde
-job_name <- "CPN_sc_test_ident"
+job_name <- "CPN_sc_test_ident2"
 ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
@@ -17,7 +17,7 @@ slurm_ressources <- list(
   account = if (partition == "csde") "csde" else "csde-ckpt",
   n_cpus = 28,
   memory = 5 * 1e3, # in Mb and PER CPU
-  walltime = 20
+  walltime = 15 # usually around 6 minutes
 )
 
 # Set orig, param, init, control -----------------------------------------------

@@ -10,23 +10,16 @@ scenarios_files <- paste0("out/scenarios/", scenarios, ".rds")
 df <- make_outcomes(scenarios_files[1], scenarios_files, scenarios)
 readr::write_csv(df, paste0("out/tables/t2.csv"))
 
-# T2b
-scenarios <- names(c(sc_base, sc_t2b))
+# T3a
+scenarios <- names(c(sc_base, sc_t3a))
 scenarios_files <- paste0("out/scenarios/", scenarios, ".rds")
 
 df <- make_outcomes(scenarios_files[1], scenarios_files, scenarios)
-readr::write_csv(df, paste0("out/tables/t2b.csv"))
+readr::write_csv(df, paste0("out/tables/t3a.csv"))
 
-# T2c
-scenarios <- names(c(sc_base, sc_t2c))
+# T3b
+scenarios <- names(c(sc_base, sc_t3b))
 scenarios_files <- paste0("out/scenarios/", scenarios, ".rds")
 
 df <- make_outcomes(scenarios_files[1], scenarios_files, scenarios)
-readr::write_csv(df, paste0("out/tables/t2c.csv"))
-
-# T3
-scenarios <- names(c(sc_base, sc_t3))
-scenarios_files <- paste0("out/scenarios/", scenarios, ".rds")
-
-df <- make_outcomes(scenarios_files[1], scenarios_files, scenarios)
-readr::write_csv(df, paste0("out/tables/t3.csv"))
+readr::write_csv(df, paste0("out/tables/t3b.csv"))

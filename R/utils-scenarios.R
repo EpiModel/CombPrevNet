@@ -1,3 +1,5 @@
+main_prob_50 <- 0.66 # main partner_ident prob to get to 50% overall
+main_prob_25 <- 0.370  # main partner_ident prob to get to 25% overall
 
 # Scenarios tables =============================================================
 # Utilities
@@ -189,12 +191,11 @@ sc_t2 <- append_scenario_seq(
 sc_t3a <- list()
 
 t3a_base <- function(n) {
-  main_prob <- 0.37 # to reach 25% overall
   list(
     part.index.prob = as.list(rep(0.9, n)),
-    part.ident.main.prob = as.list(rep(main_prob, n)),
-    part.ident.casl.prob = as.list(rep(plogis(qlogis(main_prob) - log(2)), n)),
-    part.ident.ooff.prob = as.list(rep(plogis(qlogis(main_prob) - log(4)), n))
+    part.ident.main.prob = as.list(rep(main_prob_25, n)),
+    part.ident.casl.prob = as.list(rep(plogis(qlogis(main_prob_25) - log(2)), n)),
+    part.ident.ooff.prob = as.list(rep(plogis(qlogis(main_prob_25) - log(4)), n))
   )
 }
 
@@ -276,12 +277,11 @@ sc_t3a <- append_scenario_seq(
 sc_t3b <- list()
 
 t3b_base <- function(n) {
-  main_prob <- 0.65 # to reach 50% overall
   list(
     part.index.prob = as.list(rep(0.9, n)),
-    part.ident.main.prob = as.list(rep(main_prob, n)),
-    part.ident.casl.prob = as.list(rep(plogis(qlogis(main_prob) - log(2)), n)),
-    part.ident.ooff.prob = as.list(rep(plogis(qlogis(main_prob) - log(4)), n))
+    part.ident.main.prob = as.list(rep(main_prob_50, n)),
+    part.ident.casl.prob = as.list(rep(plogis(qlogis(main_prob_50) - log(2)), n)),
+    part.ident.ooff.prob = as.list(rep(plogis(qlogis(main_prob_50) - log(4)), n))
   )
 }
 
@@ -663,29 +663,27 @@ append_scenario_f3 <- function(sc, name_prefix, sc_fixed,
   sc
 }
 
-main_prob <- 0.37 # to reach 25% overall
 sc_fig3 <- append_scenario_f3(
   list(),
   "sc_fig3A",
   sc_fixed = list(
     part.index.prob = 0.9,
-    part.ident.main.prob = main_prob,
-    part.ident.casl.prob = plogis(qlogis(main_prob) - log(2)),
-    part.ident.ooff.prob = plogis(qlogis(main_prob) - log(4))
+    part.ident.main.prob = main_prob_25,
+    part.ident.casl.prob = plogis(qlogis(main_prob_25) - log(2)),
+    part.ident.ooff.prob = plogis(qlogis(main_prob_25) - log(4))
   ),
   prep = seq(0, 1, length.out = 10),
   test = seq(0, 1, length.out = 10)
 )
 
-main_prob <- 0.65 # to reach 50% overall
 sc_fig3 <- append_scenario_f3(
   sc_fig3,
   "sc_fig3B",
   sc_fixed = list(
     part.index.prob = 0.9,
-    part.ident.main.prob = main_prob,
-    part.ident.casl.prob = plogis(qlogis(main_prob) - log(2)),
-    part.ident.ooff.prob = plogis(qlogis(main_prob) - log(4))
+    part.ident.main.prob = main_prob_50,
+    part.ident.casl.prob = plogis(qlogis(main_prob_50) - log(2)),
+    part.ident.ooff.prob = plogis(qlogis(main_prob_50) - log(4))
   ),
   prep = seq(0, 1, length.out = 10),
   test = seq(0, 1, length.out = 10)
@@ -727,29 +725,27 @@ append_scenario_f4 <- function(sc, name_prefix, sc_fixed,
   sc
 }
 
-main_prob <- 0.37 # to reach 25% overall
 sc_fig4 <- append_scenario_f4(
   list(),
   "sc_fig4A",
   sc_fixed = list(
     part.index.prob = 0.9,
-    part.ident.main.prob = main_prob,
-    part.ident.casl.prob = plogis(qlogis(main_prob) - log(2)),
-    part.ident.ooff.prob = plogis(qlogis(main_prob) - log(4))
+    part.ident.main.prob = main_prob_25,
+    part.ident.casl.prob = plogis(qlogis(main_prob_25) - log(2)),
+    part.ident.ooff.prob = plogis(qlogis(main_prob_25) - log(4))
   ),
   tx = seq(0, 1, length.out = 10),
   test = seq(0, 1, length.out = 10)
 )
 
-main_prob <- 0.65 # to reach 50% overall
 sc_fig4 <- append_scenario_f4(
   sc_fig4,
   "sc_fig4B",
   sc_fixed = list(
     part.index.prob = 0.9,
-    part.ident.main.prob = main_prob,
-    part.ident.casl.prob = plogis(qlogis(main_prob) - log(2)),
-    part.ident.ooff.prob = plogis(qlogis(main_prob) - log(4))
+    part.ident.main.prob = main_prob_50,
+    part.ident.casl.prob = plogis(qlogis(main_prob_50) - log(2)),
+    part.ident.ooff.prob = plogis(qlogis(main_prob_50) - log(4))
   ),
   tx = seq(0, 1, length.out = 10),
   test = seq(0, 1, length.out = 10)
