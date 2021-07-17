@@ -1,4 +1,3 @@
-lnt <- TRUE # if FALSE: set `require.lnt` to FALSE and adjust ` prep.start.prob`
 source("R/utils-params.R", local = TRUE)
 source("R/utils-scenarios.R")
 source("R/utils-create_outcomes.R")
