@@ -3,11 +3,12 @@ source("R/utils-slurm_wf.R")
 test_simulation <- TRUE
 
 # Set slurm parameters ---------------------------------------------------------
-batch_per_set <- 20      # How many 28 replications to do per parameter
+sim_per_batch <- 40    # How many simulation per bactch
+batch_per_set <- 3     # How many sim_per_batch replications to do per parameter
 steps_to_keep <- 20 * 52 # Steps to keep in the output df. If NULL, return sim obj
-partition <- "csde"     # On hyak, either ckpt or csde
-job_name <- "CPN_sc_tables"
-ssh_host <- "hyak_mox"
+partition <- "ckpt"     # On hyak, either ckpt or csde
+job_name <- "k_CPN_sc_fig3"
+ssh_host <- "hyak_klone"
 ssh_dir <- "gscratch/CombPrevNet/"
 
 # Options passed to slurm_wf
@@ -15,7 +16,7 @@ slurm_ressources <- list(
   partition = partition,
   job_name = job_name,
   account = if (partition == "csde") "csde" else "csde-ckpt",
-  n_cpus = 28,
+  n_cpus = sim_per_batch,
   memory = 5 * 1e3, # in Mb and PER CPU
   walltime = 15 # usually around 6 minutes
 )
@@ -30,8 +31,8 @@ orig <- readRDS("out/est/restart.rds")
 control <- control_msm(
   start = 60 * 52 + 1,
   nsteps = 80 * 52, # 60->65 rng; 65->70 calib2; 70->80 scenario
-  nsims = 28,
-  ncores = 28,
+  nsims = sim_per_batch,
+  ncores = sim_per_batch,
   save.nwstats = FALSE,
   initialize.FUN = reinit_msm,
   save.clin.hist = FALSE,
@@ -43,11 +44,10 @@ control <- control_msm(
 source("R/utils-scenarios.R")
 
 # scenarios <- c(sc_base, sc_t3a[1], sc_t3b[1]) # 20 batch_per_set
-scenarios <- c(sc_base, sc_t2, sc_t3a, sc_t3b, sc_t4, sc_t5a, sc_t5b) # 20 batch
+# scenarios <- c(sc_base, sc_t2, sc_t3a, sc_t3b, sc_t4, sc_t5a, sc_t5b) # 20 batch
 # scenarios <- c(sc_t3) # 20 batch_per_set
-# scenarios <- c(sc_fig1) # 36 batch_per_set
 # scenarios <- c(sc_fig2) # 10 batch_per_set
-# scenarios <- c(sc_fig3)
+scenarios <- c(sc_fig3)
 # scenarios <- c(sc_fig4)
 
 # Automatic --------------------------------------------------------------------

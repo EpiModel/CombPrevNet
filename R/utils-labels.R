@@ -37,27 +37,29 @@ var_labels <- c(
   "prep_episodes" = "prep_episodes"
 )
 
-# Conversion between scenario name and final label
-scenarios_labels <- c(
-  "no_ident_no_prep"          = "Neither Partner Services or PrEP",
-  "no_ident"                  = "No Partner Services",
-  "base_atlanta_complete"     = "Atlanta Complete",
-  "base_atlanta_missing"      = "Atlanta Missing",
-  "base_atlanta_complete_alt" = "Atlanta Complete Alt",
-  "ident_max"                 = "All Max",
-  "ident_max_test"            = "Max ID + Test",
-  "ident_max_prep"            = "Max ID + Test + PrEP",
-  "ident_max_tx"              = "Max ID + Test + Tx",
-  "test_100"                  = "ATL ID & Max Test",
-  "prep_100"                  = "ATL ID & Max PrEP",
-  "test_prep_100"             = "ATL ID & Max Test + PrEP",
-  "tx_100"                    = "ATL ID & Max Tx",
-  "ident_x2"                  = "ALT ID x2",
-  "ident_x2_test_100"         = "ATL ID x2 & Max Test",
-  "ident_x2_prep_100"         = "ATL ID x2 & Max PrEP",
-  "ident_x2_test_prep_100"    = "ATL ID x2 & Max Test + PrEP",
-  "ident_x2_tx_100"           = "ATL ID x2 & Max Tx"
+figure1_labels <- c(
+  "base_atlanta_complete"  = "Atlanta Complete",
+  "t4_no_ident"            = "No Partner Services",
+  "t4_ident_max_ident"     = "Max ID",
+  "t4_ident_max_test"      = "Max ID + Test",
+  "t4_ident_max_prep"      = "Max ID + Test + PrEP",
+  "t4_ident_max_tx_init"   = "Max ID + Test + tx init",
+  "t4_ident_max_tx_reinit" = "Max ID + Test + tx reinit",
+  "t4_ident_max_tx_both"   = "Max ID + Test + tx init/reinit",
+  "t4_ident_max_all"       = "Max all"
 )
+
+figure2_panel <- c(
+  "sc_fig2A" = "Base partner services",
+  "sc_fig2B" = "Max partner services"
+)
+
+figure3_panel <- c(
+  "sc_fig3A" = "Index prob 90%, Partner prob 25%",
+  "sc_fig3B" = "Index prob 90%, Partner prob 50%"
+)
+
+figure4_panel <- figure3_panel
 
 # Formatters for the variables
 fmts <- replicate(length(var_labels), scales::label_number(1))

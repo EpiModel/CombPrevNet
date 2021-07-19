@@ -1,7 +1,10 @@
 library(data.table)
 
+reprocess_all <- FALSE
+
 # One or many job_names
-job_names <- "CPN_sc_test_ident2"
+job_names <- "CPN_sc_tables"
+job_names <- "k_CPN_sc_fig2"
 job_last_n <- NULL # if not NULL, get last N jobs. Otherwise, use job_names
 
 if (!is.null(job_last_n))
@@ -44,18 +47,22 @@ for (job in job_names) {
     btch <- as.numeric(stringr::str_extract(fs::path_file(fle), "\\d+"))
     scenario_name <- names(infos$param_proposals)[btch]
 
-    sim <- readRDS(fle)
-    dff <- as.data.table(sim)
-
-    dff[, `:=`(batch = btch, scenario = scenario_name)]
-
-    keep_cols <- intersect(needed_cols, names(dff))
-    dff <- dff[, ..keep_cols]
-
     sim_dir <- fs::path("out/parts/scenarios", scenario_name)
     if (!fs::dir_exists(sim_dir)) fs::dir_create(sim_dir, recurse = TRUE)
 
-    saveRDS(dff, fs::path(sim_dir, paste0(job, "-", btch, ".rds")))
+    part_file <- fs::path(sim_dir, paste0(job, "-", btch, ".rds"))
+    if (reprocess_all || !fs::file_exists(part_file)) {
+      sim <- readRDS(fle)
+      dff <- as.data.table(sim)
+
+      dff[, `:=`(batch = btch, scenario = scenario_name)]
+
+      keep_cols <- intersect(needed_cols, names(dff))
+      dff <- dff[, ..keep_cols]
+
+
+      saveRDS(dff, fs::path(sim_dir, paste0(job, "-", btch, ".rds")))
+    }
   }
 }
 

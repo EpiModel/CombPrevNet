@@ -24,6 +24,14 @@ make_outcomes <- function(baseline_file, scenarios_files,
   # Calculate baseline elements
   df_baseline <- readRDS(baseline_file)
 
+  if (! "found_indexes" %in% names(df_baseline)) {
+    df_baseline$found_indexes <- 0
+    df_baseline$elig_indexes <- 0
+    df_baseline$found_partners <- 0
+    df_baseline$elig_partners <- 0
+    df_baseline$prepStartPart <- 0
+  }
+
   df_base_cum <- df_baseline %>%
     filter(time >= max(time) - 52 * 10) %>%
     group_by(batch, sim) %>%
@@ -45,6 +53,15 @@ make_outcomes <- function(baseline_file, scenarios_files,
     df_cur <- 0
     for (fle in scenarios_files) {
       df_sc <- readRDS(fle)
+
+      if (! "found_indexes" %in% names(df_sc)) {
+        df_sc$found_indexes <- 0
+        df_sc$elig_indexes <- 0
+        df_sc$found_partners <- 0
+        df_sc$elig_partners <- 0
+        df_sc$prepStartPart <- 0
+      }
+
       df_cur <- df_cur + 1
 
       # outcome cumulated over intervention (10y)
@@ -119,30 +136,9 @@ make_outcomes <- function(baseline_file, scenarios_files,
       # binding of the dfs and formatting
       df_res <- df_cum %>%
         left_join(df_at, by = c("scenario", "batch", "sim")) %>%
-        left_join(df_part, by = c("scenario", "batch", "sim")) %>%
-        sum_quants() %>%
-        pivot_longer(-scenario) %>%
-        separate(name, into = c("name", "quantile"), sep = "_/_") %>%
-        pivot_wider(names_from = quantile, values_from = value) %>%
-        mutate(
-          clean_val = purrr::pmap_chr(
-            list(name, l, m, h),
-            ~ paste0(
-              fmts[[..1]](..3), " (", fmts[[..1]](..2),
-              ", ", fmts[[..1]](..4), ")"
-            )
-          )
-        ) %>%
-        select(-c(l, m, h)) %>%
-        mutate(
-          # scenario = scenarios_labels[scenario],
-          name = var_labels[name]
-        ) %>%
-        pivot_wider(names_from = name, values_from = clean_val) %>%
-        arrange(scenario)
+        left_join(df_part, by = c("scenario", "batch", "sim")) 
 
-      # this lines print the df with the variable in the right order
-      df_ls[[df_cur]] <- df_res[, c("scenario", var_labels)]
+      df_ls[[df_cur]] <- df_res
     }
 
     df_out <- bind_rows(df_ls)
@@ -153,9 +149,43 @@ make_outcomes <- function(baseline_file, scenarios_files,
     df_out
 }
 
+make_table <- function(df_res, ql = 0.025, qm = 0.5, qh = 0.975) {
+   # this lines print the df with the variable in the right order
+  df_res <- df_res %>%
+    sum_quants(ql, qm, qh) %>%
+    pivot_longer(-scenario) %>%
+    separate(name, into = c("name", "quantile"), sep = "_/_") %>%
+    pivot_wider(names_from = quantile, values_from = value) %>%
+    mutate(
+      clean_val = purrr::pmap_chr(
+        list(name, l, m, h),
+        ~ paste0(
+          fmts[[..1]](..3), " (", fmts[[..1]](..2),
+          ", ", fmts[[..1]](..4), ")"
+        )
+      )
+      ) %>%
+    select(-c(l, m, h)) %>%
+    mutate(
+      # scenario = scenarios_labels[scenario],
+      name = var_labels[name]
+    ) %>%
+    pivot_wider(names_from = name, values_from = clean_val) %>%
+    arrange(scenario)
+
+  df_res[, c("scenario", var_labels)]
+}
+
 
 make_cum_dfs <- function(baseline_file, scenarios_files) {
   df_baseline <- readRDS(baseline_file)
+
+  if (! "found_indexes" %in% names(df_baseline)) {
+    df_baseline$found_indexes <- 0
+    df_baseline$elig_indexes <- 0
+    df_baseline$found_partners <- 0
+    df_baseline$elig_partners <- 0
+  }
 
   df_base_cum <- df_baseline %>%
     filter(time >= max(time) - 52 * 10) %>%
@@ -163,7 +193,7 @@ make_cum_dfs <- function(baseline_file, scenarios_files) {
     summarise(
       cum_incid = sum(incid, na.rm = TRUE),
       cum_indexes = sum(found_indexes, na.rm = TRUE)
-      ) %>%
+    ) %>%
     ungroup() %>%
     summarise(
       cum_incid = median(cum_incid),
@@ -178,6 +208,13 @@ make_cum_dfs <- function(baseline_file, scenarios_files) {
     df_cur <- 0
     for (fle in scenarios_files) {
       df_sc <- readRDS(fle)
+      if (! "found_indexes" %in% names(df_sc)) {
+        df_sc$found_indexes <- 0
+        df_sc$elig_indexes <- 0
+        df_sc$found_partners <- 0
+        df_sc$elig_partners <- 0
+      }
+      
       df_cur <- df_cur + 1
 
       # outcome cumulated over intervention (10y)

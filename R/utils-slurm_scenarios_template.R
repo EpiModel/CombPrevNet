@@ -3,7 +3,8 @@ source("R/utils-slurm_wf.R")
 test_simulation <- TRUE
 
 # Set slurm parameters ---------------------------------------------------------
-batch_per_set <- 5      # How many 28 replications to do per parameter
+sim_per_batch <- 28    # How many simulation per bactch
+batch_per_set <- 4     # How many sim_per_batch replications to do per parameter
 steps_to_keep <- 20 * 52 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "csde"     # On hyak, either ckpt or csde
 job_name <- "CPN_bases"
@@ -15,7 +16,7 @@ slurm_ressources <- list(
   partition = partition,
   job_name = job_name,
   account = if (partition == "csde") "csde" else "csde-ckpt",
-  n_cpus = 28,
+  n_cpus = sim_per_batch,
   memory = 5 * 1e3, # in Mb and PER CPU
   walltime = 15
 )
@@ -33,8 +34,8 @@ scenario_start_step <- 70 * 52 + 1
 control <- control_msm(
   start = 60 * 52 + 1,
   nsteps = 80 * 52, # 60->65 rng; 65->70 calib2; 70->80 scenario
-  nsims = 28,
-  ncores = 28,
+  nsims = sim_per_batch,
+  ncores = sim_per_batch,
   save.nwstats = FALSE,
   initialize.FUN = reinit_msm,
   save.clin.hist = FALSE,

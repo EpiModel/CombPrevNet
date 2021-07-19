@@ -1,5 +1,6 @@
 main_prob_50 <- 0.66 # main partner_ident prob to get to 50% overall
 main_prob_25 <- 0.370  # main partner_ident prob to get to 25% overall
+contour_length <- 16
 
 # Scenarios tables =============================================================
 # Utilities
@@ -361,16 +362,16 @@ sc_t3b <- append_scenario_seq(
 
 # Table 4 ----------------------------------------------------------------------
 sc_t4 <- list(
-  t4_no_ident_no_prep = list(
-    list(
-      at = param$riskh.start - 1,
-      param = list(
-        part.ident.start = Inf,
-        prep.start = Inf,
-        riskh.start = Inf # not mandatory but faster
-      )
-    )
-  ),
+  # t4_no_ident_no_prep = list(
+  #   list(
+  #     at = param$riskh.start - 1,
+  #     param = list(
+  #       part.ident.start = Inf,
+  #       prep.start = Inf,
+  #       riskh.start = Inf # not mandatory but faster
+  #     )
+  #   )
+  # ),
   t4_no_ident = list(
     list(
       at = param$riskh.start - 1,
@@ -379,7 +380,19 @@ sc_t4 <- list(
       )
     )
   ),
-  t4_base = list(),
+  t4_ident_max_ident = list(
+    list(
+      at = scenarios_update_time,
+      param = list( # maximum test (prep effect via LNT)
+        # see "R/z-indent_prob_calib.R"
+        part.index.prob = 1,
+        part.ident.main.prob = 1,
+        part.ident.casl.prob = 1,
+        part.ident.ooff.prob = 1
+        # Part Serv Params
+      )
+    )
+  ),
   t4_ident_max_test = list(
     list(
       at = scenarios_update_time,
@@ -390,10 +403,7 @@ sc_t4 <- list(
         part.ident.casl.prob = 1,
         part.ident.ooff.prob = 1,
         # Part Serv Params
-        part.hiv.test.rate   = rep(1, 3),
-        part.prep.start.prob = rep(0, 3),
-        part.tx.init.prob    = rep(0, 3),
-        part.tx.reinit.prob  = rep(0, 3)
+        part.hiv.test.rate   = rep(1, 3)
       )
     )
   ),
@@ -408,9 +418,7 @@ sc_t4 <- list(
         part.ident.ooff.prob = 1,
         # Part Serv Params
         part.hiv.test.rate   = rep(1, 3),
-        part.prep.start.prob = rep(1, 3),
-        part.tx.init.prob    = rep(0, 3),
-        part.tx.reinit.prob  = rep(0, 3)
+        part.prep.start.prob = rep(1, 3)
       )
     )
   ),
@@ -425,9 +433,7 @@ sc_t4 <- list(
         part.ident.ooff.prob = 1,
         # Part Serv Params
         part.hiv.test.rate   = rep(1, 3),
-        part.prep.start.prob = rep(0, 3),
-        part.tx.init.prob    = rep(1, 3),
-        part.tx.reinit.prob  = rep(0, 3)
+        part.tx.init.prob    = rep(1, 3)
       )
     )
   ),
@@ -442,8 +448,6 @@ sc_t4 <- list(
         part.ident.ooff.prob = 1,
         # Part Serv Params
         part.hiv.test.rate   = rep(1, 3),
-        part.prep.start.prob = rep(0, 3),
-        part.tx.init.prob    = rep(0, 3),
         part.tx.reinit.prob  = rep(1, 3)
       )
     )
@@ -459,7 +463,6 @@ sc_t4 <- list(
         part.ident.ooff.prob = 1,
         # Part Serv Params
         part.hiv.test.rate   = rep(1, 3),
-        part.prep.start.prob = rep(0, 3),
         part.tx.init.prob    = rep(1, 3),
         part.tx.reinit.prob  = rep(1, 3)
       )
@@ -611,22 +614,21 @@ sc_fig2 <- append_scenario_f2(
   list(),
   "sc_fig2A",
   sc_fixed = list(),
-  index_inits = seq(0, 1, length.out = 10),
-  partner_idents = seq(0, 1, length.out = 10)
+  index_inits = seq(0, 1, length.out = contour_length),
+  partner_idents = seq(0, 1, length.out = contour_length)
 )
 
 sc_fig2 <- append_scenario_f2(
   sc_fig2,
   "sc_fig2B",
   sc_fixed = list(
-    part.index.prob = 1,
-    part.ident.main.prob = 1,
-    part.ident.casl.prob = 1,
-    part.ident.ooff.prob = 1,
-    part.hiv.test.rate   = rep(1, 3)
+    part.hiv.test.rate   = rep(1, 3),
+    part.prep.start.prob = rep(1, 3),
+    part.tx.init.prob    = rep(1, 3),
+    part.tx.reinit.prob  = rep(1, 3)
   ),
-  index_inits = seq(0, 1, length.out = 10),
-  partner_idents = seq(0, 1, length.out = 10)
+  index_inits = seq(0, 1, length.out = contour_length),
+  partner_idents = seq(0, 1, length.out = contour_length)
 )
 
 # Figure 3 ---------------------------------------------------------------------
@@ -672,8 +674,8 @@ sc_fig3 <- append_scenario_f3(
     part.ident.casl.prob = plogis(qlogis(main_prob_25) - log(2)),
     part.ident.ooff.prob = plogis(qlogis(main_prob_25) - log(4))
   ),
-  prep = seq(0, 1, length.out = 10),
-  test = seq(0, 1, length.out = 10)
+  prep = seq(0, 1, length.out = contour_length),
+  test = seq(0, 1, length.out = contour_length)
 )
 
 sc_fig3 <- append_scenario_f3(
@@ -685,8 +687,8 @@ sc_fig3 <- append_scenario_f3(
     part.ident.casl.prob = plogis(qlogis(main_prob_50) - log(2)),
     part.ident.ooff.prob = plogis(qlogis(main_prob_50) - log(4))
   ),
-  prep = seq(0, 1, length.out = 10),
-  test = seq(0, 1, length.out = 10)
+  prep = seq(0, 1, length.out = contour_length),
+  test = seq(0, 1, length.out = contour_length)
 )
 
 # Figure 4 ---------------------------------------------------------------------
@@ -734,8 +736,8 @@ sc_fig4 <- append_scenario_f4(
     part.ident.casl.prob = plogis(qlogis(main_prob_25) - log(2)),
     part.ident.ooff.prob = plogis(qlogis(main_prob_25) - log(4))
   ),
-  tx = seq(0, 1, length.out = 10),
-  test = seq(0, 1, length.out = 10)
+  tx = seq(0, 1, length.out = contour_length),
+  test = seq(0, 1, length.out = contour_length)
 )
 
 sc_fig4 <- append_scenario_f4(
@@ -747,6 +749,6 @@ sc_fig4 <- append_scenario_f4(
     part.ident.casl.prob = plogis(qlogis(main_prob_50) - log(2)),
     part.ident.ooff.prob = plogis(qlogis(main_prob_50) - log(4))
   ),
-  tx = seq(0, 1, length.out = 10),
-  test = seq(0, 1, length.out = 10)
+  tx = seq(0, 1, length.out = contour_length),
+  test = seq(0, 1, length.out = contour_length)
 )
