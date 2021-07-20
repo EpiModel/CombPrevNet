@@ -1,40 +1,41 @@
 # Conversion between variable name and final label
 var_labels <- c(
   # Epi
-  "ir100"              = "Incidence Rate",
-  "nia"                = "NIA",
-  "pia"                = "PIA",
-  "nnt"                = "NNT",
-  "cum_incid"          = "Cumulative incidence",
-  "hiv_prev"           = "HIV Prevalence",
+  "ir100"                      = "Incidence Rate",
+  "nia"                        = "NIA",
+  "pia"                        = "PIA",
+  "nnt"                        = "NNT",
+  "cum_incid"                  = "Cumulative incidence",
   # Process
-  "prep_cov"           = "PrEP Coverage",
-  "hiv_diag"           = "HIV+ Diagnosed",
-  "hiv_tx"             = "HIV+ Treated",
-  "hiv_supp"           = "HIV+ Virally Suppressed",
-  "prep_start"         = "Total Number of individuals who Started PrEP",
+  "prep_cov"                   = "PrEP Coverage",
+  "hiv_diag"                   = "HIV+ Diagnosed",
+  "hiv_tx"                     = "HIV+ Treated | Diagnosed",
+  "hiv_supp"                   = "HIV+ Virally Suppressed | Diagnosed",
+  "prep_start"                 = "Total Number of individuals who Started PrEP",
   # Part Process
-  "elig_indexes"       = "Number of Eligible Indexes",
-  "found_indexes"      = "Number of Indexes Found",
-  "prop_found_indexes" = "Proportion of Indexes Identified",
-  "elig_partners"       = "Number of Eligible Partners",
-  "found_partners"      = "Number of Identified Partners",
-  "prop_found_partners" = "Proportion of Partners Identified",
+  "elig_indexes"               = "Number of Eligible Indexes",
+  "found_indexes"              = "Number of Indexes Found",
+  "prop_found_indexes"         = "Proportion of Indexes Identified",
+  "elig_partners"              = "Number of Eligible Partners",
+  "found_partners"             = "Number of Identified Partners",
+  "prop_found_partners"        = "Proportion of Partners Identified",
   "partners_found_per_indexes" = "Number of Partners Identified Per Index",
-  # "part_ident"         = "Number of Identified Partners",
-  "part_screened"      = "Number of Screened Partners",
-  "part_sneg"          = "Number of Screened Partners (neg)",
-  "part_spos"          = "Number of Screened Partners (pos)",
-  "part_prep"          = "Number of Partners who Started PrEP",
-  "part_txinit"        = "Number of Partners who Started ART",
-  "part_txreinit"      = "Number of Partners who Restarted ART",
-  "ident_dist0"        = "Identified Distribution: 0",
-  "ident_dist1"        = "Identified Distribution: 1",
-  "ident_dist2"        = "Identified Distribution: 2",
-  "ident_dist3p"       = "Identified Distribution: 3+",
+  # "part_ident"               = "Number of Identified Partners",
+  "part_screened"              = "Number of Screened Partners",
+  "part_sneg"                  = "Number of Screened Partners (neg)",
+  "part_spos"                  = "Number of Screened Partners (pos)",
+  "part_prep"                  = "Number of Partners who Started PrEP",
+  "part_txinit"                = "Number of Partners who Started ART",
+  "part_txreinit"              = "Number of Partners who Restarted ART",
 
-  "prep_time_on"  = "prep_time_on",
-  "prep_episodes" = "prep_episodes"
+  # other
+  "ident_dist0"                = "Identified Distribution: 0",
+  "ident_dist1"                = "Identified Distribution: 1",
+  "ident_dist2"                = "Identified Distribution: 2",
+  "ident_dist3p"               = "Identified Distribution: 3+",
+  "hiv_prev"                   = "HIV Prevalence",
+  "prep_time_on"               = "prep_time_on",
+  "prep_episodes"              = "prep_episodes"
 )
 
 figure1_labels <- c(
@@ -60,6 +61,7 @@ figure3_panel <- c(
 )
 
 figure4_panel <- figure3_panel
+names(figure4_panel) <- c("sc_fig4A", "sc_fig4B")
 
 # Formatters for the variables
 fmts <- replicate(length(var_labels), scales::label_number(1))

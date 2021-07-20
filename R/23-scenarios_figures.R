@@ -33,9 +33,12 @@ for (fle in scenarios_files) {
 
 dff <- bind_rows(df_ls)
 
-# Read the data extracted in R/21-<...>.R
+df <- dff %>%
+  mutate(
+    scenario = figure1_labels[scenario],
+    scenario = factor(scenario, levels = figure1_labels)
+  )
 
-df <- dff
 saveRDS(df, "out/figures_data/figure1.rds")
 
 # One year double smoothing
@@ -82,7 +85,7 @@ df2 <- dff %>%
   select(- starts_with("__")) %>%
   mutate(
     across(c(index, partner), as.numeric),
-    grp = figure2_panel(grp)
+    grp = figure2_panel[grp]
   ) %>%
   group_by(grp, index, partner) %>%
   summarise(pia = median(pia))
@@ -92,12 +95,12 @@ saveRDS(df2, "out/figures_data/figure2.rds")
 outcome_label <- "Percent of Infection Averted"
 ggplot(df2, aes(x = index, y = partner, z = pia)) +
   geom_contour_fill(na.fill = TRUE) +
-  # geom_contour(col = "white", alpha = 0.5, lwd = 0.5) +
+  geom_contour(col = "white", alpha = 0.5, lwd = 0.5) +
+  # geom_text_contour(col = "white", alpha = 0.9) +
   scale_fill_continuous(
-    # type = "viridis",
-    # direction = -1,
+    type = "viridis",
+    direction = -1,
     labels = scales::label_percent(),
-    # limits = c(0, 1),
     name = "PIA"
   ) +
   scale_y_continuous(
@@ -153,6 +156,7 @@ outcome_label <- "Percent of Infection Averted"
 ggplot(df2, aes(x = test, y = prep, z = pia)) +
   geom_contour_fill(na.fill = TRUE) +
   geom_contour(col = "white", alpha = 0.5, lwd = 0.5) +
+  # geom_text_contour(col = "white", alpha = 0.9) +
   scale_fill_continuous(
     type = "viridis",
     direction = -1,
@@ -185,7 +189,7 @@ ggsave(
   units = "in"
 )
 
-# fig4 prep * tx_reinit * pia --------------------------------------------------
+# fig4 test * tx (re)init * pia ------------------------------------------------
 base_file <- paste0("out/scenarios/", names(sc_base), ".rds")
 scenarios <- names(sc_fig4)
 scenarios_files <- paste0("out/scenarios/", scenarios, ".rds")

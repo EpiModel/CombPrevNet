@@ -3,8 +3,8 @@ library(data.table)
 reprocess_all <- FALSE
 
 # One or many job_names
-job_names <- "CPN_sc_tables"
-job_names <- "k_CPN_sc_fig2"
+job_names <- "k_CPN_sc_t4"
+# job_names <- "k_CPN_sc_fig4"
 job_last_n <- NULL # if not NULL, get last N jobs. Otherwise, use job_names
 
 if (!is.null(job_last_n))
