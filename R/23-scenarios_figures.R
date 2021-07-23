@@ -87,10 +87,13 @@ df2 <- dff %>%
     across(c(index, partner), as.numeric),
     grp = figure2_panel[grp]
   ) %>%
-  group_by(grp, index, partner) %>%
-  summarise(pia = median(pia))
+  ungroup()
 
 saveRDS(df2, "out/figures_data/figure2.rds")
+
+df2 <- df2 %>%
+  group_by(grp, index, partner) %>%
+  summarise(pia = median(pia))
 
 outcome_label <- "Percent of Infection Averted"
 ggplot(df2, aes(x = index, y = partner, z = pia)) +
@@ -147,10 +150,13 @@ df2 <- dff %>%
     across(c(prep, test), as.numeric),
     grp = figure3_panel[grp]
   ) %>%
-  group_by(grp, prep, test) %>%
-  summarise(pia = median(pia))
+  ungroup()
 
 saveRDS(df2, "out/figures_data/figure3.rds")
+
+df2 <- df2 %>%
+  group_by(grp, prep, test) %>%
+  summarise(pia = median(pia))
 
 outcome_label <- "Percent of Infection Averted"
 ggplot(df2, aes(x = test, y = prep, z = pia)) +
@@ -207,10 +213,13 @@ df2 <- dff %>%
     across(c(tx, test), as.numeric),
     grp = figure4_panel[grp]
   ) %>%
-  group_by(grp, tx, test) %>%
-  summarise(pia = median(pia))
+  ungroup()
 
 saveRDS(df2, "out/figures_data/figure4.rds")
+
+df2 <- df2 %>%
+  group_by(grp, tx, test) %>%
+  summarise(pia = median(pia))
 
 outcome_label <- "Percent of Infection Averted"
 ggplot(df2, aes(x = test, y = tx, z = pia)) +
@@ -243,6 +252,68 @@ ggplot(df2, aes(x = test, y = tx, z = pia)) +
 
 ggsave(
   paste0("out/plots/figure_4.jpeg"),
+  device = "jpeg", dpi = 600,
+  height = 5, width = 12,
+  units = "in"
+)
+
+# fig5 ident * prep or tx * pia ------------------------------------------------
+base_file <- paste0("out/scenarios/", names(sc_base), ".rds")
+scenarios <- names(sc_fig5)
+scenarios_files <- paste0("out/scenarios/", scenarios, ".rds")
+
+dff <- make_cum_dfs(base_file, scenarios_files)
+
+df2 <- dff %>%
+  separate(
+    scenario,
+    into = c("grp", "__1", "partner", "__2", "service"),
+    sep = "__"
+  ) %>%
+  select(- starts_with("__")) %>%
+  mutate(
+    across(c(partner, service), as.numeric),
+    grp = figure5_panel[grp]
+  ) %>%
+  ungroup()
+
+saveRDS(df2, "out/figures_data/figure5.rds")
+
+df2 <- df2 %>%
+  group_by(grp, partner, service) %>%
+  summarise(pia = median(pia))
+
+outcome_label <- "Percent of Infection Averted"
+ggplot(df2, aes(x = partner, y = service, z = pia)) +
+  geom_contour_fill(na.fill = TRUE) +
+  geom_contour(col = "white", alpha = 0.5, lwd = 0.5) +
+  scale_fill_continuous(
+    type = "viridis",
+    direction = -1,
+    labels = scales::label_percent(),
+    name = "PIA"
+  ) +
+  scale_y_continuous(
+    expand = c(0, 0),
+    labels = scales::label_percent()
+  ) +
+  scale_x_continuous(
+    expand = c(0, 0),
+    labels = scales::label_percent()
+  ) +
+  xlab("Partner Identification") +
+  ylab("A: PrEP - B: Tx init / reinit") +
+  theme_classic() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    aspect.ratio = 1
+    ) +
+  guides(fill = guide_colourbar(title.position = "top", title.hjust = 0.1)) +
+  ggtitle(outcome_label) +
+  facet_grid(cols = vars(grp))
+
+ggsave(
+  paste0("out/plots/figure_5.jpeg"),
   device = "jpeg", dpi = 600,
   height = 5, width = 12,
   units = "in"

@@ -36,7 +36,7 @@ saveRDS(d_raw, "out/tables_data/t3b.rds")
 readr::write_csv(d_table, "out/tables/t3b.csv")
 
 # T4
-scenarios <- names(c(sc_base, sc_t4))
+scenarios <- names(c(sc_base, sc_t4[names(sc_t4) != "t4_no_ident"]))
 scenarios_files <- paste0("out/scenarios/", scenarios, ".rds")
 
 d_raw <- make_outcomes(scenarios_files[1], scenarios_files, scenarios)
@@ -61,3 +61,12 @@ d_raw <- make_outcomes(scenarios_files[1], scenarios_files, scenarios)
 d_table <- make_table(d_raw)
 saveRDS(d_raw, "out/tables_data/t5b.rds")
 readr::write_csv(d_table, "out/tables/t5b.csv")
+
+# T6 - base files
+scenarios <- names(c(sc_base, sc_atlanta_missing, sc_t4["t4_no_ident"]))
+scenarios_files <- paste0("out/scenarios/", scenarios, ".rds")
+
+d_raw <- make_outcomes(scenarios_files[1], scenarios_files, scenarios)
+d_table <- make_table(d_raw)
+saveRDS(d_raw, "out/tables_data/t6.rds")
+readr::write_csv(d_table, "out/tables/t6.csv")

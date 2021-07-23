@@ -136,7 +136,7 @@ make_outcomes <- function(baseline_file, scenarios_files,
       # binding of the dfs and formatting
       df_res <- df_cum %>%
         left_join(df_at, by = c("scenario", "batch", "sim")) %>%
-        left_join(df_part, by = c("scenario", "batch", "sim")) 
+        left_join(df_part, by = c("scenario", "batch", "sim"))
 
       df_ls[[df_cur]] <- df_res
     }
@@ -173,7 +173,10 @@ make_table <- function(df_res, ql = 0.025, qm = 0.5, qh = 0.975) {
     pivot_wider(names_from = name, values_from = clean_val) %>%
     arrange(scenario)
 
-  df_res[, c("scenario", var_labels)]
+  df_res <- df_res[, c("scenario", var_labels)] %>%
+    select(-starts_with("__ignore__"))
+
+  left_join(data.frame(scenario = scenarios), df_res, by = "scenario")
 }
 
 
@@ -214,7 +217,7 @@ make_cum_dfs <- function(baseline_file, scenarios_files) {
         df_sc$found_partners <- 0
         df_sc$elig_partners <- 0
       }
-      
+
       df_cur <- df_cur + 1
 
       # outcome cumulated over intervention (10y)

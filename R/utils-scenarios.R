@@ -64,7 +64,7 @@ absolutes <- c(10, 25, 50, 75, 100)
 absolutes_names <- stringr::str_pad(absolutes, 3, "left", "0")
 absolutes <- absolutes / 100
 
-windows <- c(4, 26)
+windows <- c(26, 4)
 windows_names <- stringr::str_pad(windows, 2, "left", "0")
 
 degrees <- c(2, 3, 5, 10)
@@ -72,6 +72,17 @@ degrees_names <- stringr::str_pad(degrees, 2, "left", "0")
 
 # Base Scenario ----------------------------------------------------------------
 sc_base <- list(base_atlanta_complete = list())
+sc_atlanta_missing <- list(
+  base_atlanta_missing = list(
+    list(
+      at = scenarios_update_time,
+      param = list(
+        part.hiv.test.rate   = rep(0.84, 3),
+        part.tx.init.prob    = rep(0.96, 3)
+      )
+    )
+  )
+)
 
 # Table 2 ----------------------------------------------------------------------
 sc_t2 <- list()
@@ -751,4 +762,79 @@ sc_fig4 <- append_scenario_f4(
   ),
   tx = seq(0, 1, length.out = contour_length),
   test = seq(0, 1, length.out = contour_length)
+)
+
+# Figure 5 ---------------------------------------------------------------------
+append_scenario_f5 <- function(sc, name_prefix, sc_fixed,
+                               partner_idents, service, type) {
+  sc_cross <- purrr::cross(list(
+    "partner_idents" = partner_idents, "service" = service
+  ))
+
+  for (i in seq_along(sc_cross)) {
+    sc_param <- sc_fixed
+
+    sc_param$part.ident.main.prob <- sc_cross[[i]]$partner_idents
+    sc_param$part.ident.casl.prob <- sc_cross[[i]]$partner_idents
+    sc_param$part.ident.ooff.prob <- sc_cross[[i]]$partner_idents
+
+    if (type == "prep") {
+      sc_param$part.prep.start.prob <- rep(sc_cross[[i]]$prep, 3)
+    } else if (type == "tx") {
+      sc_param$part.tx.init.prob <- rep(sc_cross[[i]]$tx, 3)
+      sc_param$part.tx.reinit.prob <- rep(sc_cross[[i]]$tx, 3)
+    } else {
+      stop("Type must be either 'prep' or 'tx'")
+    }
+
+    scenar <- list(
+      list(
+        list(
+          at = scenarios_update_time,
+          param = sc_param
+        )
+      )
+    )
+
+    name <- paste0(
+      name_prefix, "__",
+      "partner_idents__", sc_cross[[i]]$partner_idents, "__",
+      "service__", sc_cross[[i]]$service
+    )
+    names(scenar) <- name
+
+    sc <- c(sc, scenar)
+  }
+
+  sc
+}
+
+sc_fig5 <- append_scenario_f5(
+  list(),
+  "sc_fig5A",
+  sc_fixed = list(
+    part.index.prob = 0.9,
+    part.ident.main.prob = main_prob_25,
+    part.ident.casl.prob = plogis(qlogis(main_prob_25) - log(2)),
+    part.ident.ooff.prob = plogis(qlogis(main_prob_25) - log(4)),
+    part.hiv.test.rate = 1
+  ),
+  partner_idents = seq(0, 1, length.out = contour_length),
+  service = seq(0, 1, length.out = contour_length),
+  type = "prep"
+)
+
+sc_fig5 <- append_scenario_f5(
+  sc_fig5,
+  "sc_fig5b",
+  sc_fixed = list(
+    part.index.prob = 0.9,
+    part.ident.main.prob = main_prob_25,
+    part.ident.casl.prob = plogis(qlogis(main_prob_25) - log(2)),
+    part.ident.ooff.prob = plogis(qlogis(main_prob_25) - log(4)),
+    part.hiv.test.rate = 1
+  ),
+  partner_idents = seq(0, 1, length.out = contour_length),
+  service = seq(0, 1, length.out = contour_length),
+  type = "tx"
 )

@@ -2,10 +2,10 @@
 var_labels <- c(
   # Epi
   "ir100"                      = "Incidence Rate",
+  "cum_incid"                  = "Cumulative incidence",
   "nia"                        = "NIA",
   "pia"                        = "PIA",
   "nnt"                        = "NNT",
-  "cum_incid"                  = "Cumulative incidence",
   # Process
   "prep_cov"                   = "PrEP Coverage",
   "hiv_diag"                   = "HIV+ Diagnosed",
@@ -29,13 +29,13 @@ var_labels <- c(
   "part_txreinit"              = "Number of Partners who Restarted ART",
 
   # other
-  "ident_dist0"                = "Identified Distribution: 0",
-  "ident_dist1"                = "Identified Distribution: 1",
-  "ident_dist2"                = "Identified Distribution: 2",
-  "ident_dist3p"               = "Identified Distribution: 3+",
-  "hiv_prev"                   = "HIV Prevalence",
-  "prep_time_on"               = "prep_time_on",
-  "prep_episodes"              = "prep_episodes"
+  "ident_dist0"                = "__ignore__Identified Distribution: 0",
+  "ident_dist1"                = "__ignore__Identified Distribution: 1",
+  "ident_dist2"                = "__ignore__Identified Distribution: 2",
+  "ident_dist3p"               = "__ignore__Identified Distribution: 3+",
+  "hiv_prev"                   = "__ignore__HIV Prevalence",
+  "prep_time_on"               = "__ignore__prep_time_on",
+  "prep_episodes"              = "__ignore__prep_episodes"
 )
 
 figure1_labels <- c(
@@ -62,6 +62,11 @@ figure3_panel <- c(
 
 figure4_panel <- figure3_panel
 names(figure4_panel) <- c("sc_fig4A", "sc_fig4B")
+
+figure5_panel <- c(
+  "sc_fig5A" = "Index prob 90%, Partner prob 25%, PrEP",
+  "sc_fig5B" = "Index prob 90%, Partner prob 25%, Tx init / reinit"
+)
 
 # Formatters for the variables
 fmts <- replicate(length(var_labels), scales::label_number(1))
