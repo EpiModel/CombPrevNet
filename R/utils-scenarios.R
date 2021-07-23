@@ -817,7 +817,7 @@ sc_fig5 <- append_scenario_f5(
     part.ident.main.prob = main_prob_25,
     part.ident.casl.prob = plogis(qlogis(main_prob_25) - log(2)),
     part.ident.ooff.prob = plogis(qlogis(main_prob_25) - log(4)),
-    part.hiv.test.rate = 1
+    part.hiv.test.rate   = rep(1, 3)
   ),
   partner_idents = seq(0, 1, length.out = contour_length),
   service = seq(0, 1, length.out = contour_length),
@@ -826,13 +826,14 @@ sc_fig5 <- append_scenario_f5(
 
 sc_fig5 <- append_scenario_f5(
   sc_fig5,
-  "sc_fig5b",
+  "sc_fig5B",
   sc_fixed = list(
     part.index.prob = 0.9,
     part.ident.main.prob = main_prob_25,
     part.ident.casl.prob = plogis(qlogis(main_prob_25) - log(2)),
     part.ident.ooff.prob = plogis(qlogis(main_prob_25) - log(4)),
-    part.hiv.test.rate = 1
+    part.hiv.test.rate   = rep(1, 3)
+
   ),
   partner_idents = seq(0, 1, length.out = contour_length),
   service = seq(0, 1, length.out = contour_length),
