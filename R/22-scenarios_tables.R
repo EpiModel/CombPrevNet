@@ -45,7 +45,7 @@ saveRDS(d_raw, "out/tables_data/t4.rds")
 readr::write_csv(d_table, "out/tables/t4.csv")
 
 # T5a
-scenarios <- names(c(sc_base, sc_t5a))
+scenarios <- c("t5a_base", names(sc_t5a))
 scenarios_files <- paste0("out/scenarios/", scenarios, ".rds")
 
 d_raw <- make_outcomes(scenarios_files[1], scenarios_files, scenarios)
@@ -54,7 +54,7 @@ saveRDS(d_raw, "out/tables_data/t5a.rds")
 readr::write_csv(d_table, "out/tables/t5a.csv")
 
 # T5b
-scenarios <- names(c(sc_base, sc_t5b))
+scenarios <- c("t4_ident_max_all", names(sc_t5b))
 scenarios_files <- paste0("out/scenarios/", scenarios, ".rds")
 
 d_raw <- make_outcomes(scenarios_files[1], scenarios_files, scenarios)

@@ -75,7 +75,8 @@ make_outcomes <- function(baseline_file, scenarios_files,
         mutate(
           nia =  (base_cum_incid - cum_incid),
           pia = nia / base_cum_incid,
-          nnt = (cum_indexes - base_cum_indexes) / nia
+          # nnt = (cum_indexes - base_cum_indexes) / nia
+          nnt = cum_indexes / nia
         ) %>%
         select(- cum_indexes) %>%
         ungroup()
@@ -231,7 +232,8 @@ make_cum_dfs <- function(baseline_file, scenarios_files) {
         mutate(
           nia =  (base_cum_incid - cum_incid),
           pia = nia / base_cum_incid,
-          nnt = (cum_indexes - base_cum_indexes) / nia
+          # nnt = (cum_indexes - base_cum_indexes) / nia
+          nnt = cum_indexes / nia
         ) %>%
         select(- cum_indexes) %>%
         ungroup()

@@ -499,6 +499,21 @@ sc_t4 <- list(
 )
 
 # Table 5a ----------------------------------------------------------------------
+sc_t5a_base <- list(
+  t5a_base = list(
+    list(
+      at = scenarios_update_time,
+      param = list( # maximum test (prep effect via LNT)
+        # see "R/z-indent_prob_calib.R"
+        part.index.prob = 0.9,
+        part.ident.main.prob = main_prob_50,
+        part.ident.casl.prob = plogis(qlogis(main_prob_50) - log(2)),
+        part.ident.ooff.prob = plogis(qlogis(main_prob_50) - log(4))
+      )
+    )
+  )
+)
+
 # windows
 sc_t5a <- list()
 t5a_base <- t3b_base
@@ -779,13 +794,14 @@ append_scenario_f5 <- function(sc, name_prefix, sc_fixed,
     sc_param$part.ident.ooff.prob <- sc_cross[[i]]$partner_idents
 
     if (type == "prep") {
-      sc_param$part.prep.start.prob <- rep(sc_cross[[i]]$prep, 3)
+      sc_param$part.prep.start.prob <- rep(sc_cross[[i]]$service, 3)
     } else if (type == "tx") {
-      sc_param$part.tx.init.prob <- rep(sc_cross[[i]]$tx, 3)
-      sc_param$part.tx.reinit.prob <- rep(sc_cross[[i]]$tx, 3)
+      sc_param$part.tx.init.prob <- rep(sc_cross[[i]]$service, 3)
+      sc_param$part.tx.reinit.prob <- rep(sc_cross[[i]]$service, 3)
     } else {
       stop("Type must be either 'prep' or 'tx'")
     }
+
 
     scenar <- list(
       list(
@@ -814,9 +830,6 @@ sc_fig5 <- append_scenario_f5(
   "sc_fig5A",
   sc_fixed = list(
     part.index.prob = 0.9,
-    part.ident.main.prob = main_prob_25,
-    part.ident.casl.prob = plogis(qlogis(main_prob_25) - log(2)),
-    part.ident.ooff.prob = plogis(qlogis(main_prob_25) - log(4)),
     part.hiv.test.rate   = rep(1, 3)
   ),
   partner_idents = seq(0, 1, length.out = contour_length),
@@ -829,11 +842,7 @@ sc_fig5 <- append_scenario_f5(
   "sc_fig5B",
   sc_fixed = list(
     part.index.prob = 0.9,
-    part.ident.main.prob = main_prob_25,
-    part.ident.casl.prob = plogis(qlogis(main_prob_25) - log(2)),
-    part.ident.ooff.prob = plogis(qlogis(main_prob_25) - log(4)),
     part.hiv.test.rate   = rep(1, 3)
-
   ),
   partner_idents = seq(0, 1, length.out = contour_length),
   service = seq(0, 1, length.out = contour_length),

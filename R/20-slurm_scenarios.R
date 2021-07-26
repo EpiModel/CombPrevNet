@@ -3,12 +3,12 @@ source("R/utils-slurm_wf.R")
 test_simulation <- TRUE
 
 # Set slurm parameters ---------------------------------------------------------
-sim_per_batch <- 40    # How many simulation per bactch
-batch_per_set <- 3    # How many sim_per_batch replications to do per parameter
+sim_per_batch <- 28    # How many simulation per bactch
+batch_per_set <- 20    # How many sim_per_batch replications to do per parameter
 steps_to_keep <- 20 * 52 # Steps to keep in the output df. If NULL, return sim obj
 partition <- "ckpt"     # On hyak, either ckpt or csde
-job_name <- "k_CPN_sc_fig5"
-ssh_host <- "hyak_klone"
+job_name <- "CPN_sc_t5_base"
+ssh_host <- "hyak_mox"
 ssh_dir <- "gscratch/CombPrevNet/"
 
 # Options passed to slurm_wf
@@ -46,10 +46,11 @@ source("R/utils-scenarios.R")
 # scenarios <- c(sc_atlanta_missing) # 20 * 28
 # scenarios <- c(sc_base, sc_t2, sc_t3a, sc_t3b, sc_t4, sc_t5a, sc_t5b) # 20 * 28
 # scenarios <- c(sc_t4) # 20 * 28
+scenarios <- c(sc_t5a_base) # 20 * 28
 # scenarios <- c(sc_fig2) # 3 * 40 sims
 # scenarios <- c(sc_fig3) # 3 * 40 sims
 # scenarios <- c(sc_fig4) # 3 * 40 sims
-scenarios <- c(sc_fig5) # 3 * 40 sims
+# scenarios <- c(sc_fig5) # 3 * 40 sims
 
 # Automatic --------------------------------------------------------------------
 #
