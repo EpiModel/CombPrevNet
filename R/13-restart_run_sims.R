@@ -37,13 +37,7 @@ control <- control_msm(
 )
 
 # Parameters to test -----------------------------------------------------------
-
-# Use this line to run only the default values
 param_proposals <- list(base_params__ = TRUE)
-
-# Make some additional changes to param_proposals using the present values
-# must return NULL if the required elements are NULL
-relative_params <- list()
 
 # Automatic --------------------------------------------------------------------
 

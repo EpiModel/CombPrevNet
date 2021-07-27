@@ -1,3 +1,4 @@
+library(EpiModel)
 library(tidyverse)
 
 files_folder <- "out/remote_jobs/CPN_restart_tmp/out" # where are the calibration files

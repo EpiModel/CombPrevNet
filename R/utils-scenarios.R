@@ -1,6 +1,7 @@
 main_prob_50 <- 0.66 # main partner_ident prob to get to 50% overall
 main_prob_25 <- 0.370  # main partner_ident prob to get to 25% overall
 contour_length <- 16
+scenarios_update_time <- 52 * 70 + 1
 
 # Scenarios tables =============================================================
 # Utilities

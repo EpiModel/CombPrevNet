@@ -52,7 +52,6 @@ restart_trackers <- epi_tracker_by_race(
   indiv = TRUE
 )
 
-
 # Params and inits
 orig <- readRDS("out/est/netest.rds")
 netstats <- readRDS("out/est/netstats.rds")
