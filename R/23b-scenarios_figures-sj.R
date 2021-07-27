@@ -236,3 +236,51 @@ ggsave(
   height = 6, width = 12,
   units = "in"
 )
+
+
+# fig 5 partner ident * PrEP,  ART ----------------------------------------
+
+df <- readRDS("data/output/figure5.rds")
+names(df)
+head(df)
+table(df$grp)
+
+f1a <- filter(df, grp == "Index prob 90%, Partner prob 25%, PrEP")
+f1b <- filter(df, grp == "Index prob 90%, Partner prob 25%, Tx init / reinit")
+
+loess1a <- loess(pia ~ partner * service, data = f1a, span = 0.1)
+fit1a <- expand.grid(list(partner = seq(min(f1a$partner), max(f1a$partner), length.out = 100),
+                          service = seq(min(f1a$service), max(f1a$service), length.out = 100)))
+fit1a$pia <- as.numeric(predict(loess1a, newdata = fit1a))
+head(fit1a, 25)
+
+loess1b <- loess(pia ~ partner * service, data = f1b, span = 0.1)
+fit1b <- expand.grid(list(partner = seq(min(f1b$partner), max(f1b$partner), length.out = 100),
+                          service = seq(min(f1b$service), max(f1b$service), length.out = 100)))
+fit1b$pia <- as.numeric(predict(loess1b, newdata = fit1b))
+head(fit1b, 25)
+
+fit1a$grp <- "Partner PrEP Initiation"
+fit1b$grp <- "Partner ART Initiation/Reinitiation"
+
+fit1 <- rbind(fit1a, fit1b)
+
+f1 <- ggplot(fit1, aes(partner, service)) +
+  geom_raster(aes(fill = pia), interpolate = TRUE) +
+  geom_contour(aes(z = pia), col = "white", alpha = 0.5, lwd = 0.5) +
+  # geom_text_contour(aes(z = pia), stroke = 0.1, size = 3.5) +
+  theme_minimal() +
+  theme(panel.spacing = unit(1.5, "lines")) +
+  facet_grid(cols = vars(grp)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  labs(y = "Service Engagement Probability", x = "Partner Identification Probability") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "B", direction = 1)
+f1
+
+ggsave(
+  paste0("out/Fig5.pdf"),
+  device = "pdf",
+  height = 6, width = 12,
+  units = "in"
+)
