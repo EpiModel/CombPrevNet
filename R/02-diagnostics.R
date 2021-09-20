@@ -1,19 +1,17 @@
-
 ##
 ## 02. Network Model Diagnostics
 ## CombPrevNet (https://github.com/EpiModel/CombPrevNet)
 ##
 
 ## Packages ##
-rm(list = ls())
-suppressMessages(library("EpiModelHIV"))
-library("EpiABC")
+pkgload::load_all("../EMHIVP2") #library(EpiModelHIV)
+# library(EpiABC)
 
-est <- readRDS("data/input/netest.rds")
-netstats <- readRDS("data/input/netstats.rds")
+est <- readRDS("out/est/netest.rds")
+netstats <- readRDS("out/est/netstats.rds")
 
 ncores <- parallel::detectCores() / 2
-nsims <- ncores * 1
+nsims <- ncores * 2
 
 # Main --------------------------------------------------------------------
 
@@ -30,18 +28,27 @@ model_main_dx <- ~edges +
   nodematch("role.class", diff = TRUE) +
   degree(0:3)
 
-dx_main <- netdx(fit_main, nsims = nsims, ncores = ncores, nsteps = 1000,
-                 nwstats.formula = model_main_dx, skip.dissolution = TRUE,
-                 set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5))
+dx_main <- netdx(
+  fit_main,
+  nsims = nsims, ncores = ncores,
+  nsteps = 1000,
+  nwstats.formula = model_main_dx, skip.dissolution = TRUE,
+  set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5)
+)
 
 print(dx_main, digits = 2)
 
 netstats$main
 cbind(fit_main$coef.form)
 
-dx_main_static <- netdx(fit_main, dynamic = FALSE, nsims = 10000,
-                        nwstats.formula = model_main_dx, skip.dissolution = TRUE,
-                        set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5))
+dx_main_static <- netdx(
+  fit_main,
+  dynamic = FALSE,
+  nsims = 10000,
+  nwstats.formula = model_main_dx, skip.dissolution = TRUE,
+  set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5)
+)
+
 print(dx_main_static, digits = 1)
 
 plot(dx_main)
@@ -61,9 +68,15 @@ model_casl_dx <- ~edges +
   concurrent +
   nodematch("role.class", diff = TRUE) +
   degree(0:4)
-dx_casl <- netdx(fit_casl, nsims = nsims, ncores = ncores, nsteps = 500,
-                 nwstats.formula = model_casl_dx, skip.dissolution = TRUE,
-                 set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5))
+
+dx_casl <- netdx(
+  fit_casl,
+  nsims = nsims, ncores = ncores,
+  nsteps = 500,
+  nwstats.formula = model_casl_dx, skip.dissolution = TRUE,
+  set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5)
+)
+
 print(dx_casl, digits = 1)
 plot(dx_casl)
 
@@ -83,9 +96,14 @@ model_inst_dx <- ~edges +
   nodefactor("deg.tot", levels = TRUE) +
   nodematch("role.class", diff = TRUE) +
   degree(0:4)
-dx_inst <- netdx(fit_inst, nsims = 10000, dynamic = FALSE,
-                 nwstats.formula = model_inst_dx,
-                 set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5))
+
+dx_inst <- netdx(
+  fit_inst,
+  nsims = 10000,
+  dynamic = FALSE,
+  nwstats.formula = model_inst_dx,
+  set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e5)
+)
 
 print(dx_inst, digits = 1)
 plot(dx_inst)

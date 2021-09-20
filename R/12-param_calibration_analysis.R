@@ -54,11 +54,11 @@ df %>%
 param_proposals[c(24, 39, 47, 48)]
 
 
-df %>%
-  filter(time > max(time) - 52 * 10) %>%
-  group_by(param_batch) %>%
-  summarise(across(- c(time, )
-  ) |> print(n = 200)
+# df %>%
+#   filter(time > max(time) - 52 * 10) %>%
+#   group_by(param_batch) %>%
+#   summarise(across(- c(time, )
+#   ) %>% print(n = 200)
 
 df %>%
   filter(time > max(time) - 52 * 10) %>%

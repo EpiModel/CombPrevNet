@@ -1,5 +1,5 @@
 # Utility ----------------------------------------------------------------------
-epi_tracker_by_race <- function(ls_funs, races = 1:3,
+epi_tracker_by_race <- function(ls_funs, races = seq_len(3),
                                 races_names = c("B", "H", "W"),
                                 indiv = TRUE, full = TRUE) {
 
