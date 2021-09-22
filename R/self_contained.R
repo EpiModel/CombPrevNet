@@ -1,4 +1,5 @@
-pkgload::load_all("../EMHIVP2") #library(EpiModelHIV)
+# pkgload::load_all("../EMHIVP2")
+library(EpiModelHIV) # "EpiModel/EpiModelHIV-p@CPN_new_APIs"
 library(ARTnet)
 
 epistats <- build_epistats(
@@ -160,6 +161,85 @@ orig <- out
 # netstats <- readRDS("out/est/netstats.rds")
 # epistats <- readRDS("out/est/epistats.rds")
 
+# the `simnet_msm` function used here
+simnet_msm <- function(dat, at) {
+
+  ## Parameters
+  truncate.plist <- get_param(dat, "truncate.plist")
+  truncate.el.cuml <- get_control(dat, "truncate.el.cuml")
+
+  ## Edges correction
+  dat <- edges_correct_msm(dat, at)
+
+  ## Main network
+  nwparam <- EpiModel::get_nwparam(dat, network = 1)
+
+  dat <- set_attr(dat, "deg.casl", EpiModel::get_degree(dat$el[[2]]))
+  dat <- tergmLite::updateModelTermInputs(dat, network = 1)
+
+  rv <- tergmLite::simulate_network(
+    state = dat$p[[1]]$state,
+    coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
+    control = dat$control$mcmc.control[[1]],
+    save.changes = TRUE
+  )
+
+  dat$el[[1]] <- rv$el
+
+  plist1 <- update_plist(dat, at, ptype = 1)
+
+
+  ## Casual network
+  nwparam <- EpiModel::get_nwparam(dat, network = 2)
+
+  dat <- set_attr(dat, "deg.main", EpiModel::get_degree(dat$el[[1]]))
+  dat <- tergmLite::updateModelTermInputs(dat, network = 2)
+
+  # rv <- tergmLite::simulate_network(
+  #   state = dat$p[[2]]$state,
+  #   coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
+  #   control = dat$control$mcmc.control[[2]],
+  #   save.changes = TRUE
+  # )
+
+  # dat$el[[2]] <- rv$el
+
+  # plist2 <- update_plist(dat, at, ptype = 2)
+
+  # ## One-off network
+  # nwparam <- EpiModel::get_nwparam(dat, network = 3)
+
+  # dat <- set_attr(dat, "deg.tot",
+  #   pmin(get_attr(dat, "deg.main") + EpiModel::get_degree(dat$el[[2]]), 3))
+  # dat <- tergmLite::updateModelTermInputs(dat, network = 3)
+
+  # rv <- tergmLite::simulate_ergm(state = dat$p[[3]]$state,
+  #   coef = nwparam$coef.form,
+  #   control = dat$control$mcmc.control[[3]]
+  # )
+
+  # dat$el[[3]] <- rv$el
+
+  # plist3 <- update_plist(dat, at, ptype = 3)
+
+  # dat$temp$plist <- rbind(plist1, plist2, plist3)
+  # if (truncate.plist != Inf) {
+  #   to.keep.stop <- at - dat$temp$plist[, "stop"]
+  #   to.keep <- which(is.na(dat$temp$plist[, "stop"]) | to.keep.stop < truncate.plist)
+  #   dat$temp$plist <- dat$temp$plist[to.keep, , drop = FALSE]
+  # }
+
+  # if (get_control(dat, "save.nwstats") == TRUE) {
+  #   dat <- calc_nwstats(dat, at)
+  # }
+
+  # for (n_network in seq_len(3)) {
+  #   dat <- update_cumulative_edgelist(dat, at, n_network, truncate.el.cuml)
+  # }
+
+  return(dat)
+}
+
 param <- param_msm(
   netstats = netstats,
   epistats = epistats,
@@ -173,75 +253,45 @@ init <- init_msm(
   prev.uct = 0.05
 )
 
+param$truncate.plist <- 54
 control <- control_msm(
-  nsteps = 52 * 1,
+  nsteps = 52 * 60,
   nsims = 1,
   ncores = 1,
   save.nwstats = FALSE,
   save.clin.hist = FALSE,
-  raw.output = TRUE, # so `sim[[1]]` is the `dat` object unmodified
+  truncate.el.cuml = param$truncate.plist,
+  tracker.list = list(), #epi_trackers,
+  raw.output = FALSE,
 
   # truncate.el.cuml = 53,
 
   initialize.FUN    = initialize_msm,
-  param_updater.FUN = NULL, # param_updater,
+  updater.FUN       = function(dat, at) dat, #updater.net,
   aging.FUN         = aging_msm,
   departure.FUN     = departure_msm,
   arrival.FUN       = arrival_msm,
-  partident.FUN     = NULL, # partident_msm,
-  hivtest.FUN       = NULL, # hivtest_msm,
-  hivtx.FUN         = NULL, # hivtx_msm,
-  hivprogress.FUN   = NULL, # hivprogress_msm,
-  hivvl.FUN         = NULL, # hivvl_msm,
-  resim_nets.FUN    = simnet_msm,
-  acts.FUN          = NULL, # acts_msm,
-  condoms.FUN       = NULL, # condoms_msm,
-  position.FUN      = NULL, # position_msm,
-  prep.FUN          = NULL, # prep_msm,
-  hivtrans.FUN      = NULL, # hivtrans_msm,
-  stitrans.FUN      = NULL, # stitrans_msm,
-  stirecov.FUN      = NULL, # stirecov_msm,
-  stitx.FUN         = NULL, # stitx_msm,
-  prev.FUN          = NULL, # prevalence_msm,
+  partident.FUN     = function(dat, at) dat, #partident_msm,
+  hivtest.FUN       = function(dat, at) dat, #hivtest_msm,
+  hivtx.FUN         = function(dat, at) dat, #hivtx_msm,
+  hivprogress.FUN   = function(dat, at) dat, #hivprogress_msm,
+  hivvl.FUN         = function(dat, at) dat, #hivvl_msm,
+  resim_nets.FUN    = simnet_msm, # see above
+  acts.FUN          = function(dat, at) dat, #acts_msm,
+  condoms.FUN       = function(dat, at) dat, #condoms_msm,
+  position.FUN      = function(dat, at) dat, #position_msm,
+  prep.FUN          = function(dat, at) dat, #prep_msm,
+  hivtrans.FUN      = function(dat, at) dat, #hivtrans_msm,
+  stitrans.FUN      = function(dat, at) dat, #stitrans_msm,
+  stirecov.FUN      = function(dat, at) dat, #stirecov_msm,
+  stitx.FUN         = function(dat, at) dat, #stitx_msm,
+  prev.FUN          = prevalence_msm,
+  trackers.FUN      = function(dat, at) dat, #trackers.net,
   verbose.FUN       = verbose.net,
 
-  verbose = TRUE
+  verbose = FALSE
 )
 
 # Model Run --------------------------------------------------------------------
 sim <- netsim(orig, param, init, control)
-
-# Look at the Plists -----------------------------------------------------------
-sim[[1]]$temp %>%
-  as.data.frame() %>%
-  dplyr::filter(
-    plist.ptype %in% c(1, 2),
-    plist.start > 1
-  )
-
-sim[[1]]$temp %>%
-  as.data.frame() %>%
-  dplyr::filter(
-    plist.ptype %in% 3,
-    plist.start > 1
-  )
-
-# Resimulate the casual network to see that nothing is happening ---------------
-at <- control$nsteps
-dat <- sim[[1]]
-
-dat <- edges_correct_msm(dat, at)
-
-
-nwparam <- EpiModel::get_nwparam(dat, network = 2)
-dat <- tergmLite::updateModelTermInputs(dat, network = 2)
-
-rv <- tergmLite::simulate_network(
-  state = dat$p[[2]]$state,
-  coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
-  control = dat$control$mcmc.control[[2]],
-  save.changes = TRUE
-)
-
-attr(rv$el, "changes")
 

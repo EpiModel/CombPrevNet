@@ -57,7 +57,7 @@ netstats <- readRDS("out/est/netstats.rds")
 epistats <- readRDS("out/est/epistats.rds")
 
 full_tx_eff <- rep(1, 3)
-prep_start_time <- 52 * 65 + 1
+prep_start_time <- 52 * 5 + 1 # 52 * 65 + 1
 prep_start_prob <- rep(0.302, 3)
 
 param <- param_msm(
@@ -156,7 +156,7 @@ param <- param_msm(
   part.tx.init.prob = rep(0.387, 3),
   part.tx.reinit.prob = rep(0, 3),
 
-  param_updaters = list(
+  param.updater.list = list(
     # High PrEP intake for the first year
     list(
       at = prep_start_time,
@@ -191,3 +191,4 @@ init <- init_msm(
   prev.rgc = 0.05,
   prev.uct = 0.05
 )
+

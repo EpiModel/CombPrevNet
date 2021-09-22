@@ -6,73 +6,52 @@
 #
 source("R/utils-inputs.R", local = TRUE)
 
+param$truncate.plist <- 54
 control <- control_msm(
-  nsteps = 52 * 1,
+  nsteps = 52 * 60,
   nsims = 1,
   ncores = 1,
   save.nwstats = FALSE,
   save.clin.hist = FALSE,
-  tracker.list = epi_trackers,
-  raw.output = TRUE,
+  truncate.el.cuml = param$truncate.plist,
+  tracker.list = list(), #epi_trackers,
+  raw.output = FALSE,
 
   # truncate.el.cuml = 53,
 
   initialize.FUN    = initialize_msm,
-  param_updater.FUN = NULL, # param_updater,
+  updater.FUN       = function(dat, at) dat, #updater.net,
   aging.FUN         = aging_msm,
   departure.FUN     = departure_msm,
   arrival.FUN       = arrival_msm,
-  partident.FUN     = NULL, # partident_msm,
-  hivtest.FUN       = NULL, # hivtest_msm,
-  hivtx.FUN         = NULL, # hivtx_msm,
-  hivprogress.FUN   = NULL, # hivprogress_msm,
-  hivvl.FUN         = NULL, # hivvl_msm,
+  partident.FUN     = function(dat, at) dat, #partident_msm,
+  hivtest.FUN       = function(dat, at) dat, #hivtest_msm,
+  hivtx.FUN         = function(dat, at) dat, #hivtx_msm,
+  hivprogress.FUN   = function(dat, at) dat, #hivprogress_msm,
+  hivvl.FUN         = function(dat, at) dat, #hivvl_msm,
   resim_nets.FUN    = simnet_msm,
-  acts.FUN          = NULL, # acts_msm,
-  condoms.FUN       = NULL, # condoms_msm,
-  position.FUN      = NULL, # position_msm,
-  prep.FUN          = NULL, # prep_msm,
-  hivtrans.FUN      = NULL, # hivtrans_msm,
-  stitrans.FUN      = NULL, # stitrans_msm,
-  stirecov.FUN      = NULL, # stirecov_msm,
-  stitx.FUN         = NULL, # stitx_msm,
-  prev.FUN          = NULL, # prevalence_msm,
+  acts.FUN          = function(dat, at) dat, #acts_msm,
+  condoms.FUN       = function(dat, at) dat, #condoms_msm,
+  position.FUN      = function(dat, at) dat, #position_msm,
+  prep.FUN          = function(dat, at) dat, #prep_msm,
+  hivtrans.FUN      = function(dat, at) dat, #hivtrans_msm,
+  stitrans.FUN      = function(dat, at) dat, #stitrans_msm,
+  stirecov.FUN      = function(dat, at) dat, #stirecov_msm,
+  stitx.FUN         = function(dat, at) dat, #stitx_msm,
+  prev.FUN          = prevalence_msm,
+  trackers.FUN      = function(dat, at) dat, #trackers.net,
   verbose.FUN       = verbose.net,
 
-  verbose = TRUE
+  verbose = FALSE
 )
 
-# debug(initialize_msm)
+# debug(updateModelTermInputs)
 sim <- netsim(orig, param, init, control)
 
-# Error in simulate.ergm_model(m, nsim = nsim, seed = seed, coef = coef,  :
-#   coef has 18 elements, while the model requires 16 parameters.
-sim[[1]]$el_cuml
+# library(dplyr)
 
-sim[[1]]$temp %>%
-  as.data.frame() %>%
-  dplyr::filter(
-    plist.ptype %in% c(1, 2),
-    plist.start > 1
-  )
+# d <- as_tibble(sim)
 
-dat <- sim[[1]]
-
-at <- 53
-dat <- edges_correct_msm(dat, at)
-
-## Main network
-nwparam <- EpiModel::get_nwparam(dat, network = 1)
-
-dat <- set_attr(dat, "deg.casl", EpiModel::get_degree(dat$el[[2]]))
-dat <- tergmLite::updateModelTermInputs(dat, network = 1)
-
-rv <- tergmLite::simulate_network(
-  state = dat$p[[1]]$state,
-  coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
-  control = dat$control$mcmc.control[[1]],
-  save.changes = TRUE
-)
-
-dat$el[[1]] <- rv$el
-
+# d %>%
+#   select(found_partners, found_partners2) %>%
+#   summarise(across(everything(), ~ sum(.x, na.rm = T)))

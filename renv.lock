@@ -55,9 +55,21 @@
       "RemoteHost": "api.github.com",
       "RemoteUsername": "statnet",
       "RemoteRepo": "EpiModel",
-      "RemoteRef": "master",
-      "RemoteSha": "57c0889d3c9ed4d16a3a00c5d0e2b0a5edffe5ce",
-      "Hash": "0498d7c4b602d514425c88d373f0da3b"
+      "RemoteRef": "fix576_cumulative_el",
+      "RemoteSha": "838e18f960543723763d8c4364bb5be8d21d9e60",
+      "Hash": "d70b04d0c8b7003cbe62344b09b87400"
+    },
+    "EpiModelHIV": {
+      "Package": "EpiModelHIV",
+      "Version": "2.0.5",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "EpiModel",
+      "RemoteRepo": "EpiModelHIV-p",
+      "RemoteRef": "CPN_new_APIs",
+      "RemoteSha": "72073200a893361df3562c0eb9479a2ee0d642e4",
+      "Hash": "78adebf81d49959a7546741021497927"
     },
     "EpiModelHPC": {
       "Package": "EpiModelHPC",
@@ -283,10 +295,10 @@
     },
     "cpp11": {
       "Package": "cpp11",
-      "Version": "0.3.1",
+      "Version": "0.4.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "e02edab2bc389c5e4b12949b13df44f2"
+      "Hash": "40ba3fd26c8f61d8d14d334bc7761df9"
     },
     "crayon": {
       "Package": "crayon",
@@ -618,10 +630,10 @@
     },
     "lattice": {
       "Package": "lattice",
-      "Version": "0.20-44",
+      "Version": "0.20-45",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "f36bf1a849d9106dc2af72e501f9de41"
+      "Hash": "b64cdbb2b340437c4ee047a1f4c4377b"
     },
     "lazyeval": {
       "Package": "lazyeval",
@@ -681,10 +693,10 @@
     },
     "metR": {
       "Package": "metR",
-      "Version": "0.10.0",
+      "Version": "0.11.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "0e85761875017029df1d5157d9c8d718"
+      "Hash": "383bfe74994affab757693f0cdc6d574"
     },
     "mgcv": {
       "Package": "mgcv",
