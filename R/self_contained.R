@@ -292,6 +292,3 @@ control <- control_msm(
   verbose = FALSE
 )
 
-# Model Run --------------------------------------------------------------------
-sim <- netsim(orig, param, init, control)
-
