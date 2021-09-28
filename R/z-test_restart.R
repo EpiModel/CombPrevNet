@@ -1,5 +1,5 @@
 # This pulls in the default `param` object and the trackers
-source("R/utils-params.R", local = TRUE)
+source("R/utils-inputs.R", local = TRUE)
 # pkgload::load_all("../EpiModelHIV-p")
 orig <- readRDS("out/est/restart.rds")
 
@@ -8,8 +8,8 @@ nsteps <- 52 * 20
 control <- control_msm(
   start = 60 * 52 + 1,
   nsteps = 61 * 52 + 1 + nsteps, # one year for prep riskhist then nsteps
-  nsims = 28,
-  ncores = 7,
+  nsims = 1,
+  ncores = 1,
   save.nwstats = FALSE,
   initialize.FUN = reinit_msm,
   save.clin.hist = FALSE,
@@ -22,6 +22,8 @@ param$part.ident.main.prob <- main
 param$part.ident.casl.prob <- plogis(qlogis(main) - log(2))
 param$part.ident.ooff.prob <- plogis(qlogis(main) - log(4))
 
+# options(error = recover)
+# debug(get_cumulative_edgelists_df)
 sim <- netsim(orig, param, init, control)
 
 library(tidyverse)

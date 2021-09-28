@@ -1,3 +1,4 @@
+pkgload::load_all("../EpiModel")
 pkgload::load_all("../EMHIVP2")
 # library(EpiModelHIV)
 
@@ -58,7 +59,7 @@ netstats <- readRDS("out/est/netstats.rds")
 epistats <- readRDS("out/est/epistats.rds")
 
 full_tx_eff <- rep(1, 3)
-prep_start_time <- 52 * 5 + 1 # 52 * 65 + 1
+prep_start_time <- 52 * 65 + 1
 prep_start_prob <- rep(0.302, 3)
 
 param <- param_msm(
