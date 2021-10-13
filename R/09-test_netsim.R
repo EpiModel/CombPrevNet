@@ -6,22 +6,22 @@
 #
 source("R/utils-inputs.R", local = TRUE)
 
-nsim <- 1
 control <- control_msm(
-  nsteps = 52 * 60,
-  nsims = nsim,
-  ncores = nsim,
-  save.nwstats = FALSE,
-  save.clin.hist = FALSE,
+  nsteps = 52 * 65,
+  nsims = 1,
+  ncores = 1,
   truncate.el.cuml = 53,
   tracker.list = epi_trackers,
-  raw.output = FALSE,
-  verbose = TRUE
+  verbose = FALSE,
+  raw.output = FALSE
 )
 
-# options(error = recover)
-# debug(tergm_MCMC_slave)
-sim <- netsim(orig, param, init, control)
+# sim <- netsim(orig, param, init, control)
+
+options(browser = "firefox")
+profvis::profvis({
+  sim <- netsim(orig, param, init, control)
+})
 
 # sim$epi <- sim$epi["num"] # keep only the "num" epi tracker
 # saveRDS(sim, "out/est/restart.rds")
