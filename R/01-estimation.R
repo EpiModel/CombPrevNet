@@ -1,9 +1,9 @@
-##
+#
 ## 01. Network Model Estimation
 ## CombPrevNet (https://github.com/EpiModel/CombPrevNet)
 ##
 
-pkgload::load_all("../EMHIVP2") #library(EpiModelHIV)
+library(EpiModelHIV)
 library(ARTnet)
 
 if (!fs::dir_exists("out/est"))
@@ -22,7 +22,7 @@ netstats <- build_netstats(
   epistats,
   netparams,
   expect.mort = 0.000478213,
-  network.size = 10000
+  network.size = 1e4
 )
 saveRDS(netstats, file = "out/est/netstats.rds")
 
