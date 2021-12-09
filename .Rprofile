@@ -1,6 +1,10 @@
 
 if (dir.exists("renv/")) {
-  source("renv/activate.R")
+  if (file.exists("renv/activate.R")) {
+    source("renv/activate.R")
+  } else {
+    cat("* renv may have been incompletely set up. Run renv::init() to continue\n")
+  }
   if (interactive()) {
     renv::status()
   }
