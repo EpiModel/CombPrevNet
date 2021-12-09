@@ -238,6 +238,105 @@ ggsave(
 )
 
 
+
+# combine figure 3/4 ------------------------------------------------------
+
+df <- readRDS("data/output/figure3.rds")
+names(df)
+head(df)
+table(df$grp)
+
+f1a <- filter(df, grp == "Index prob 90%, Partner prob 25%")
+f1b <- filter(df, grp == "Index prob 90%, Partner prob 50%")
+
+loess1a <- loess(pia ~ prep * test, data = f1a, span = 0.2)
+fit1a <- expand.grid(list(prep = seq(min(f1a$prep), max(f1a$prep), length.out = 100),
+                          test = seq(min(f1a$test), max(f1a$test), length.out = 100)))
+fit1a$pia <- as.numeric(predict(loess1a, newdata = fit1a))
+head(fit1a, 25)
+
+loess1b <- loess(pia ~ prep * test, data = f1b, span = 0.2)
+fit1b <- expand.grid(list(prep = seq(min(f1b$prep), max(f1b$prep), length.out = 100),
+                          test = seq(min(f1b$test), max(f1b$test), length.out = 100)))
+fit1b$pia <- as.numeric(predict(loess1b, newdata = fit1b))
+head(fit1b, 25)
+
+fit1a$grp <- "Partner Prob = 25%"
+fit1b$grp <- "Partner Prob = 50%"
+
+fit1 <- rbind(fit1a, fit1b)
+fit1$service = "PrEP"
+
+# f1 <- ggplot(fit1, aes(test, prep)) +
+#   geom_raster(aes(fill = pia), interpolate = TRUE) +
+#   geom_contour(aes(z = pia), col = "white", alpha = 0.5, lwd = 0.5) +
+#   # geom_text_contour(aes(z = pia), stroke = 0.1, size = 3.5) +
+#   theme_minimal() +
+#   theme(panel.spacing = unit(1.5, "lines")) +
+#   facet_grid(cols = vars(grp)) +
+#   scale_y_continuous(expand = c(0, 0)) +
+#   scale_x_continuous(expand = c(0, 0)) +
+#   labs(y = "Partner PrEP Initiation Probability", x = "Partner HIV Screening Probability") +
+#   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "B", direction = 1)
+# f1
+
+
+df <- readRDS("data/output/figure4.rds")
+names(df)
+head(df)
+table(df$grp)
+
+f2a <- filter(df, grp == "Index prob 90%, Partner prob 25%")
+f2b <- filter(df, grp == "Index prob 90%, Partner prob 50%")
+
+loess2a <- loess(pia ~ tx * test, data = f2a, span = 0.15)
+fit2a <- expand.grid(list(tx = seq(min(f2a$tx), max(f2a$tx), length.out = 100),
+                          test = seq(min(f2a$test), max(f2a$test), length.out = 100)))
+fit2a$pia <- as.numeric(predict(loess2a, newdata = fit2a))
+head(fit2a, 25)
+
+loess2b <- loess(pia ~ tx * test, data = f2b, span = 0.15)
+fit2b <- expand.grid(list(tx = seq(min(f2b$tx), max(f2b$tx), length.out = 100),
+                          test = seq(min(f2b$test), max(f2b$test), length.out = 100)))
+fit2b$pia <- as.numeric(predict(loess2b, newdata = fit2b))
+head(fit2b, 25)
+
+fit2a$grp <- "Partner Prob = 25%"
+fit2b$grp <- "Partner Prob = 50%"
+
+fit2 <- rbind(fit2a, fit2b)
+fit2$service = "ART"
+
+names(fit1)[1] <- "coverage"
+names(fit2)[1] <- "coverage"
+
+fit12 <- rbind(fit1, fit2)
+
+head(fit12)
+
+f2 <- ggplot(fit12, aes(test, coverage)) +
+  geom_raster(aes(fill = pia), interpolate = TRUE) +
+  geom_contour(aes(z = pia), col = "white", alpha = 0.5, lwd = 0.5) +
+  # geom_text_contour(aes(z = pia), stroke = 0.1, size = 3.5) +
+  theme_minimal() +
+  theme(panel.spacing = unit(1.5, "lines")) +
+  facet_grid(cols = vars(grp), rows = vars(service)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  labs(y = "Partner PrEP/ART Service Engagement Probability", x = "Partner HIV Screening Probability") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "B", direction = 1)
+f2
+# f1
+
+
+ggsave(
+  paste0("out/Fig3-4.pdf"),
+  device = "pdf",
+  height = 10, width = 10,
+  units = "in"
+)
+
+
 # fig 5 partner ident * PrEP,  ART ----------------------------------------
 
 df <- readRDS("data/output/figure5.rds")
