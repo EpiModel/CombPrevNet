@@ -1,6 +1,7 @@
-library(tidyverse)
-library(RcppRoll)
-library(metR)
+library("tidyverse")
+library("zoo")
+library("metR")
+library("viridis")
 theme_set(theme_classic())
 
 create_var_df <- function(df, scen, var) {
@@ -29,8 +30,8 @@ draw_quants <- function(x, col) {
 }
 
 apply_roll <- function(x, n) {
-  for (j in 1:ncol(x)) {
-    x[, j] <- RcppRoll::roll_meanr(x[, j], n = n)
+  for (j in 2:ncol(x)) {
+    x[, j] <- zoo::rollmean(x[, j], k = n, align = "right", fill = NA)
     x[1:(n - 1), j] <- x[n, j]
   }
   return(x)
@@ -44,7 +45,8 @@ lsmooth <- function(x) {
   return(x)
 }
 
-# Figure 1 ---------------------------------------------------------------------
+
+# Supplemental Figure 1 ---------------------------------------------------
 
 df <- readRDS("data/output/figure1.rds")
 names(df)
@@ -55,9 +57,9 @@ var <- "ir100"
 roll <- 104
 alpha <- 0.08
 
-pdf("out/Fig1.pdf", height = 6, width = 12)
+pdf("out/Supp-Fig1.pdf", height = 6, width = 12)
 par(mar = c(3,3,1,1), mgp = c(2,1,0))
-h1 <- create_var_df(df, scen = "Atlanta Complete", var)
+h1 <- create_var_df(df, scen = "Atlanta Complete", all_of(var))
 h2 <- apply_roll(h1, roll)
 h3 <- create_quants_df(h2, low = 0.25, high = 0.75)
 h4 <- as.data.frame(tail(h3, 520))
