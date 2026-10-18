@@ -1,0 +1,78 @@
+---
+title: "CombPrevNet"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(knitr.kable.NA = "")
+```
+
+## First Stage Calibration
+
+### Diagnosed Prevalence
+
+![](../out/plots/additional_calib_i.prev.dx.jpeg)
+
+### Proportion of Diagnosed
+
+![](../out/plots/additional_calib_cc.dx.jpeg)
+
+### Proportion of Linked to Care Within a Month
+
+![](../out/plots/additional_calib_cc.linked1m.jpeg)
+
+### Proportion of Diagnosed That Are Virally Suppressed
+
+![](../out/plots/additional_calib_cc.vsupp.jpeg)
+
+### Incidence of Gonorrhea for 100 Person Year at Risk
+
+![](../out/plots/additional_calib_ir100.gc.jpeg)
+
+### Incidence of Chlamydia for 100 Person Year at Risk
+
+![](../out/plots/additional_calib_ir100.ct.jpeg)
+
+## Restart Point Strategy
+
+- Run the model 60 years to get rid of the initial population
+- But it makes the simulation longer runs
+- After 60 years, choose the simulation closest to the targets
+- For each scenario
+  - Run 5 years to add randomness (60 to 65)
+  - Turn on PrEP and Partner services (65 to 70)
+  - Start the intervention (70 to 80)
+- Only 20 years to simulate instead of 75 each run
+- Still 10 years of "shuffling" before the scenarios (enough to go back to a "random state")
+
+## PrEP Calibration
+
+![](../out/plots/cdc_presentation_prep.jpeg)
+
+## Identification
+
+### HIV Prevalence (Infected / Total Population)
+
+![](../out/plots/cdc_presentation_prev.jpeg)
+
+### Proportion of Diagnosed
+
+![](../out/plots/cdc_presentation_idx.jpeg)
+
+### Proportion of Treated (out of all the infected)
+
+![](../out/plots/cdc_presentation_itx.jpeg)
+
+
+### Proportion of Diagnosed who are Treated
+
+![](../out/plots/cdc_presentation_itxdx.jpeg)
+
+### Proportion of Diagnosed who are Virally Suppressed
+
+![](../out/plots/cdc_presentation_isupdx.jpeg)
+
+###  HIV Incidence per 100 PYAR
+
+![](../out/plots/cdc_presentation_incid.jpeg)

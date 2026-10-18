@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+.jpeg
+.rda
+data/
+renv/
+
+# ARTnet data and files built from it
+out/est/
