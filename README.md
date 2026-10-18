@@ -12,7 +12,7 @@ The EpiModelHIV engine for this paper is release [`PartServ-STD`](https://github
 remotes::install_github("EpiModel/EpiModelHIV@PartServ-STD")
 ```
 
-ARTnetData is a private package. See the [ARTnet package](https://github.com/EpiModel/ARTnet) for how to request access. The fitted networks and restart file built from it (`out/est/`) are not included in this repository, so running the model starts with re-estimating the networks.
+ARTnetData is a private package. See the [ARTnet package](https://github.com/EpiModel/ARTnet) for how to request access. The fitted networks and restart file built from it (`out/est/`) are not included in this repository, so running the model starts with re-estimating the networks. The paper's networks were estimated with ARTnet 2.5.0, which is no longer public, so `renv.lock` installs ARTnet 2.9.3, the first version in the public ARTnet repository. Networks re-estimated with it may not match the paper's exactly.
 
 
 ## Abstract
